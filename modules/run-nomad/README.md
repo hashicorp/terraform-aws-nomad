@@ -28,7 +28,7 @@ This will:
    
 1. Generate a [Supervisor](http://supervisord.org/) configuration file called `run-nomad.conf` in the Supervisor
    config dir (default: `/etc/supervisor/conf.d`) with a command that will run Nomad:  
-   `sudo nomad agent -config=/opt/nomad/config -data-dir=/opt/nomad/data`.
+   `nomad agent -config=/opt/nomad/config -data-dir=/opt/nomad/data`.
 
 1. Tell Supervisor to load the new configuration file, thereby starting Nomad.
 
@@ -81,6 +81,12 @@ available.
 ### Default configuration
 
 `run-nomad` sets the following configuration values by default:
+
+* [advertise](https://www.nomadproject.io/docs/agent/configuration/index.html#advertise): All the advertise addresses
+  are set to the Instance's private IP address, as fetched from  
+  [Metadata](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html).
+  
+* [bind](https://www.nomadproject.io/docs/agent/configuration/index.html#bind_addr): Set to 0.0.0.0.
   
 * [consul](https://www.nomadproject.io/docs/agent/configuration/consul.html): By default, set the Consul address to
   `127.0.0.1:8500`, with the assumption that Nomad and Consul are colocated on the same server. If you are running 
