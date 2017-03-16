@@ -10,10 +10,8 @@ which are used to run jobs:
 
 ![Nomad architecture](/_docs/architecture-nomad-consul-separate.png)
 
-You will need to create one [Amazon Machine Image (AMI)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) 
-that has Nomad installed, which you can do using the [nomad-only-ami example](/examples/nomad-only-ami)), and another
-AMI that has Consul installed, which you can do using the [consul-ami 
-example](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/examples/consul-ami).  
+You will need to create an [Amazon Machine Image (AMI)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) 
+that has Nomad and Consul installed, which you can do using the [nomad-consul-ami example](/examples/nomad-consul-ami)).  
 
 For more info on how the Nomad cluster works, check out the [nomad-cluster](/modules/nomad-cluster) documentation.
 
@@ -25,10 +23,7 @@ For more info on how the Nomad cluster works, check out the [nomad-cluster](/mod
 To deploy a Nomad Cluster:
 
 1. `git clone` this repo to your computer.
-1. Build a Nomad AMI. See the [nomad-only-ami example](/examples/nomad-only-ami) documentation for instructions. Make 
-   sure to note down the ID of the AMI.
-1. Build a Consul AMI. See the [consul-ami 
-   example](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/examples/consul-ami) documentation for 
+1. Build a Nomad and Consul AMI. See the [nomad-consul-ami example](/examples/nomad-consul-ami) documentation for 
    instructions. Make sure to note down the ID of the AMI.
 1. Install [Terraform](https://www.terraform.io/).
 1. Open `vars.tf`, set the environment variables specified at the top of the file, and fill in any other variables that

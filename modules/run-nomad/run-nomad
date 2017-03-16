@@ -19,25 +19,26 @@ function print_usage {
   echo
   echo "Options:"
   echo
-  echo -e "  --server\t\tSet to true to run in server mode and false to run in client mode. Required."
+  echo -e "  --server\t\tIf set, run in server mode. Optional. At least one of --server or --client must be set."
+  echo -e "  --client\t\tIf set, run in client mode. Optional. At least one of --server or --client must be set."
   echo -e "  --num-servers\t\tThe number of servers to expect in the Nomad cluster. Required if --server is true."
   echo -e "  --config-dir\t\tThe path to the Nomad config folder. Optional. Default is the absolute path of '../config', relative to this script."
   echo -e "  --data-dir\t\tThe path to the Nomad data folder. Optional. Default is the absolute path of '../data', relative to this script."
   echo -e "  --bin-dir\t\tThe path to the folder with Nomad binary. Optional. Default is the absolute path of the parent folder of this script."
   echo -e "  --user\t\tThe user to run Nomad as. Optional. Default is to use the owner of --config-dir."
-  echo -e "  --no-sudo\t\tIf set, do not run the Nomad agent with sudo. By default, sudo is only used if --server is false."
+  echo -e "  --use-sudo\t\tIf set, run the Nomad agent with sudo. By default, sudo is only used if --client is set."
   echo -e "  --skip-nomad-config\tIf this flag is set, don't generate a Nomad configuration file. Optional. Default is false."
   echo
   echo "Example:"
   echo
-  echo "  run-nomad --server true --config-dir /custom/path/to/nomad/config"
+  echo "  run-nomad --server --config-dir /custom/path/to/nomad/config"
 }
 
 function log {
   local readonly level="$1"
   local readonly message="$2"
   local readonly timestamp=$(date +"%Y-%m-%d %H:%M:%S")
-  >&2 echo -e "${timestamp} [${level}] [install-consul] ${message}"
+  >&2 echo -e "${timestamp} [${level}] [run-nomad] ${message}"
 }
 
 function log_info {
@@ -73,24 +74,6 @@ function assert_not_empty {
   fi
 }
 
-function assert_one_of {
-  local readonly arg_name="$1"
-  local readonly arg_value="$2"
-  shift 2
-  local readonly valid_values=($@)
-  local valid_value
-
-  for valid_value in "${valid_values[@]}"; do
-    if [[ "$arg_value" == "$valid_value" ]]; then
-      return
-    fi
-  done
-
-  log_error "The value for '$arg_name' must be one of: [${valid_values[@]}]. Found: '$arg_value'."
-  print_usage
-  exit 1
-}
-
 function lookup_path_in_instance_metadata {
   local readonly path="$1"
   curl --silent --location "$EC2_INSTANCE_METADATA_URL/$path/"
@@ -109,6 +92,10 @@ function get_instance_id {
   lookup_path_in_instance_metadata "instance-id"
 }
 
+function get_instance_availability_zone {
+  lookup_path_in_instance_metadata "placement/availability-zone"
+}
+
 function get_instance_region {
   lookup_path_in_instance_dynamic_data "instance-identity/document" | jq -r ".region"
 }
@@ -124,21 +111,23 @@ function assert_is_installed {
 
 function generate_nomad_config {
   local readonly server="$1"
-  local readonly num_servers="$2"
-  local readonly config_dir="$3"
-  local readonly user="$4"
+  local readonly client="$2"
+  local readonly num_servers="$3"
+  local readonly config_dir="$4"
+  local readonly user="$5"
   local readonly config_path="$config_dir/$NOMAD_CONFIG_FILE"
 
   local instance_id=""
   local instance_ip_address=""
   local instance_region=""
+  local instance_availability_zone=""
 
   instance_id=$(get_instance_id)
   instance_ip_address=$(get_instance_ip_address)
   instance_region=$(get_instance_region)
+  availability_zone=$(get_instance_availability_zone)
 
   local server_config=""
-  local client_config=""
   if [[ "$server" == "true" ]]; then
     server_config=$(cat <<EOF
 server {
@@ -147,11 +136,13 @@ server {
 }
 EOF
 )
-  else
+  fi
+
+  local client_config=""
+  if [[ "$client" == "true" ]]; then
     client_config=$(cat <<EOF
 client {
   enabled = true
-  TODO
 }
 EOF
 )
@@ -159,24 +150,24 @@ EOF
 
   log_info "Creating default Nomad config file in $config_path"
   cat > "$config_path" <<EOF
+datacenter = "$availability_zone"
+name       = "$instance_id"
+region     = "$instance_region"
+bind_addr  = "0.0.0.0"
+
 advertise {
   http = "$instance_ip_address"
-  serf = "$instance_ip_address"
   rpc  = "$instance_ip_address"
+  serf = "$instance_ip_address"
 }
 
-bind = "0.0.0.0"
-
 $client_config
+
 $server_config
 
 consul {
   address = "127.0.0.1:8500"
 }
-
-datacenter = "TODO"
-name       = "$instance_id"
-region     = "$instance_region"
 EOF
   chown "$user:$user" "$config_path"
 }
@@ -187,15 +178,19 @@ function generate_supervisor_config {
   local readonly nomad_data_dir="$3"
   local readonly nomad_bin_dir="$4"
   local readonly nomad_user="$5"
-  local readonly no_sudo="$6"
+  local readonly use_sudo="$6"
 
-  log_info "Creating Supervisor config file to run Consul in $supervisor_config_path"
-  # TODO: sudo
+  local nomad_cmd="$nomad_bin_dir/nomad"
+  if [[ "$use_sudo" == "true" ]]; then
+    nomad_cmd="sudo $nomad_cmd"
+  fi
+
+  log_info "Creating Supervisor config file to run Nomad in $supervisor_config_path"
   cat > "$supervisor_config_path" <<EOF
-[program:consul]
-command=$nomad_bin_dir/nomad agent -config-dir $nomad_config_dir -data-dir $nomad_data_dir
-stdout_logfile=/var/log/consul-stdout.log
-stderr_logfile=/var/log/consul-error.log
+[program:nomad]
+command=$nomad_cmd agent -config $nomad_config_dir -data-dir $nomad_data_dir
+stdout_logfile=/var/log/nomad-stdout.log
+stderr_logfile=/var/log/nomad-error.log
 numprocs=1
 autostart=true
 autorestart=true
@@ -204,8 +199,8 @@ user=$nomad_user
 EOF
 }
 
-function start_consul {
-  log_info "Reloading Supervisor config and starting Consul"
+function start_nomad {
+  log_info "Reloading Supervisor config and starting Nomad"
   supervisorctl reread
   supervisorctl update
 }
@@ -217,14 +212,15 @@ function get_owner_of_path {
 }
 
 function run {
-  local server=""
+  local server="false"
+  local client="false"
   local num_servers=""
   local config_dir=""
   local data_dir=""
   local bin_dir=""
   local user=""
   local skip_nomad_config="false"
-  local no_sudo=""
+  local use_sudo=""
   local all_args=()
 
   while [[ $# > 0 ]]; do
@@ -232,10 +228,12 @@ function run {
 
     case "$key" in
       --server)
-        server="$2"
-        shift
+        server="true"
         ;;
-      --server)
+      --client)
+        client="true"
+        ;;
+      --num-servers)
         num_servers="$2"
         shift
         ;;
@@ -269,11 +267,11 @@ function run {
         cluster_tag_value="$2"
         shift
         ;;
-      --skip-consul-config)
+      --skip-nomad-config)
         skip_nomad_config="true"
         ;;
-      --no-sudo)
-        no_sudo="true"
+      --use-sudo)
+        use_sudo="true"
         ;;
       --help)
         print_usage
@@ -289,17 +287,20 @@ function run {
     shift
   done
 
-  assert_one_of "--server" "$server" "true" "false"
-
   if [[ "$server" == "true" ]]; then
     assert_not_empty "--num-servers" "$num_servers"
   fi
 
-  if [[ -z "$no_sudo" ]]; then
-    if [[ "$server" == "true" ]]; then
-      no_sudo="true"
+  if [[ "$server" == "false" && "$client" == "false" ]]; then
+    log_error "At least one of --server or --client must be set"
+    exit 1
+  fi
+
+  if [[ -z "$use_sudo" ]]; then
+    if [[ "$client" == "true" ]]; then
+      use_sudo="true"
     else
-      no_sudo="false"
+      use_sudo="false"
     fi
   fi
 
@@ -327,11 +328,11 @@ function run {
   if [[ "$skip_nomad_config" == "true" ]]; then
     log_info "The --skip-nomad-config flag is set, so will not generate a default Nomad config file."
   else
-    generate_nomad_config "$server" "$num_servers" "$config_dir" "$user"
+    generate_nomad_config "$server" "$client" "$num_servers" "$config_dir" "$user"
   fi
 
-  generate_supervisor_config "$SUPERVISOR_CONFIG_PATH" "$config_dir" "$data_dir" "$bin_dir" "$user" "$no_sudo"
-  start_consul
+  generate_supervisor_config "$SUPERVISOR_CONFIG_PATH" "$config_dir" "$data_dir" "$bin_dir" "$user" "$use_sudo"
+  start_nomad
 }
 
 run "$@"

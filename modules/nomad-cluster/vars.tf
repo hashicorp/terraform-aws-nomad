@@ -136,37 +136,18 @@ variable "instance_profile_path" {
   default     = "/"
 }
 
-variable "server_rpc_port" {
-  description = "The port used by servers to handle incoming requests from other agents."
-  default     = 8300
+variable "http_port" {
+  description = "The port to use for HTTP"
+  default = 4646
 }
 
-variable "cli_rpc_port" {
-  description = "The port used by all agents to handle RPC from the CLI."
-  default     = 8400
+variable "rpc_port" {
+  description = "The port to use for RPC"
+  default = 4647
 }
 
-variable "serf_lan_port" {
-  description = "The port used to handle gossip in the LAN. Required by all agents."
-  default     = 8301
+variable "serf_port" {
+  description = "The port to use for Serf"
+  default = 4648
 }
 
-variable "serf_wan_port" {
-  description = "The port used by servers to gossip over the WAN to other servers."
-  default     = 8302
-}
-
-variable "http_api_port" {
-  description = "The port used by clients to talk to the HTTP API"
-  default     = 8500
-}
-
-variable "dns_port" {
-  description = "The port used to resolve DNS queries."
-  default     = 8600
-}
-
-variable "ssh_port" {
-  description = "The port used for SSH connections"
-  default     = 22
-}

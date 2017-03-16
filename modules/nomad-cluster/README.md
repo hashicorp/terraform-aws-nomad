@@ -250,8 +250,8 @@ Nomad can encrypt all of its network traffic. For instructions on enabling netwo
 
 The EC2 Instances in the cluster store all their data on the root EBS Volume. To enable encryption for the data at
 rest, you must enable encryption in your Nomad AMI. If you're creating the AMI using Packer (e.g. as shown in
-the [nomad-consul-ami](/examples/nomad-consul-ami) and [nomad-only-ami](/examples/nomad-only-ami) examples), you need 
-to set the [encrypt_boot parameter](https://www.packer.io/docs/builders/amazon-ebs.html#encrypt_boot) to `true`.  
+the [nomad-consul-ami example](/examples/nomad-consul-ami)), you need to set the [encrypt_boot 
+parameter](https://www.packer.io/docs/builders/amazon-ebs.html#encrypt_boot) to `true`.  
 
 
 ### Dedicated instances

@@ -55,8 +55,8 @@ See the [nomad-consul-colocated-cluster example](/examples/nomad-consul-colocate
 
 The `run-nomad` script accepts the following arguments:
 
-* `server` (optional): If set, run in server mode.
-* `client` (optional): If set, run in client mode.
+* `server` (optional): If set, run in server mode. At least one of `--server` or `--client` must be set.
+* `client` (optional): If set, run in client mode. At least one of `--server` or `--client` must be set.
 * `num-servers` (optional): The number of servers to expect in the Nomad cluster. Required if `--server` is set. 
 * `config-dir` (optional): The path to the Nomad config folder. Default is to take the absolute path of `../config`, 
   relative to the `run-nomad` script itself.
@@ -97,7 +97,7 @@ available.
   are set to the Instance's private IP address, as fetched from  
   [Metadata](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html).
   
-* [bind](https://www.nomadproject.io/docs/agent/configuration/index.html#bind_addr): Set to 0.0.0.0.
+* [bind_addr](https://www.nomadproject.io/docs/agent/configuration/index.html#bind_addr): Set to 0.0.0.0.
   
 * [client](https://www.nomadproject.io/docs/agent/configuration/client.html): This config is only set of `--client` is
   set.
