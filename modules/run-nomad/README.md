@@ -24,7 +24,7 @@ run:
 To start Nomad in client mode, you run:
 
 ```
-/opt/nomad/bin/run-nomad --client --cluster-size 3
+/opt/nomad/bin/run-nomad --client
 ```
 
 This will:
