@@ -18,7 +18,7 @@ module](/modules/install-nomad). The default install path is `/opt/nomad/bin`, s
 run:
 
 ```
-/opt/nomad/bin/run-nomad --server --cluster-size 3
+/opt/nomad/bin/run-nomad --server --num-servers 3
 ```
 
 To start Nomad in client mode, you run:
@@ -57,7 +57,7 @@ The `run-nomad` script accepts the following arguments:
 
 * `server` (optional): If set, run in server mode.
 * `client` (optional): If set, run in client mode.
-* `cluster-size` (optional): The number of servers to expect in the Nomad cluster. Required if `--server` is set. 
+* `num-servers` (optional): The number of servers to expect in the Nomad cluster. Required if `--server` is set. 
 * `config-dir` (optional): The path to the Nomad config folder. Default is to take the absolute path of `../config`, 
   relative to the `run-nomad` script itself.
 * `data-dir` (optional): The path to the Nomad config folder. Default is to take the absolute path of `../data`, 
@@ -75,7 +75,7 @@ The `run-nomad` script accepts the following arguments:
 Example:
 
 ```
-/opt/nomad/bin/run-nomad --server --cluster-size 3
+/opt/nomad/bin/run-nomad --server --num-servers 3
 ```
 
 
@@ -122,7 +122,7 @@ available.
 
     * [enabled](https://www.nomadproject.io/docs/agent/configuration/server.html#enabled): `true`.
     * [bootstrap_expect](https://www.nomadproject.io/docs/agent/configuration/server.html#bootstrap_expect): Set to the
-      `--cluster-size` parameter.
+      `--num-servers` parameter.
 
 
 ### Overriding the configuration
@@ -145,7 +145,7 @@ If you want to override *all* the default settings, you can tell `run-nomad` not
 at all using the `--skip-nomad-config` flag:
 
 ```
-/opt/nomad/bin/run-nomad --cluster-size 3 --skip-nomad-config
+/opt/nomad/bin/run-nomad --server --num-servers 3 --skip-nomad-config
 ```
 
 

@@ -1,0 +1,337 @@
+#!/bin/bash
+# This script is used to configure and run Nomad on an AWS server.
+
+set -e
+
+readonly NOMAD_CONFIG_FILE="default.hcl"
+readonly SUPERVISOR_CONFIG_PATH="/etc/supervisor/conf.d/run-nomad.conf"
+
+readonly EC2_INSTANCE_METADATA_URL="http://169.254.169.254/latest/meta-data"
+readonly EC2_INSTANCE_DYNAMIC_DATA_URL="http://169.254.169.254/latest/dynamic"
+
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+function print_usage {
+  echo
+  echo "Usage: run-nomad [OPTIONS]"
+  echo
+  echo "This script is used to configure and run Nomad on an AWS server."
+  echo
+  echo "Options:"
+  echo
+  echo -e "  --server\t\tSet to true to run in server mode and false to run in client mode. Required."
+  echo -e "  --num-servers\t\tThe number of servers to expect in the Nomad cluster. Required if --server is true."
+  echo -e "  --config-dir\t\tThe path to the Nomad config folder. Optional. Default is the absolute path of '../config', relative to this script."
+  echo -e "  --data-dir\t\tThe path to the Nomad data folder. Optional. Default is the absolute path of '../data', relative to this script."
+  echo -e "  --bin-dir\t\tThe path to the folder with Nomad binary. Optional. Default is the absolute path of the parent folder of this script."
+  echo -e "  --user\t\tThe user to run Nomad as. Optional. Default is to use the owner of --config-dir."
+  echo -e "  --no-sudo\t\tIf set, do not run the Nomad agent with sudo. By default, sudo is only used if --server is false."
+  echo -e "  --skip-nomad-config\tIf this flag is set, don't generate a Nomad configuration file. Optional. Default is false."
+  echo
+  echo "Example:"
+  echo
+  echo "  run-nomad --server true --config-dir /custom/path/to/nomad/config"
+}
+
+function log {
+  local readonly level="$1"
+  local readonly message="$2"
+  local readonly timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+  >&2 echo -e "${timestamp} [${level}] [install-consul] ${message}"
+}
+
+function log_info {
+  local readonly message="$1"
+  log "INFO" "$message"
+}
+
+function log_warn {
+  local readonly message="$1"
+  log "WARN" "$message"
+}
+
+function log_error {
+  local readonly message="$1"
+  log "ERROR" "$message"
+}
+
+# Based on code from: http://stackoverflow.com/a/16623897/483528
+function strip_prefix {
+  local readonly str="$1"
+  local readonly prefix="$2"
+  echo "${str#$prefix}"
+}
+
+function assert_not_empty {
+  local readonly arg_name="$1"
+  local readonly arg_value="$2"
+
+  if [[ -z "$arg_value" ]]; then
+    log_error "The value for '$arg_name' cannot be empty"
+    print_usage
+    exit 1
+  fi
+}
+
+function assert_one_of {
+  local readonly arg_name="$1"
+  local readonly arg_value="$2"
+  shift 2
+  local readonly valid_values=($@)
+  local valid_value
+
+  for valid_value in "${valid_values[@]}"; do
+    if [[ "$arg_value" == "$valid_value" ]]; then
+      return
+    fi
+  done
+
+  log_error "The value for '$arg_name' must be one of: [${valid_values[@]}]. Found: '$arg_value'."
+  print_usage
+  exit 1
+}
+
+function lookup_path_in_instance_metadata {
+  local readonly path="$1"
+  curl --silent --location "$EC2_INSTANCE_METADATA_URL/$path/"
+}
+
+function lookup_path_in_instance_dynamic_data {
+  local readonly path="$1"
+  curl --silent --location "$EC2_INSTANCE_DYNAMIC_DATA_URL/$path/"
+}
+
+function get_instance_ip_address {
+  lookup_path_in_instance_metadata "local-ipv4"
+}
+
+function get_instance_id {
+  lookup_path_in_instance_metadata "instance-id"
+}
+
+function get_instance_region {
+  lookup_path_in_instance_dynamic_data "instance-identity/document" | jq -r ".region"
+}
+
+function assert_is_installed {
+  local readonly name="$1"
+
+  if [[ ! $(command -v ${name}) ]]; then
+    log_error "The binary '$name' is required by this script but is not installed or in the system's PATH."
+    exit 1
+  fi
+}
+
+function generate_nomad_config {
+  local readonly server="$1"
+  local readonly num_servers="$2"
+  local readonly config_dir="$3"
+  local readonly user="$4"
+  local readonly config_path="$config_dir/$NOMAD_CONFIG_FILE"
+
+  local instance_id=""
+  local instance_ip_address=""
+  local instance_region=""
+
+  instance_id=$(get_instance_id)
+  instance_ip_address=$(get_instance_ip_address)
+  instance_region=$(get_instance_region)
+
+  local server_config=""
+  local client_config=""
+  if [[ "$server" == "true" ]]; then
+    server_config=$(cat <<EOF
+server {
+  enabled = true
+  bootstrap_expect = $num_servers
+}
+EOF
+)
+  else
+    client_config=$(cat <<EOF
+client {
+  enabled = true
+  TODO
+}
+EOF
+)
+  fi
+
+  log_info "Creating default Nomad config file in $config_path"
+  cat > "$config_path" <<EOF
+advertise {
+  http = "$instance_ip_address"
+  serf = "$instance_ip_address"
+  rpc  = "$instance_ip_address"
+}
+
+bind = "0.0.0.0"
+
+$client_config
+$server_config
+
+consul {
+  address = "127.0.0.1:8500"
+}
+
+datacenter = "TODO"
+name       = "$instance_id"
+region     = "$instance_region"
+EOF
+  chown "$user:$user" "$config_path"
+}
+
+function generate_supervisor_config {
+  local readonly supervisor_config_path="$1"
+  local readonly nomad_config_dir="$2"
+  local readonly nomad_data_dir="$3"
+  local readonly nomad_bin_dir="$4"
+  local readonly nomad_user="$5"
+  local readonly no_sudo="$6"
+
+  log_info "Creating Supervisor config file to run Consul in $supervisor_config_path"
+  # TODO: sudo
+  cat > "$supervisor_config_path" <<EOF
+[program:consul]
+command=$nomad_bin_dir/nomad agent -config-dir $nomad_config_dir -data-dir $nomad_data_dir
+stdout_logfile=/var/log/consul-stdout.log
+stderr_logfile=/var/log/consul-error.log
+numprocs=1
+autostart=true
+autorestart=true
+stopsignal=INT
+user=$nomad_user
+EOF
+}
+
+function start_consul {
+  log_info "Reloading Supervisor config and starting Consul"
+  supervisorctl reread
+  supervisorctl update
+}
+
+# Based on: http://unix.stackexchange.com/a/7732/215969
+function get_owner_of_path {
+  local readonly path="$1"
+  ls -ld "$path" | awk '{print $3}'
+}
+
+function run {
+  local server=""
+  local num_servers=""
+  local config_dir=""
+  local data_dir=""
+  local bin_dir=""
+  local user=""
+  local skip_nomad_config="false"
+  local no_sudo=""
+  local all_args=()
+
+  while [[ $# > 0 ]]; do
+    local key="$1"
+
+    case "$key" in
+      --server)
+        server="$2"
+        shift
+        ;;
+      --server)
+        num_servers="$2"
+        shift
+        ;;
+      --config-dir)
+        assert_not_empty "$key" "$2"
+        config_dir="$2"
+        shift
+        ;;
+      --data-dir)
+        assert_not_empty "$key" "$2"
+        data_dir="$2"
+        shift
+        ;;
+      --bin-dir)
+        assert_not_empty "$key" "$2"
+        bin_dir="$2"
+        shift
+        ;;
+      --user)
+        assert_not_empty "$key" "$2"
+        user="$2"
+        shift
+        ;;
+      --cluster-tag-key)
+        assert_not_empty "$key" "$2"
+        cluster_tag_key="$2"
+        shift
+        ;;
+      --cluster-tag-value)
+        assert_not_empty "$key" "$2"
+        cluster_tag_value="$2"
+        shift
+        ;;
+      --skip-consul-config)
+        skip_nomad_config="true"
+        ;;
+      --no-sudo)
+        no_sudo="true"
+        ;;
+      --help)
+        print_usage
+        exit
+        ;;
+      *)
+        log_error "Unrecognized argument: $key"
+        print_usage
+        exit 1
+        ;;
+    esac
+
+    shift
+  done
+
+  assert_one_of "--server" "$server" "true" "false"
+
+  if [[ "$server" == "true" ]]; then
+    assert_not_empty "--num-servers" "$num_servers"
+  fi
+
+  if [[ -z "$no_sudo" ]]; then
+    if [[ "$server" == "true" ]]; then
+      no_sudo="true"
+    else
+      no_sudo="false"
+    fi
+  fi
+
+  assert_is_installed "supervisorctl"
+  assert_is_installed "aws"
+  assert_is_installed "curl"
+  assert_is_installed "jq"
+
+  if [[ -z "$config_dir" ]]; then
+    config_dir=$(cd "$SCRIPT_DIR/../config" && pwd)
+  fi
+
+  if [[ -z "$data_dir" ]]; then
+    data_dir=$(cd "$SCRIPT_DIR/../data" && pwd)
+  fi
+
+  if [[ -z "$bin_dir" ]]; then
+    bin_dir=$(cd "$SCRIPT_DIR/../bin" && pwd)
+  fi
+
+  if [[ -z "$user" ]]; then
+    user=$(get_owner_of_path "$config_dir")
+  fi
+
+  if [[ "$skip_nomad_config" == "true" ]]; then
+    log_info "The --skip-nomad-config flag is set, so will not generate a default Nomad config file."
+  else
+    generate_nomad_config "$server" "$num_servers" "$config_dir" "$user"
+  fi
+
+  generate_supervisor_config "$SUPERVISOR_CONFIG_PATH" "$config_dir" "$data_dir" "$bin_dir" "$user" "$no_sudo"
+  start_consul
+}
+
+run "$@"

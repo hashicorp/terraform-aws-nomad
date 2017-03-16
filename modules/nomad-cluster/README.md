@@ -29,7 +29,7 @@ module "nomad_cluster" {
   # configuration and form a cluster with other Nomad nodes connected to that Consul cluster. 
   user_data = <<-EOF
               #!/bin/bash
-              /opt/nomad/bin/run-nomad --server --cluster-size 3
+              /opt/nomad/bin/run-nomad --server --num-servers 3
               EOF
   
   # ... See vars.tf for the other parameters you must define for the nomad-cluster module
