@@ -14,10 +14,17 @@ There is a good chance it will work on other flavors of Debian, CentOS, and RHEL
 ## Quick start
 
 This script assumes you installed it, plus all of its dependencies (including Nomad itself), using the [install-nomad 
-module](/modules/install-nomad). The default install path is `/opt/nomad/bin`, so to start Nomad, you just run:
+module](/modules/install-nomad). The default install path is `/opt/nomad/bin`, so to start Nomad in server mode, you 
+run:
 
 ```
-/opt/nomad/bin/run-nomad --cluster-size 3
+/opt/nomad/bin/run-nomad --server true --cluster-size 3
+```
+
+To start Nomad in client mode, you run:
+
+```
+/opt/nomad/bin/run-nomad --server false --cluster-size 3
 ```
 
 This will:
@@ -35,7 +42,7 @@ This will:
 We recommend using the `run-nomad` command as part of [User 
 Data](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html#user-data-shell-scripts), so that it executes
 when the EC2 Instance is first booting. If you are running Consul on the same server, make sure to use this script 
-*after* Consul has booted. After runing `run-nomad` on that initial boot, the `supervisord` configuration 
+*after* Consul has booted. After running `run-nomad` on that initial boot, the `supervisord` configuration 
 will automatically restart Nomad if it crashes or the EC2 instance reboots.
 
 See the [nomad-consul-colocated-cluster example](/examples/nomad-consul-colocated-cluster example) and 
@@ -48,23 +55,26 @@ See the [nomad-consul-colocated-cluster example](/examples/nomad-consul-colocate
 
 The `run-nomad` script accepts the following arguments:
 
-* `cluster-size` (Required): The number of servers to expect in the Nomad cluster. 
+* `server` (required): Set to true to run in server mode and false to run in client mode.
+* `cluster-size` (Optional): The number of servers to expect in the Nomad cluster. Required if `--server` is `true`. 
 * `config-dir` (Optional): The path to the Nomad config folder. Default is to take the absolute path of `../config`, 
   relative to the `run-nomad` script itself.
 * `data-dir` (Optional): The path to the Nomad config folder. Default is to take the absolute path of `../data`, 
   relative to the `run-nomad` script itself.
 * `user` (Optional): The user to run Nomad as. Default is to use the owner of `config-dir`.
-* `no-sudo` (Optional): Nomad need root-level privilege to make use of operating system primitives for resource 
-  isolation, as those require elevated permissions (see [the 
+* `no-sudo` (Optional): Nomad agents make use of operating system primitives for resource isolation that require 
+  elevated (root) permissions (see [the 
   docs](https://www.nomadproject.io/intro/getting-started/running.html) for more info). If you set this flag, Nomad
-  will run without root-level privilege, which means certain task drivers will not be available.
+  will run without root-level privileges, which means certain task drivers will not be available. By default, this flag
+  is enabled if `--server` is `true` (server nodes don't need root-level privileges) and disabled if `--server` is 
+  `false`.
 * `skip-nomad-config`: If this flag is set, don't generate a Nomad configuration file. This is useful if you have
   a custom configuration file and don't want to use any of of the default settings from `run-nomad`. 
 
 Example:
 
 ```
-/opt/nomad/bin/run-nomad --cluster-size 3
+/opt/nomad/bin/run-nomad --server true --cluster-size 3
 ```
 
 
@@ -88,9 +98,11 @@ available.
   
 * [bind](https://www.nomadproject.io/docs/agent/configuration/index.html#bind_addr): Set to 0.0.0.0.
   
+* [client](https://www.nomadproject.io/docs/agent/configuration/client.html): This section is only set of `--server` is
+  `false`.
+  
 * [consul](https://www.nomadproject.io/docs/agent/configuration/consul.html): By default, set the Consul address to
-  `127.0.0.1:8500`, with the assumption that Nomad and Consul are colocated on the same server. If you are running 
-  Consul on separate servers, you may need to override this config.
+  `127.0.0.1:8500`, with the assumption that the Consul agent is running on the same server. 
 
 * [datacenter](https://www.nomadproject.io/docs/agent/configuration/index.html#datacenter): Set to the current 
   availability zone, as fetched from 
@@ -102,7 +114,8 @@ available.
 * [region](https://www.nomadproject.io/docs/agent/configuration/index.html#region): Set to the current AWS region, as 
   fetched from [Metadata](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html).
                                                                                       
-* [server](https://www.nomadproject.io/docs/agent/configuration/server.html): Set as follows:
+* [server](https://www.nomadproject.io/docs/agent/configuration/server.html): This section is only set of `--server` is
+  `true`.
 
     * [enabled](https://www.nomadproject.io/docs/agent/configuration/server.html#enabled): `true`.
     * [bootstrap_expect](https://www.nomadproject.io/docs/agent/configuration/server.html#bootstrap_expect): Set to the

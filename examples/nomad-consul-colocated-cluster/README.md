@@ -1,18 +1,20 @@
-# Nomad and Consul Colocated Cluster Example
+# Nomad and Consul Co-located Cluster Example
 
-This folder shows an example of Terraform code that uses the [consul-cluster 
-module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/consul-cluster) module from the
-Consul Blueprint to deploy a cluster that has both [Consul](https://www.consul.io/) and 
-[Nomad](https://www.nomadproject.io/) on top of an Auto Scaling Group in [AWS](https://aws.amazon.com/).  If you want to 
-run Nomad and Consul on separate clusters, see the [nomad-consul-separate-cluster 
-example](/examples/nomad-consul-separate-cluster) instead.
+This folder shows an example of Terraform code to deploy a [Nomad](https://www.nomadproject.io/) cluster co-located 
+with a [Consul](https://www.consul.io/) cluster in [AWS](https://aws.amazon.com/) (if you want to run Nomad and Consul 
+on separate clusters, see the [nomad-consul-separate-cluster example](/examples/nomad-consul-separate-cluster) 
+instead). The cluster consists of two Auto Scaling Groups (ASGs): one with a small number of Nomad and Consul server 
+nodes, which are responsible for being part of the [concensus 
+quorum](https://www.consul.io/docs/internals/consensus.html), and one with a larger number of Nomad and Consul client 
+nodes, which are used to run jobs:
 
-![Nomad architecture](/_docs/architecture.png)
+![Nomad architecture](/_docs/architecture-nomad-consul-colocated.png)
 
 You will need to create an [Amazon Machine Image (AMI)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) 
 that has Nomad and Consul installed, which you can do using the [nomad-consul-ami example](/examples/nomad-consul-ami)).  
 
 For more info on how the Nomad cluster works, check out the [nomad-cluster](/modules/nomad-cluster) documentation.
+
 
 
 
@@ -32,5 +34,5 @@ To deploy a Nomad Cluster:
 
 After the `apply` command finishes, the EC2 Instances will start, discover each other, and form a cluster.
  
-To see how to connect to the cluster and start reading/writing data, head over to the [How do you connect to the Nomad 
+To see how to connect to the cluster and start running jobs, head over to the [How do you connect to the Nomad 
 cluster?](/modules/nomad-cluster#how-do-you-connect-to-the-nomad-cluster) docs.

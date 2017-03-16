@@ -1,14 +1,14 @@
-# Nomad Cluster and Consul Cluster Example
+# Nomad and Consul Separate Clusters Example
 
-This folder shows an example of Terraform code that uses the [nomad-cluster module](/modules/nomad-cluster) from this
-Blueprint to deploy a [Nomad](https://www.nomadproject.io/) cluster across an Auto Scaling Group in 
-[AWS](https://aws.amazon.com/) and the [consul-cluster 
-module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/consul-cluster) from the Consul AWS
-Blueprint to deploy a separate [Consul](https://www.consul.io/) cluster across an Auto Scaling Group in 
-[AWS](https://aws.amazon.com/). If you want to run Nomad and Consul on the same cluster, see the 
-[nomad-consul-colocated-cluster example](/examples/nomad-consul-colocated-cluster) instead. 
+This folder shows an example of Terraform code to deploy a [Nomad](https://www.nomadproject.io/) cluster that connects 
+to a separate [Consul](https://www.consul.io/) cluster in [AWS](https://aws.amazon.com/) (if you want to run Nomad and 
+Consul in the same clusters, see the [nomad-consul-colocated-cluster example](/examples/nomad-consul-colocated-cluster) 
+instead). The Nomad cluster consists of two Auto Scaling Groups (ASGs): one with a small number of Nomad server 
+nodes, which are responsible for being part of the [concensus 
+quorum](https://www.consul.io/docs/internals/consensus.html), and one with a larger number of Nomad client nodes, which 
+are used to run jobs:
 
-![Nomad architecture](/_docs/architecture.png)
+![Nomad architecture](/_docs/architecture-nomad-consul-separate.png)
 
 You will need to create one [Amazon Machine Image (AMI)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) 
 that has Nomad installed, which you can do using the [nomad-only-ami example](/examples/nomad-only-ami)), and another
@@ -16,6 +16,7 @@ AMI that has Consul installed, which you can do using the [consul-ami
 example](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/examples/consul-ami).  
 
 For more info on how the Nomad cluster works, check out the [nomad-cluster](/modules/nomad-cluster) documentation.
+
 
 
 
@@ -38,5 +39,5 @@ To deploy a Nomad Cluster:
 
 After the `apply` command finishes, a Nomad and Consul cluster will boot up and discover each other.
  
-To see how to connect to the cluster and start reading/writing data, head over to the [How do you connect to the Nomad 
+To see how to connect to the cluster and start running jobs, head over to the [How do you connect to the Nomad 
 cluster?](/modules/nomad-cluster#how-do-you-connect-to-the-nomad-cluster) docs.

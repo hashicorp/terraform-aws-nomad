@@ -1,8 +1,8 @@
 # Nomad Cluster
 
 This folder contains a [Terraform](https://www.terraform.io/) module that can be used to deploy a 
-[Nomad](https://www.nomadproject.io/) cluster in [AWS](https://aws.amazon.com/) on top of an Auto Scaling Group. This module 
-is designed to deploy an [Amazon Machine Image (AMI)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) 
+[Nomad](https://www.nomadproject.io/) cluster in [AWS](https://aws.amazon.com/) on top of an Auto Scaling Group. This 
+module is designed to deploy an [Amazon Machine Image (AMI)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) 
 that had Nomad installed via the [install-nomad](/modules/install-nomad) module in this Blueprint.
 
 Note that this module assumes you have a separate [Consul](https://www.consul.io/) cluster already running. If you want
@@ -29,7 +29,7 @@ module "nomad_cluster" {
   # configuration and form a cluster with other Nomad nodes connected to that Consul cluster. 
   user_data = <<-EOF
               #!/bin/bash
-              /opt/nomad/bin/run-nomad --cluster-size 3
+              /opt/nomad/bin/run-nomad --server true --cluster-size 3
               EOF
   
   # ... See vars.tf for the other parameters you must define for the nomad-cluster module

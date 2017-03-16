@@ -2,7 +2,9 @@
 
 This repo contains a Blueprint for how to deploy a [Nomad](https://www.nomadproject.io/) cluster on 
 [AWS](https://aws.amazon.com/) using [Terraform](https://www.terraform.io/). Nomad is a distributed, highly-available 
-data-center aware scheduler. 
+data-center aware scheduler. A Nomad cluster typically includes a small number of server nodes, which are responsible 
+for being part of the [concensus quorum](https://www.consul.io/docs/internals/consensus.html), and a larger number of 
+client nodes, which are used for running jobs:
 
 ![Nomad architecture](/_docs/architecture.png)
 
@@ -16,8 +18,9 @@ This Blueprint includes:
   [User Data](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html#user-data-shell-scripts) 
   script to fire up Nomad while the server is booting.
 
-* [nomad-cluster](/modules/nomad-cluster): Terraform code to deploy a Nomad AMI across an [Auto Scaling 
+* [nomad-cluster](/modules/nomad-cluster): Terraform code to deploy a cluster of Nomad servers using an [Auto Scaling 
   Group](https://aws.amazon.com/autoscaling/).
+    
   
 
 
@@ -59,10 +62,11 @@ Click on each of the modules above for more details.
 
 <!-- TODO: update the consul-aws-blueprint URL to the final URL -->
 
-To use Nomad, you must also have a [Consul](https://www.consul.io/) cluster deployed. The easiest way to deploy Consul
-on AWS is to use the [Consul AWS Blueprint](https://github.com/gruntwork-io/consul-aws-blueprint).
-
-You have two deployment options:
+To run a Nomad cluster, you need to deploy a small number of server nodes (typically 3), which are responsible 
+for being part of the [concensus quorum](https://www.consul.io/docs/internals/consensus.html), and a larger number of 
+client nodes, which are used for running jobs. You must also have a [Consul](https://www.consul.io/) cluster deployed
+(see the [Consul AWS Blueprint](https://github.com/gruntwork-io/consul-aws-blueprint)) in one of the following 
+configurations:
 
 1. [Deploy Nomad and Consul in the same cluster](#deploy-nomad-and-consul-in-the-same-cluster)
 1. [Deploy Nomad and Consul in separate clusters](#deploy-nomad-and-consul-in-separate-clusters)
@@ -70,16 +74,20 @@ You have two deployment options:
 
 ### Deploy Nomad and Consul in the same cluster
 
-1. Use the scripts from the [install-consul 
-   module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/install-consul) and the
-   [install-nomad module](/modules/install-nomad) in a Packer template to create an AMI with Consul and Nomad.
-1. Deploy that AMI across an Auto Scaling Group using the [consul-cluster 
-   module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/consul-cluster).
-1. Execute the [run-consul script](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/run-consul) 
-   during boot on each Instance in the Auto Scaling Group to have that Instance automatically find other Instances and 
-   form a Consul cluster.
-1. Execute the [run-nomad script](/modules/run-nomad) during boot on each Instance in the Auto Scaling Group to 
-   have that Instance automatically find other Instances and form a Nomad cluster.
+1. Use the [install-consul 
+   module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/install-consul) from the Consul AWS
+   Blueprint and the [install-nomad module](/modules/install-nomad) from this Blueprint in a Packer template to create 
+   an AMI with Consul and Nomad.
+1. Deploy a small number of server nodes (typically, 3) using the [consul-cluster 
+   module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/consul-cluster). Execute the 
+   [run-consul script](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/run-consul) and the
+   [run-nomad script](/modules/run-nomad) on each node during boot, setting the `--server` flag to `true` in both 
+   scripts.
+1. Deploy as many client nodes as you need using the [consul-cluster 
+   module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/consul-cluster). Execute the 
+   [run-consul script](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/run-consul) and the
+   [run-nomad script](/modules/run-nomad) on each node during boot, setting the `--server` flag to `false` in both 
+   scripts.
 
 Check out the [nomad-consul-colocated-cluster example](/examples/nomad-consul-colocated-cluster example) for working
 sample code.
@@ -90,10 +98,11 @@ sample code.
 1. Deploy a standalone Consul cluster by following the instructions in the [Consul AWS 
    Blueprint](https://github.com/gruntwork-io/consul-aws-blueprint).
 1. Use the scripts from the [install-nomad module](/modules/install-nomad) in a Packer template to create a Nomad AMI.
-1. Deploy that AMI across an Auto Scaling Group using the [nomad-cluster module](/modules/nomad).
-1. Execute the [run-nomad script](/modules/run-nomad) during boot on each Instance in the Auto Scaling Group to 
-   have that Instance automatically find other Instances and form a Nomad cluster. You will need to configure each 
-   Instance with the connection details for your standalone Consul cluster.
+1. Deploy a small number of server nodes (typically, 3) using the [nomad-cluster module](/modules/nomad). Execute the    
+   [run-nomad script](/modules/run-nomad) on each node during boot, setting the `--server` flag to `true`. You will 
+   need to configure each node with the connection details for your standalone Consul cluster.   
+1. Deploy as many client nodes as you need using the [nomad-cluster module](/modules/nomad). Execute the 
+   [run-nomad script](/modules/run-nomad) on each node during boot, setting the `--server` flag to `false`.
 
 Check out the [nomad-consul-separate-cluster example](/examples/nomad-consul-separate-cluster example) for working
 sample code.
