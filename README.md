@@ -88,7 +88,7 @@ configurations:
    [run-nomad script](/modules/run-nomad) on each node during boot, setting the `--client` flag in both 
    scripts.
 
-Check out the [nomad-consul-colocated-cluster example](/examples/nomad-consul-colocated-cluster example) for working
+Check out the [nomad-consul-colocated-cluster example](/examples/nomad-consul-colocated-cluster) for working
 sample code.
 
 
@@ -103,7 +103,7 @@ sample code.
 1. Deploy as many client nodes as you need using the [nomad-cluster module](/modules/nomad). Execute the 
    [run-nomad script](/modules/run-nomad) on each node during boot, setting the `--client` flag.
 
-Check out the [nomad-consul-separate-cluster example](/examples/nomad-consul-separate-cluster example) for working
+Check out the [nomad-consul-separate-cluster example](/examples/nomad-consul-separate-cluster) for working
 sample code.
 
  
