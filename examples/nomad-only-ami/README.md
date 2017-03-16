@@ -62,7 +62,7 @@ Your code should look more like this:
 "provisioners": [{
   "type": "shell",
   "inline": [
-    "git clone --branch <BLUEPRINT_VERSION> https://github.com/gruntwork-io/nomad-aws-blueprint.git"
+    "git clone --branch <BLUEPRINT_VERSION> https://github.com/gruntwork-io/nomad-aws-blueprint.git",
     "/tmp/nomad-aws-blueprint/modules/install-nomad/install-nomad --version {{user `nomad_version`}}"
   ],
   "pause_before": "30s"

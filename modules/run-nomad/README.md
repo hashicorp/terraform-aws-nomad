@@ -18,13 +18,13 @@ module](/modules/install-nomad). The default install path is `/opt/nomad/bin`, s
 run:
 
 ```
-/opt/nomad/bin/run-nomad --server true --cluster-size 3
+/opt/nomad/bin/run-nomad --server --cluster-size 3
 ```
 
 To start Nomad in client mode, you run:
 
 ```
-/opt/nomad/bin/run-nomad --server false --cluster-size 3
+/opt/nomad/bin/run-nomad --client --cluster-size 3
 ```
 
 This will:
@@ -55,26 +55,27 @@ See the [nomad-consul-colocated-cluster example](/examples/nomad-consul-colocate
 
 The `run-nomad` script accepts the following arguments:
 
-* `server` (required): Set to true to run in server mode and false to run in client mode.
-* `cluster-size` (Optional): The number of servers to expect in the Nomad cluster. Required if `--server` is `true`. 
-* `config-dir` (Optional): The path to the Nomad config folder. Default is to take the absolute path of `../config`, 
+* `server` (optional): If set, run in server mode.
+* `client` (optional): If set, run in client mode.
+* `cluster-size` (optional): The number of servers to expect in the Nomad cluster. Required if `--server` is set. 
+* `config-dir` (optional): The path to the Nomad config folder. Default is to take the absolute path of `../config`, 
   relative to the `run-nomad` script itself.
-* `data-dir` (Optional): The path to the Nomad config folder. Default is to take the absolute path of `../data`, 
+* `data-dir` (optional): The path to the Nomad config folder. Default is to take the absolute path of `../data`, 
   relative to the `run-nomad` script itself.
-* `user` (Optional): The user to run Nomad as. Default is to use the owner of `config-dir`.
-* `no-sudo` (Optional): Nomad agents make use of operating system primitives for resource isolation that require 
+* `user` (optional): The user to run Nomad as. Default is to use the owner of `config-dir`.
+* `use-sudo` (optional): Nomad clients make use of operating system primitives for resource isolation that require 
   elevated (root) permissions (see [the 
   docs](https://www.nomadproject.io/intro/getting-started/running.html) for more info). If you set this flag, Nomad
-  will run without root-level privileges, which means certain task drivers will not be available. By default, this flag
-  is enabled if `--server` is `true` (server nodes don't need root-level privileges) and disabled if `--server` is 
-  `false`.
+  will run with root-level privileges. If you don't, it'll still work, but certain task drivers will not be available. 
+  By default, this flag is enabled if `--client` is set and disabled if `--server` is set (server nodes don't need 
+  root-level privileges).
 * `skip-nomad-config`: If this flag is set, don't generate a Nomad configuration file. This is useful if you have
   a custom configuration file and don't want to use any of of the default settings from `run-nomad`. 
 
 Example:
 
 ```
-/opt/nomad/bin/run-nomad --server true --cluster-size 3
+/opt/nomad/bin/run-nomad --server --cluster-size 3
 ```
 
 
@@ -98,8 +99,10 @@ available.
   
 * [bind](https://www.nomadproject.io/docs/agent/configuration/index.html#bind_addr): Set to 0.0.0.0.
   
-* [client](https://www.nomadproject.io/docs/agent/configuration/client.html): This section is only set of `--server` is
-  `false`.
+* [client](https://www.nomadproject.io/docs/agent/configuration/client.html): This config is only set of `--client` is
+  set.
+  
+    * [enabled](https://www.nomadproject.io/docs/agent/configuration/client.html#enabled): `true`.
   
 * [consul](https://www.nomadproject.io/docs/agent/configuration/consul.html): By default, set the Consul address to
   `127.0.0.1:8500`, with the assumption that the Consul agent is running on the same server. 
@@ -114,8 +117,8 @@ available.
 * [region](https://www.nomadproject.io/docs/agent/configuration/index.html#region): Set to the current AWS region, as 
   fetched from [Metadata](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html).
                                                                                       
-* [server](https://www.nomadproject.io/docs/agent/configuration/server.html): This section is only set of `--server` is
-  `true`.
+* [server](https://www.nomadproject.io/docs/agent/configuration/server.html): This config is only set if `--server` is
+  set.
 
     * [enabled](https://www.nomadproject.io/docs/agent/configuration/server.html#enabled): `true`.
     * [bootstrap_expect](https://www.nomadproject.io/docs/agent/configuration/server.html#bootstrap_expect): Set to the

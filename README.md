@@ -3,8 +3,8 @@
 This repo contains a Blueprint for how to deploy a [Nomad](https://www.nomadproject.io/) cluster on 
 [AWS](https://aws.amazon.com/) using [Terraform](https://www.terraform.io/). Nomad is a distributed, highly-available 
 data-center aware scheduler. A Nomad cluster typically includes a small number of server nodes, which are responsible 
-for being part of the [concensus quorum](https://www.consul.io/docs/internals/consensus.html), and a larger number of 
-client nodes, which are used for running jobs:
+for being part of the [concensus protocol](https://www.nomadproject.io/docs/internals/consensus.html), and a larger 
+number of client nodes, which are used for running jobs:
 
 ![Nomad architecture](/_docs/architecture.png)
 
@@ -63,9 +63,9 @@ Click on each of the modules above for more details.
 <!-- TODO: update the consul-aws-blueprint URL to the final URL -->
 
 To run a Nomad cluster, you need to deploy a small number of server nodes (typically 3), which are responsible 
-for being part of the [concensus quorum](https://www.consul.io/docs/internals/consensus.html), and a larger number of 
-client nodes, which are used for running jobs. You must also have a [Consul](https://www.consul.io/) cluster deployed
-(see the [Consul AWS Blueprint](https://github.com/gruntwork-io/consul-aws-blueprint)) in one of the following 
+for being part of the [concensus protocol](https://www.nomadproject.io/docs/internals/consensus.html), and a larger 
+number of client nodes, which are used for running jobs. You must also have a [Consul](https://www.consul.io/) cluster 
+deployed (see the [Consul AWS Blueprint](https://github.com/gruntwork-io/consul-aws-blueprint)) in one of the following 
 configurations:
 
 1. [Deploy Nomad and Consul in the same cluster](#deploy-nomad-and-consul-in-the-same-cluster)
@@ -81,12 +81,11 @@ configurations:
 1. Deploy a small number of server nodes (typically, 3) using the [consul-cluster 
    module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/consul-cluster). Execute the 
    [run-consul script](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/run-consul) and the
-   [run-nomad script](/modules/run-nomad) on each node during boot, setting the `--server` flag to `true` in both 
+   [run-nomad script](/modules/run-nomad) on each node during boot, setting the `--server` flag in both 
    scripts.
-1. Deploy as many client nodes as you need using the [consul-cluster 
-   module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/consul-cluster). Execute the 
+1. Deploy as many client nodes as you need using the [nomad-cluster module](/modules/nomad-cluster). Execute the 
    [run-consul script](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/run-consul) and the
-   [run-nomad script](/modules/run-nomad) on each node during boot, setting the `--server` flag to `false` in both 
+   [run-nomad script](/modules/run-nomad) on each node during boot, setting the `--client` flag in both 
    scripts.
 
 Check out the [nomad-consul-colocated-cluster example](/examples/nomad-consul-colocated-cluster example) for working
@@ -99,10 +98,10 @@ sample code.
    Blueprint](https://github.com/gruntwork-io/consul-aws-blueprint).
 1. Use the scripts from the [install-nomad module](/modules/install-nomad) in a Packer template to create a Nomad AMI.
 1. Deploy a small number of server nodes (typically, 3) using the [nomad-cluster module](/modules/nomad). Execute the    
-   [run-nomad script](/modules/run-nomad) on each node during boot, setting the `--server` flag to `true`. You will 
+   [run-nomad script](/modules/run-nomad) on each node during boot, setting the `--server` flag. You will 
    need to configure each node with the connection details for your standalone Consul cluster.   
 1. Deploy as many client nodes as you need using the [nomad-cluster module](/modules/nomad). Execute the 
-   [run-nomad script](/modules/run-nomad) on each node during boot, setting the `--server` flag to `false`.
+   [run-nomad script](/modules/run-nomad) on each node during boot, setting the `--client` flag.
 
 Check out the [nomad-consul-separate-cluster example](/examples/nomad-consul-separate-cluster example) for working
 sample code.

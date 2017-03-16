@@ -5,8 +5,8 @@ to a separate [Consul](https://www.consul.io/) cluster in [AWS](https://aws.amaz
 Consul in the same clusters, see the [nomad-consul-colocated-cluster example](/examples/nomad-consul-colocated-cluster) 
 instead). The Nomad cluster consists of two Auto Scaling Groups (ASGs): one with a small number of Nomad server 
 nodes, which are responsible for being part of the [concensus 
-quorum](https://www.consul.io/docs/internals/consensus.html), and one with a larger number of Nomad client nodes, which 
-are used to run jobs:
+quorum](https://www.nomadproject.io/docs/internals/consensus.html), and one with a larger number of Nomad client nodes, 
+which are used to run jobs:
 
 ![Nomad architecture](/_docs/architecture-nomad-consul-separate.png)
 
