@@ -35,11 +35,21 @@ resource "aws_security_group_rule" "allow_rpc_inbound" {
   security_group_id = "${aws_security_group.lc_security_group.id}"
 }
 
-resource "aws_security_group_rule" "allow_serf_inbound" {
+resource "aws_security_group_rule" "allow_serf_tcp_inbound" {
   type        = "ingress"
   from_port   = "${var.serf_port}"
   to_port     = "${var.serf_port}"
   protocol    = "tcp"
+  cidr_blocks = ["${var.allowed_inbound_cidr_blocks}"]
+
+  security_group_id = "${aws_security_group.lc_security_group.id}"
+}
+
+resource "aws_security_group_rule" "allow_serf_udp_inbound" {
+  type        = "ingress"
+  from_port   = "${var.serf_port}"
+  to_port     = "${var.serf_port}"
+  protocol    = "udp"
   cidr_blocks = ["${var.allowed_inbound_cidr_blocks}"]
 
   security_group_id = "${aws_security_group.lc_security_group.id}"
