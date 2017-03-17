@@ -152,7 +152,10 @@ func testNomadCluster(t *testing.T, nodeIpAddress string, logger *log.Logger) {
 
 // A quick, hacky way to call the Nomad HTTP API: https://www.nomadproject.io/docs/http/index.html
 func callNomadApi(nodeIpAddress string, path string, logger *log.Logger) ([]interface{}, error) {
-	resp, err := http.Get(fmt.Sprintf("http://%s:4646/%s", nodeIpAddress, path))
+	url := fmt.Sprintf("http://%s:4646/%s", nodeIpAddress, path)
+	logger.Printf("Making an HTTP GET to URL %s", url)
+
+	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +166,7 @@ func callNomadApi(nodeIpAddress string, path string, logger *log.Logger) ([]inte
 		return nil, err
 	}
 
-	logger.Printf("Response from Nomad: %s", string(body))
+	logger.Printf("Response from Nomad for URL %s: %s", url, string(body))
 
 	result := []interface{}{}
 	if err := json.Unmarshal(body, &result); err != nil {
