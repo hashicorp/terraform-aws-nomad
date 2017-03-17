@@ -4,11 +4,11 @@ import "testing"
 
 func TestNomadConsulClusterSeparateWithUbuntuAmi(t *testing.T) {
 	t.Parallel()
-	runNomadClusterSeparateTest(t, "TestNomadSepUbuntu", "ubuntu-16-ami")
+	runNomadClusterSeparateTest(t, "NomadSepUbuntu", "ubuntu-16-ami")
 }
 
 func TestNomadConsulClusterSeparateAmazonLinuxAmi(t *testing.T) {
 	t.Parallel()
-	runNomadClusterSeparateTest(t, "TestNomadSepAmznLnx", "amazon-linux-ami")
+	runNomadClusterSeparateTest(t, "NomadSepAmznLnx", "amazon-linux-ami")
 }
 

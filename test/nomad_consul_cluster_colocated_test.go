@@ -6,11 +6,11 @@ import (
 
 func TestNomadConsulClusterColocatedWithUbuntuAmi(t *testing.T) {
 	t.Parallel()
-	runNomadClusterColocatedTest(t, "TestNomadColoUbuntu", "ubuntu-16-ami")
+	runNomadClusterColocatedTest(t, "NomadColoUbuntu", "ubuntu-16-ami")
 }
 
 func TestNomadConsulClusterColocatedAmazonLinuxAmi(t *testing.T) {
 	t.Parallel()
-	runNomadClusterColocatedTest(t, "TestNomadColoAmznLnx", "amazon-linux-ami")
+	runNomadClusterColocatedTest(t, "NomadColoAmznLnx", "amazon-linux-ami")
 }
 
