@@ -59,7 +59,7 @@ func runNomadClusterColocatedTest(t *testing.T, testName string, packerBuildName
 
 	terratestOptions.Vars = map[string]interface{} {
 		VAR_AWS_REGION: resourceCollection.AwsRegion,
-		CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_NAME: testName + resourceCollection.UniqueId,
+		CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_NAME: "test-" + resourceCollection.UniqueId,
 		CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_SERVERS: DEFAULT_NUM_SERVERS,
 		CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_CLIENTS: DEFAULT_NUM_CLIENTS,
 		VAR_AMI_ID: amiId,
@@ -89,8 +89,8 @@ func runNomadClusterSeparateTest(t *testing.T, testName string, packerBuildName 
 
 	terratestOptions.Vars = map[string]interface{} {
 		VAR_AWS_REGION: resourceCollection.AwsRegion,
-		CLUSTER_SEPARATE_EXAMPLE_VAR_NOMAD_CLUSTER_NAME: "nomad-" + testName + resourceCollection.UniqueId,
-		CLUSTER_SEPARATE_EXAMPLE_VAR_CONSUL_CLUSTER_NAME: "consul-" + testName + resourceCollection.UniqueId,
+		CLUSTER_SEPARATE_EXAMPLE_VAR_NOMAD_CLUSTER_NAME: "test-" + resourceCollection.UniqueId,
+		CLUSTER_SEPARATE_EXAMPLE_VAR_CONSUL_CLUSTER_NAME: "test-" + resourceCollection.UniqueId,
 		CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_NOMAD_SERVERS: DEFAULT_NUM_SERVERS,
 		CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_CONSUL_SERVERS: DEFAULT_NUM_SERVERS,
 		CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_NOMAD_CLIENTS: DEFAULT_NUM_CLIENTS,
