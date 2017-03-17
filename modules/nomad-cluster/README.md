@@ -106,9 +106,13 @@ To see the status of all the Nomad agents:
 ```
 > nomad node-status -address=http://<INSTANCE_IP_ADDR>:4646
 
-ID        DC   Name              Class   Drain  Status
-31505a5c  dc1  ip-172-31-18-58   <none>  false  ready
-7032561c  dc1  ip-172-31-23-153  <none>  false  ready
+ID        DC          Name                 Class   Drain  Status
+ec2796cd  us-east-1e  i-0059e5cafb8103834  <none>  false  ready
+ec2f799e  us-east-1d  i-0a5552c3c375e9ea0  <none>  false  ready
+ec226624  us-east-1b  i-0d647981f5407ae32  <none>  false  ready
+ec2d4635  us-east-1a  i-0c43dcc509e3d8bdf  <none>  false  ready
+ec232ea5  us-east-1d  i-0eff2e6e5989f51c1  <none>  false  ready
+ec2d4bd6  us-east-1c  i-01523bf946d98003e  <none>  false  ready
 ```
 
 And to submit a job called `example.nomad`:
