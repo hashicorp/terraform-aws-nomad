@@ -182,15 +182,15 @@ function generate_supervisor_config {
   local readonly nomad_user="$6"
   local readonly use_sudo="$7"
 
-  local nomad_cmd="$nomad_bin_dir/nomad"
   if [[ "$use_sudo" == "true" ]]; then
-    nomad_cmd="sudo $nomad_cmd"
+    log_info "The --use-sudo flag is set, so running Nomad as the root user"
+    nomad_user="root"
   fi
 
   log_info "Creating Supervisor config file to run Nomad in $supervisor_config_path"
   cat > "$supervisor_config_path" <<EOF
 [program:nomad]
-command=$nomad_cmd agent -config $nomad_config_dir -data-dir $nomad_data_dir
+command=$nomad_bin_dir/nomad agent -config $nomad_config_dir -data-dir $nomad_data_dir
 stdout_logfile=$nomad_log_dir/nomad-stdout.log
 stderr_logfile=$nomad_log_dir/nomad-error.log
 numprocs=1
