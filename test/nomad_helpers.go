@@ -121,7 +121,7 @@ func testNomadCluster(t *testing.T, nodeIpAddress string, logger *log.Logger) {
 	maxRetries := 60
 	sleepBetweenRetries := 10 * time.Second
 
-	response, err := util.DoWithRetry("Check Nomad members", maxRetries, sleepBetweenRetries, logger, func() (string, error) {
+	response, err := util.DoWithRetry("Check Nomad cluster has expected number of servers and clients", maxRetries, sleepBetweenRetries, logger, func() (string, error) {
 		clients, err := callNomadApi(nodeIpAddress, "v1/nodes", logger)
 		if err != nil {
 			return "", err
