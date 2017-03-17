@@ -173,7 +173,11 @@ Check out the [Security section](#security) for more details.
 ### IAM Role and Permissions
 
 Each EC2 Instance in the ASG has an [IAM Role](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) attached. 
+We give this IAM role a small set of IAM permissions that each EC2 Instance can use to automatically discover the other 
+Instances in its ASG and form a cluster with them. 
+
 The IAM Role ARN is exported as an output variable if you need to add additional permissions. 
+
 
 
 

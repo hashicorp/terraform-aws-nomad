@@ -74,6 +74,7 @@ Create an OS user named `nomad`. Create the following folders, all owned by user
 * `/opt/nomad/bin`: directory for Nomad binaries.
 * `/opt/nomad/data`: directory where the Nomad agent can store state.
 * `/opt/nomad/config`: directory where the Nomad agent looks up configuration.
+* `/opt/nomad/log`: directory where the Nomad agent will store log files.
 
 
 ### Install Nomad binaries and scripts

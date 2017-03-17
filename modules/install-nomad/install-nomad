@@ -151,6 +151,7 @@ function create_nomad_install_paths {
   sudo mkdir -p "$path/bin"
   sudo mkdir -p "$path/config"
   sudo mkdir -p "$path/data"
+  sudo mkdir -p "$path/log"
 
   log_info "Changing ownership of $path to $username"
   sudo chown -R "$username:$username" "$path"
