@@ -151,3 +151,7 @@ variable "serf_port" {
   default = 4648
 }
 
+variable "ssh_port" {
+  description = "The port used for SSH connections"
+  default     = 22
+}

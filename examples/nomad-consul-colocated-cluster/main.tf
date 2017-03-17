@@ -18,7 +18,7 @@ provider "aws" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "servers" {
-  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-cluster?ref=v0.0.1"
+  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-cluster?ref=v0.0.2"
 
   cluster_name  = "${var.cluster_name}-server"
   cluster_size  = "${var.num_servers}"
@@ -39,6 +39,24 @@ module "servers" {
   allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
   ssh_key_name                = "${var.ssh_key_name}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ATTACH SECURITY GROUP RULES FOR NOMAD
+# Our Nomad servers are running on top of the consul-cluster module, so we need to configure that cluster to allow
+# the inbound/outbound connections used by Nomad.
+# ---------------------------------------------------------------------------------------------------------------------
+
+module "nomad_security_group_rules" {
+  # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
+  # to a specific version of the modules, such as the following example:
+  # source = "git::git@github.com:gruntwork-io/nomad-aws-blueprint.git//modules/nomad-security-group-rules?ref=v0.0.1"
+  source = "../../modules/nomad-security-group-rules"
+
+  # To make testing easier, we allow requests from any IP address here but in a production deployment, we strongly
+  # recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
+  security_group_id = "${module.servers.security_group_id}"
+  allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -86,6 +104,18 @@ module "clients" {
   allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
   ssh_key_name                = "${var.ssh_key_name}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ATTACH IAM POLICIES FOR CONSUL
+# To allow our client Nodes to automatically discover the Consul servers, we need to give them the IAM permissions from
+# the Consul AWS Blueprint's consul-iam-policies module.
+# ---------------------------------------------------------------------------------------------------------------------
+
+module "consul_iam_policies" {
+  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-iam-policies?ref=v0.0.2"
+
+  iam_role_id = "${module.clients.iam_role_id}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

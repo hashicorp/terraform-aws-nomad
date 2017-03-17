@@ -1,19 +1,6 @@
 # ---------------------------------------------------------------------------------------------------------------------
-# CREATE A SECURITY GROUP TO CONTROL WHAT REQUESTS CAN GO IN AND OUT OF EACH EC2 INSTANCE
+# CREATE THE SECURITY GROUP RULES THAT CONTROL WHAT TRAFFIC CAN GO IN AND OUT OF A NOMAD CLUSTER
 # ---------------------------------------------------------------------------------------------------------------------
-
-resource "aws_security_group" "lc_security_group" {
-  name_prefix = "${var.cluster_name}"
-  description = "Security group for the ${var.cluster_name} launch configuration"
-  vpc_id      = "${var.vpc_id}"
-
-  # aws_launch_configuration.launch_configuration in this module sets create_before_destroy to true, which means
-  # everything it depends on, including this resource, must set it as well, or you'll get cyclic dependency errors
-  # when you try to do a terraform destroy.
-  lifecycle {
-    create_before_destroy = true
-  }
-}
 
 resource "aws_security_group_rule" "allow_http_inbound" {
   type        = "ingress"
@@ -22,7 +9,7 @@ resource "aws_security_group_rule" "allow_http_inbound" {
   protocol    = "tcp"
   cidr_blocks = ["${var.allowed_inbound_cidr_blocks}"]
 
-  security_group_id = "${aws_security_group.lc_security_group.id}"
+  security_group_id = "${var.security_group_id}"
 }
 
 resource "aws_security_group_rule" "allow_rpc_inbound" {
@@ -32,7 +19,7 @@ resource "aws_security_group_rule" "allow_rpc_inbound" {
   protocol    = "tcp"
   cidr_blocks = ["${var.allowed_inbound_cidr_blocks}"]
 
-  security_group_id = "${aws_security_group.lc_security_group.id}"
+  security_group_id = "${var.security_group_id}"
 }
 
 resource "aws_security_group_rule" "allow_serf_tcp_inbound" {
@@ -42,7 +29,7 @@ resource "aws_security_group_rule" "allow_serf_tcp_inbound" {
   protocol    = "tcp"
   cidr_blocks = ["${var.allowed_inbound_cidr_blocks}"]
 
-  security_group_id = "${aws_security_group.lc_security_group.id}"
+  security_group_id = "${var.security_group_id}"
 }
 
 resource "aws_security_group_rule" "allow_serf_udp_inbound" {
@@ -52,15 +39,5 @@ resource "aws_security_group_rule" "allow_serf_udp_inbound" {
   protocol    = "udp"
   cidr_blocks = ["${var.allowed_inbound_cidr_blocks}"]
 
-  security_group_id = "${aws_security_group.lc_security_group.id}"
-}
-
-resource "aws_security_group_rule" "allow_all_outbound" {
-  type        = "egress"
-  from_port   = 0
-  to_port     = 0
-  protocol    = "-1"
-  cidr_blocks = ["0.0.0.0/0"]
-
-  security_group_id = "${aws_security_group.lc_security_group.id}"
+  security_group_id = "${var.security_group_id}"
 }

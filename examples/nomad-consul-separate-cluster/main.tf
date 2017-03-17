@@ -48,6 +48,18 @@ module "nomad_servers" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# ATTACH IAM POLICIES FOR CONSUL
+# To allow our server Nodes to automatically discover the Consul servers, we need to give them the IAM permissions from
+# the Consul AWS Blueprint's consul-iam-policies module.
+# ---------------------------------------------------------------------------------------------------------------------
+
+module "consul_iam_policies" {
+  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-iam-policies?ref=v0.0.2"
+
+  iam_role_id = "${module.nomad_servers.iam_role_id}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # THE USER DATA SCRIPT THAT WILL RUN ON EACH NOMAD SERVER NODE WHEN IT'S BOOTING
 # This script will configure and start Nomad
 # ---------------------------------------------------------------------------------------------------------------------
@@ -67,7 +79,7 @@ data "template_file" "user_data_nomad_server" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_servers" {
-  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-cluster?ref=v0.0.1"
+  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-cluster?ref=v0.0.2"
 
   cluster_name  = "${var.consul_cluster_name}-server"
   cluster_size  = "${var.num_consul_servers}"
@@ -123,7 +135,7 @@ module "nomad_clients" {
   max_size         = "${var.num_nomad_clients}"
   desired_capacity = "${var.num_nomad_clients}"
 
-  ami_id    = "${var.nomad_ami_id}"
+  ami_id    = "${var.ami_id}"
   user_data = "${data.template_file.user_data_nomad_client.rendered}"
 
   vpc_id             = "${data.aws_vpc.default.id}"
@@ -134,6 +146,18 @@ module "nomad_clients" {
   allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
   ssh_key_name                = "${var.ssh_key_name}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ATTACH IAM POLICIES FOR CONSUL
+# To allow our client Nodes to automatically discover the Consul servers, we need to give them the IAM permissions from
+# the Consul AWS Blueprint's consul-iam-policies module.
+# ---------------------------------------------------------------------------------------------------------------------
+
+module "consul_iam_policies" {
+  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-iam-policies?ref=v0.0.2"
+
+  iam_role_id = "${module.nomad_clients.iam_role_id}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
