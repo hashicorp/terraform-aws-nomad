@@ -131,7 +131,7 @@ func testNomadCluster(t *testing.T, nodeIpAddress string, logger *log.Logger) {
 			return "", fmt.Errorf("Expected the cluster to have %d clients, but found %d", DEFAULT_NUM_CLIENTS, len(clients))
 		}
 
-		servers, err := callNomadApi(nodeIpAddress, "v1/agent/servers", logger)
+		servers, err := callNomadApi(nodeIpAddress, "v1/status/peers", logger)
 		if err != nil {
 			return "", err
 		}
