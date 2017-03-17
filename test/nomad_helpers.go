@@ -122,7 +122,7 @@ func testNomadCluster(t *testing.T, nodeIpAddress string, logger *log.Logger) {
 	sleepBetweenRetries := 10 * time.Second
 
 	response, err := util.DoWithRetry("Check Nomad members", maxRetries, sleepBetweenRetries, logger, func() (string, error) {
-		clients, err := callNomadApi(nodeIpAddress, "v1/nodes")
+		clients, err := callNomadApi(nodeIpAddress, "v1/nodes", logger)
 		if err != nil {
 			return "", err
 		}
@@ -131,7 +131,7 @@ func testNomadCluster(t *testing.T, nodeIpAddress string, logger *log.Logger) {
 			return "", fmt.Errorf("Expected the cluster to have %d clients, but found %d", DEFAULT_NUM_CLIENTS, len(clients))
 		}
 
-		servers, err := callNomadApi(nodeIpAddress, "v1/agent/servers")
+		servers, err := callNomadApi(nodeIpAddress, "v1/agent/servers", logger)
 		if err != nil {
 			return "", err
 		}
@@ -151,7 +151,7 @@ func testNomadCluster(t *testing.T, nodeIpAddress string, logger *log.Logger) {
 }
 
 // A quick, hacky way to call the Nomad HTTP API: https://www.nomadproject.io/docs/http/index.html
-func callNomadApi(nodeIpAddress string, path string) ([]interface{}, error) {
+func callNomadApi(nodeIpAddress string, path string, logger *log.Logger) ([]interface{}, error) {
 	resp, err := http.Get(fmt.Sprintf("http://%s:4646/%s", nodeIpAddress, path))
 	if err != nil {
 		return nil, err
@@ -162,6 +162,8 @@ func callNomadApi(nodeIpAddress string, path string) ([]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	logger.Printf("Response from Nomad: %s", string(body))
 
 	result := []interface{}{}
 	if err := json.Unmarshal(body, &result); err != nil {
