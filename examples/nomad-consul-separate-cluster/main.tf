@@ -53,7 +53,7 @@ module "nomad_servers" {
 # the Consul AWS Blueprint's consul-iam-policies module.
 # ---------------------------------------------------------------------------------------------------------------------
 
-module "consul_iam_policies" {
+module "consul_iam_policies_servers" {
   source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-iam-policies?ref=v0.0.2"
 
   iam_role_id = "${module.nomad_servers.iam_role_id}"
@@ -154,7 +154,7 @@ module "nomad_clients" {
 # the Consul AWS Blueprint's consul-iam-policies module.
 # ---------------------------------------------------------------------------------------------------------------------
 
-module "consul_iam_policies" {
+module "consul_iam_policies_clients" {
   source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-iam-policies?ref=v0.0.2"
 
   iam_role_id = "${module.nomad_clients.iam_role_id}"
@@ -166,7 +166,7 @@ module "consul_iam_policies" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 data "template_file" "user_data_nomad_client" {
-  template = "${file("${path.module}/user-data-client.sh")}"
+  template = "${file("${path.module}/user-data-nomad-client.sh")}"
 
   vars {
     cluster_tag_key   = "${var.cluster_tag_key}"
