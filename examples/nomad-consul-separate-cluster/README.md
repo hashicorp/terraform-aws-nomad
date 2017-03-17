@@ -27,7 +27,7 @@ To deploy a Nomad Cluster:
    instructions. Make sure to note down the ID of the AMI.
 1. Install [Terraform](https://www.terraform.io/).
 1. Open `vars.tf`, set the environment variables specified at the top of the file, and fill in any other variables that
-   don't have a default, including putting your AMI IDs into the `nomad_ami_id` and `consul_ami_id` variables.
+   don't have a default, including putting your AMI ID into the `ami_id` variable.
 1. Run `terraform get`.
 1. Run `terraform plan`.
 1. If the plan looks good, run `terraform apply`.

@@ -4,7 +4,8 @@
     "aws_region": "us-east-1",
     "nomad_version": "0.5.5",
     "consul_blueprint_version": "v0.0.1",
-    "consul_version": "0.7.5"
+    "consul_version": "0.7.5",
+    "github_oauth_token": "{{env `GITHUB_OAUTH_TOKEN`}}"
   },
   "builders": [{
     "ami_name": "nomad-consul-ubuntu-{{isotime | clean_ami_name}}",
@@ -58,8 +59,19 @@
   },{
     "type": "shell",
     "inline": [
-      "sudo apt-get install -y git",
-      "git clone --branch {{user `consul_blueprint_version`}} https://github.com/gruntwork-io/consul-aws-blueprint.git",
+      "sudo apt-get install -y git"
+    ],
+    "only": ["ubuntu-16-ami"]
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo yum install -y git"
+    ],
+    "only": ["amazon-linux-ami"]
+  },{
+    "type": "shell",
+    "inline": [
+      "git clone --branch {{user `consul_blueprint_version`}} https://{{user `github_oauth_token`}}@github.com/gruntwork-io/consul-aws-blueprint.git",
       "/tmp/consul-aws-blueprint/modules/install-consul/install-consul --version {{user `consul_version`}}"
     ]
   }]

@@ -11,12 +11,8 @@
 # You must provide a value for each of these parameters.
 # ---------------------------------------------------------------------------------------------------------------------
 
-variable "nomad_ami_id" {
-  description = "The ID of the Nomad AMI to run in the Nomad cluster. This should be an AMI built from the Packer template under examples/nomad-consul-ami/nomad-consul.json."
-}
-
-variable "consul_ami_id" {
-  description = "The ID of the Consul AMI to run in the Consul cluster. This should be an AMI built from the Packer template under examples/nomad-consul-ami/nomad-consul.json."
+variable "ami_id" {
+  description = "The ID of the AMI to run in the cluster. This should be an AMI built from the Packer template under examples/nomad-consul-ami/nomad-consul.json."
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
