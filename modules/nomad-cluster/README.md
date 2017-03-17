@@ -94,7 +94,7 @@ command](https://www.nomadproject.io/docs/commands/index.html). For example, to 
 servers:
 
 ```
-> nomad server-members -address=<INSTANCE_IP_ADDR>:4646
+> nomad server-members -address=http://<INSTANCE_IP_ADDR>:4646
 
 ip-172-31-23-140.global  172.31.23.140  4648  alive   true    2         0.5.4  dc1         global
 ip-172-31-23-141.global  172.31.23.141  4648  alive   true    2         0.5.4  dc1         global
@@ -104,7 +104,7 @@ ip-172-31-23-142.global  172.31.23.142  4648  alive   true    2         0.5.4  d
 To see the status of all the Nomad agents:
 
 ```
-> nomad node-status -address=<INSTANCE_IP_ADDR>:4646
+> nomad node-status -address=http://<INSTANCE_IP_ADDR>:4646
 
 ID        DC   Name              Class   Drain  Status
 31505a5c  dc1  ip-172-31-18-58   <none>  false  ready
@@ -114,7 +114,7 @@ ID        DC   Name              Class   Drain  Status
 And to submit a job called `example.nomad`:
  
 ```
-> nomad run -address=<INSTANCE_IP_ADDR>:4646 example.nomad
+> nomad run -address=http://<INSTANCE_IP_ADDR>:4646 example.nomad
 
 ==> Monitoring evaluation "0d159869"
     Evaluation triggered by job "example"
