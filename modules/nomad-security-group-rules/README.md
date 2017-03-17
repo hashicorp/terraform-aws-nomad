@@ -4,22 +4,29 @@ This folder contains a [Terraform](https://www.terraform.io/) module that define
 [Nomad](https://www.nomadproject.io/) cluster to control the traffic that is allowed to go in and out of the cluster. 
 
 Normally, you'd get these rules by default if you're using the [nomad-cluster module](/examples/nomad-cluster), but if 
-you're running Nomad on top of a different cluster (e.g. you're co-locating Nomad with Consul), then you can use this 
-module to add the necessary security group rules that that cluster.
+you're running Nomad on top of a different cluster, then you can use this module to add the necessary security group 
+rules that that cluster. For example, imagine you were using the [consul-cluster 
+module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/consul-cluster) to run a cluster of 
+servers that have both Nomad and Consul on each node:
 
+```hcl
+module "consul_servers" {
+  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-cluster?ref=v0.0.1"
+  
+  # This AMI has both Nomad and Consul installed
+  ami_id = "ami-1234abcd"
+}
+```
 
+The `consul-cluster` module will provide the security group rules for Consul, but not for Nomad. To ensure those 
+servers have the necessary ports open for using Nomad, you can use this module as follows:
 
-
-## How do you use this module?
-
-This folder defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your
-code by adding a `module` configuration and setting its `source` parameter to URL of this folder:
 
 ```hcl
 module "security_group_rules" {
-  source = "github.com/gruntwork-io/nomad-aws-blueprint//modules/nomad-security-group-rules?ref=v0.0.1"
+  source = "git::git@github.com:gruntwork-io/nomad-aws-blueprint.git//modules/nomad-security-group-rules?ref=v0.0.1"
 
-  security_group_id = "${module.some_cluster.security_group_id}"
+  security_group_id = "${module.consul_servers.security_group_id}"
   
   # ... (other params omitted) ...
 }
