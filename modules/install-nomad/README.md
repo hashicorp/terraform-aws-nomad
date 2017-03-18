@@ -32,9 +32,9 @@ join other nodes to form a cluster.
 
 We recommend running the `install-nomad` script as part of a [Packer](https://www.packer.io/) template to create a
 Nomad [Amazon Machine Image (AMI)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) (see the 
-[nomad-consul-ami](/examples/nomad-consul-ami) and [nomad-only-ami](/examples/nomad-only-ami) examples for a 
-fully-working sample code). You can then deploy the AMI across an Auto Scaling Group using the [nomad-cluster 
-module](/modules/nomad-cluster) (see the [nomad-consul-colocated-cluster](/examples/nomad-consul-colocated-cluster) and
+[nomad-consul-ami example](/examples/nomad-consul-ami) for sample code). You can then deploy the AMI across an Auto 
+Scaling Group using the [nomad-cluster module](/modules/nomad-cluster) (see the 
+[nomad-consul-colocated-cluster](/examples/nomad-consul-colocated-cluster) and
 [nomad-consul-separate-cluster](/examples/nomad-consul-separate-cluster) examples for fully-working sample code).
 
 
@@ -74,6 +74,7 @@ Create an OS user named `nomad`. Create the following folders, all owned by user
 * `/opt/nomad/bin`: directory for Nomad binaries.
 * `/opt/nomad/data`: directory where the Nomad agent can store state.
 * `/opt/nomad/config`: directory where the Nomad agent looks up configuration.
+* `/opt/nomad/log`: directory where the Nomad agent will store log files.
 
 
 ### Install Nomad binaries and scripts

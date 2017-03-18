@@ -9,8 +9,7 @@ from the Consul AWS Blueprint with [Packer](https://www.packer.io/) to create [A
 1. Amazon Linux
 
 These AMIs will have [Consul](https://www.consul.io/) and [Nomad](https://www.nomadproject.io/) installed and 
-configured to automatically join a cluster during boot-up. If you want to run Consul in a separate cluster and want 
-an AMI that *only* has Nomad installed, see the [nomad-only-ami example](/examples/nomad-only-ami).
+configured to automatically join a cluster during boot-up.
 
 To see how to deploy this AMI, check out the [nomad-consul-colocated-cluster 
 example](/examples/nomad-consul-colocated-cluster). For more info on Nomad installation and configuration, check out 
@@ -66,7 +65,7 @@ Your code should look more like this:
   "provisioners": [{
     "type": "shell",
     "inline": [
-      "git clone --branch <BLUEPRINT_VERSION> https://github.com/gruntwork-io/nomad-aws-blueprint.git",
+      "git clone --branch <BLUEPRINT_VERSION> https://github.com/gruntwork-io/nomad-aws-blueprint.git /tmp/nomad-aws-blueprint",
       "/tmp/nomad-aws-blueprint/modules/install-nomad/install-nomad --version {{user `nomad_version`}}"
     ],
     "pause_before": "30s"

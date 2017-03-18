@@ -29,7 +29,7 @@ module "nomad_cluster" {
   # configuration and form a cluster with other Nomad nodes connected to that Consul cluster. 
   user_data = <<-EOF
               #!/bin/bash
-              /opt/nomad/bin/run-nomad --server --cluster-size 3
+              /opt/nomad/bin/run-nomad --server --num-servers 3
               EOF
   
   # ... See vars.tf for the other parameters you must define for the nomad-cluster module
@@ -94,7 +94,7 @@ command](https://www.nomadproject.io/docs/commands/index.html). For example, to 
 servers:
 
 ```
-> nomad server-members -address=<INSTANCE_IP_ADDR>:4646
+> nomad server-members -address=http://<INSTANCE_IP_ADDR>:4646
 
 ip-172-31-23-140.global  172.31.23.140  4648  alive   true    2         0.5.4  dc1         global
 ip-172-31-23-141.global  172.31.23.141  4648  alive   true    2         0.5.4  dc1         global
@@ -104,17 +104,21 @@ ip-172-31-23-142.global  172.31.23.142  4648  alive   true    2         0.5.4  d
 To see the status of all the Nomad agents:
 
 ```
-> nomad node-status -address=<INSTANCE_IP_ADDR>:4646
+> nomad node-status -address=http://<INSTANCE_IP_ADDR>:4646
 
-ID        DC   Name              Class   Drain  Status
-31505a5c  dc1  ip-172-31-18-58   <none>  false  ready
-7032561c  dc1  ip-172-31-23-153  <none>  false  ready
+ID        DC          Name                 Class   Drain  Status
+ec2796cd  us-east-1e  i-0059e5cafb8103834  <none>  false  ready
+ec2f799e  us-east-1d  i-0a5552c3c375e9ea0  <none>  false  ready
+ec226624  us-east-1b  i-0d647981f5407ae32  <none>  false  ready
+ec2d4635  us-east-1a  i-0c43dcc509e3d8bdf  <none>  false  ready
+ec232ea5  us-east-1d  i-0eff2e6e5989f51c1  <none>  false  ready
+ec2d4bd6  us-east-1c  i-01523bf946d98003e  <none>  false  ready
 ```
 
 And to submit a job called `example.nomad`:
  
 ```
-> nomad run -address=<INSTANCE_IP_ADDR>:4646 example.nomad
+> nomad run -address=http://<INSTANCE_IP_ADDR>:4646 example.nomad
 
 ==> Monitoring evaluation "0d159869"
     Evaluation triggered by job "example"
@@ -173,7 +177,11 @@ Check out the [Security section](#security) for more details.
 ### IAM Role and Permissions
 
 Each EC2 Instance in the ASG has an [IAM Role](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) attached. 
+We give this IAM role a small set of IAM permissions that each EC2 Instance can use to automatically discover the other 
+Instances in its ASG and form a cluster with them. 
+
 The IAM Role ARN is exported as an output variable if you need to add additional permissions. 
+
 
 
 
@@ -250,8 +258,8 @@ Nomad can encrypt all of its network traffic. For instructions on enabling netwo
 
 The EC2 Instances in the cluster store all their data on the root EBS Volume. To enable encryption for the data at
 rest, you must enable encryption in your Nomad AMI. If you're creating the AMI using Packer (e.g. as shown in
-the [nomad-consul-ami](/examples/nomad-consul-ami) and [nomad-only-ami](/examples/nomad-only-ami) examples), you need 
-to set the [encrypt_boot parameter](https://www.packer.io/docs/builders/amazon-ebs.html#encrypt_boot) to `true`.  
+the [nomad-consul-ami example](/examples/nomad-consul-ami)), you need to set the [encrypt_boot 
+parameter](https://www.packer.io/docs/builders/amazon-ebs.html#encrypt_boot) to `true`.  
 
 
 ### Dedicated instances
