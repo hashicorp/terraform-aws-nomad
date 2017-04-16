@@ -31,6 +31,7 @@ To deploy a Nomad Cluster:
 1. Run `terraform get`.
 1. Run `terraform plan`.
 1. If the plan looks good, run `terraform apply`.
-1. Run the `nomad-examples-helper.sh` script in the `nomad-examples-helper` folder to print out the IP addresses of the 
-   Nomad servers and some example commands you can run to interact with the cluster!
+1. Run the [nomad-examples-helper.sh script](/examples/nomad-examples-helper/nomad-examples-helper.sh) to print out 
+   the IP addresses of the Nomad servers and some example commands you can run to interact with the cluster:
+   `../nomad-examples-helper/nomad-examples-helper.sh`.
    
