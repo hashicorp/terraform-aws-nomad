@@ -4,7 +4,7 @@
     "aws_region": "us-east-1",
     "nomad_version": "0.5.5",
     "consul_blueprint_version": "v0.0.5",
-    "consul_version": "0.7.5",
+    "consul_version": "0.8.0",
     "github_oauth_token": "{{env `GITHUB_OAUTH_TOKEN`}}"
   },
   "builders": [{
