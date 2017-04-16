@@ -92,7 +92,7 @@ function get_all_nomad_server_ips {
       echo "${ips[@]}"
       return
     else
-      log_warn "Found ${#ips[@]} of $expected_num_nomad_servers public IP addresses. Will sleep for $SLEEP_BETWEEN_RETRIES_SEC and try again."
+      log_warn "Found ${#ips[@]} of $expected_num_nomad_servers public IP addresses. Will sleep for $SLEEP_BETWEEN_RETRIES_SEC seconds and try again."
       sleep "$SLEEP_BETWEEN_RETRIES_SEC"
     fi
   done
