@@ -154,12 +154,12 @@ function print_instructions {
   local readonly server_ip="${server_ips[0]}"
 
   local instructions=()
-  instructions+=("\nYour Nomad servers are running at the following IP addresses:\n\n${server_ips[@]}\n")
+  instructions+=("\nYour Nomad servers are running at the following IP addresses:\n\n${server_ips[@]/#/    }\n")
   instructions+=("Some commands for you to try:\n")
-  instructions+=("nomad server-members -address=http://$server_ip:4646")
-  instructions+=("nomad node-status -address=http://$server_ip:4646")
-  instructions+=("nomad run -address=http://$server_ip:4646 $SCRIPT_DIR/example.nomad")
-  instructions+=("nomad status -address=http://$server_ip:4646 example\n")
+  instructions+=("    nomad server-members -address=http://$server_ip:4646")
+  instructions+=("    nomad node-status -address=http://$server_ip:4646")
+  instructions+=("    nomad run -address=http://$server_ip:4646 $SCRIPT_DIR/example.nomad")
+  instructions+=("    nomad status -address=http://$server_ip:4646 example\n")
 
   local instructions_str
   instructions_str=$(join "\n" "${instructions[@]}")
