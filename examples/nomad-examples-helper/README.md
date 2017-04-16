@@ -1,12 +1,14 @@
 # Nomad Examples Helper
 
-This folder contains two helpers for working with the 
+This folder contains a helper script called `nomad-examples-helper.sh` for working with the 
 [nomad-consul-colocated-cluster](/examples/nomad-consul-colocated-cluster) and
-[nomad-consul-separate-cluster](/examples/nomad-consul-separate-cluster) examples:
+[nomad-consul-separate-cluster](/examples/nomad-consul-separate-cluster) examples. After running `terraform apply` on
+the examples, if you run `nomad-examples-helper.sh`, it will automatically:
 
-1. `nomad-examples-helper.sh`: A script you can run after deploying the examples to a) wait for the Nomad server 
-   cluster to come up, b) print out the IP addresses of the Nomad servers, c) print out some example commands you can 
-   run against your Nomad servers.
+1. Wait for the Nomad server cluster to come up.
+1. Print out the IP addresses of the Nomad servers.
+1. Print out some example commands you can run against your Nomad servers.
 
-1. `example.nomad`: An example Nomad job you can run in your Nomad cluster. This job simply echoes "Hello, World!"
+This folder also contains an example Nomad job called `example.nomad` that you can run in your Nomad cluster. This job 
+simply echoes "Hello, World!"
 
