@@ -136,6 +136,7 @@ function get_nomad_server_ips {
   local aws_region
   local cluster_tag_key
   local cluster_tag_value
+  local instances
 
   aws_region=$(get_required_terraform_output "aws_region")
   cluster_tag_key=$(get_required_terraform_output "nomad_servers_cluster_tag_key")
@@ -143,10 +144,11 @@ function get_nomad_server_ips {
 
   log_info "Fetching public IP addresses for EC2 Instances in $aws_region with tag $cluster_tag_key=$cluster_tag_value"
 
-  aws ec2 describe-instances \
+  instances=$(aws ec2 describe-instances \
     --region "$aws_region" \
-    --filter "Name=tag:$cluster_tag_key,Values=$cluster_tag_value" "Name=instance-state-name,Values=running" | \
-    jq -r '.Reservations[].Instances[].PublicIpAddress'
+    --filter "Name=tag:$cluster_tag_key,Values=$cluster_tag_value" "Name=instance-state-name,Values=running")
+
+  echo "$instances" | jq -r '.Reservations[].Instances[].PublicIpAddress'
 }
 
 function print_instructions {
