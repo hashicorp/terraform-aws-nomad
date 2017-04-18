@@ -69,3 +69,15 @@ output "iam_role_id_nomad_clients" {
 output "security_group_id_nomad_clients" {
   value = "${module.nomad_clients.security_group_id}"
 }
+
+output "aws_region" {
+  value = "${var.aws_region}"
+}
+
+output "nomad_servers_cluster_tag_key" {
+  value = "${module.nomad_servers.cluster_tag_key}"
+}
+
+output "nomad_servers_cluster_tag_value" {
+  value = "${module.nomad_servers.cluster_tag_value}"
+}

@@ -1,4 +1,4 @@
-output "num_servers" {
+output "num_nomad_servers" {
   value = "${module.servers.cluster_size}"
 }
 
@@ -44,4 +44,16 @@ output "iam_role_id_clients" {
 
 output "security_group_id_clients" {
   value = "${module.clients.security_group_id}"
+}
+
+output "aws_region" {
+  value = "${var.aws_region}"
+}
+
+output "nomad_servers_cluster_tag_key" {
+  value = "${module.servers.cluster_tag_key}"
+}
+
+output "nomad_servers_cluster_tag_value" {
+  value = "${module.servers.cluster_tag_value}"
 }

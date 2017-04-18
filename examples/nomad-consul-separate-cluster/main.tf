@@ -16,6 +16,10 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
+terraform {
+  required_version = ">= 0.9.3"
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # DEPLOY THE NOMAD SERVER NODES
 # ---------------------------------------------------------------------------------------------------------------------
@@ -37,8 +41,8 @@ module "nomad_servers" {
   ami_id    = "${var.ami_id}"
   user_data = "${data.template_file.user_data_nomad_server.rendered}"
 
-  vpc_id             = "${data.aws_vpc.default.id}"
-  availability_zones = ["${data.aws_availability_zones.all.names}"]
+  vpc_id     = "${data.aws_vpc.default.id}"
+  subnet_ids = "${data.aws_subnet_ids.default.ids}"
 
   # To make testing easier, we allow requests from any IP address here but in a production deployment, we strongly
   # recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
@@ -54,7 +58,7 @@ module "nomad_servers" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_iam_policies_servers" {
-  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-iam-policies?ref=v0.0.2"
+  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-iam-policies?ref=v0.0.5"
 
   iam_role_id = "${module.nomad_servers.iam_role_id}"
 }
@@ -79,7 +83,7 @@ data "template_file" "user_data_nomad_server" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_servers" {
-  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-cluster?ref=v0.0.2"
+  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-cluster?ref=v0.0.5"
 
   cluster_name  = "${var.consul_cluster_name}-server"
   cluster_size  = "${var.num_consul_servers}"
@@ -92,8 +96,8 @@ module "consul_servers" {
   ami_id    = "${var.ami_id}"
   user_data = "${data.template_file.user_data_consul_server.rendered}"
 
-  vpc_id             = "${data.aws_vpc.default.id}"
-  availability_zones = ["${data.aws_availability_zones.all.names}"]
+  vpc_id     = "${data.aws_vpc.default.id}"
+  subnet_ids = "${data.aws_subnet_ids.default.ids}"
 
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
@@ -138,8 +142,8 @@ module "nomad_clients" {
   ami_id    = "${var.ami_id}"
   user_data = "${data.template_file.user_data_nomad_client.rendered}"
 
-  vpc_id             = "${data.aws_vpc.default.id}"
-  availability_zones = ["${data.aws_availability_zones.all.names}"]
+  vpc_id     = "${data.aws_vpc.default.id}"
+  subnet_ids = "${data.aws_subnet_ids.default.ids}"
 
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
@@ -155,7 +159,7 @@ module "nomad_clients" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_iam_policies_clients" {
-  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-iam-policies?ref=v0.0.2"
+  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-iam-policies?ref=v0.0.5"
 
   iam_role_id = "${module.nomad_clients.iam_role_id}"
 }
@@ -175,14 +179,16 @@ data "template_file" "user_data_nomad_client" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# DEPLOY THE CLUSTERS IN THE DEFAULT VPC AND AVAILABILITY ZONES
-# Using the default VPC and all availability zones makes this example easy to run and test, but in a production
-# deployment, we strongly recommend deploying into a custom VPC and private subnets (the latter specified via the
-# subnet_ids parameter in the consul-cluster module).
+# DEPLOY THE CLUSTER IN THE DEFAULT VPC AND SUBNETS
+# Using the default VPC and subnets makes this example easy to run and test, but it means Consul and Nomad are
+# accessible from the public Internet. In a production deployment, we strongly recommend deploying into a custom VPC
+# and private subnets.
 # ---------------------------------------------------------------------------------------------------------------------
 
 data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_availability_zones" "all" {}
+data "aws_subnet_ids" "default" {
+  vpc_id = "${data.aws_vpc.default.id}"
+}

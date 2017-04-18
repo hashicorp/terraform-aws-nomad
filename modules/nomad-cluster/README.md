@@ -74,19 +74,21 @@ the IP address of one of the servers in your Nomad cluster. Note that this only 
 in public subnets and/or your default VPC (as in both [examples](/examples)), which is OK for testing and 
 experimentation, but NOT recommended for production usage.
 
-To use the HTTP API, you first need to get the public IP address of one of the Nomad Instances. You can get the IPs of 
-all the Nomad Instances using the [AWS CLI](https://aws.amazon.com/cli/) and 
-[jq](https://stedolan.github.io/jq/) as follows:
+To use the HTTP API, you first need to get the public IP address of one of the Nomad Instances. If you deployed the
+[nomad-consul-colocated-cluster](/examples/nomad-consul-colocated-cluster) or
+[nomad-consul-separate-cluster](/examples/nomad-consul-separate-cluster) example, the 
+[nomad-examples-helper.sh script](/examples/nomad-examples-helper/nomad-examples-helper.sh) will do the tag lookup for 
+you automatically (note, you must have the [AWS CLI](https://aws.amazon.com/cli/), 
+[jq](https://stedolan.github.io/jq/), and the [Nomad agent](https://www.nomadproject.io/) installed locally):
 
 ```
-aws ec2 describe-instances \
-  --region us-east-1 \
-  --filter "Name=tag:Name,Values=(NAME_OF_YOUR_NOMAD_CLUSTER)" "Name=instance-state-name,Values=running" | \
-  jq -r '.Reservations[].Instances[].PublicIpAddress'
-  
-11.22.33.44
-11.22.33.55
-11.22.33.66
+> ../nomad-examples-helper/nomad-examples-helper.sh 
+
+Your Nomad servers are running at the following IP addresses:
+
+34.204.85.139
+52.23.167.204
+54.236.16.38
 ```
 
 Copy and paste one of these IPs and use it with the `-address` argument for any [Nomad 
