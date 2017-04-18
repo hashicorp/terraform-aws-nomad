@@ -13,11 +13,15 @@
 #
 job "example" {
   # The "region" parameter specifies the region in which to execute the job. If
-  # omitted, this inherits the default region name of "global".
+  # omitted, this inherits the default region name of "global". Note that this example job
+  # is hard-coded to us-east-1, so if you are running your example elsewhere, make
+  # sure to update this setting, as well as the datacenters setting.
   region = "us-east-1"
 
   # The "datacenters" parameter specifies the list of datacenters which should
-  # be considered when placing this task. This must be provided.
+  # be considered when placing this task. This must be provided. Note that this example job
+  # is hard-coded to us-east-1, so if you are running your example elsewhere, make
+  # sure to update this setting, as well as the region setting.
   datacenters = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d", "us-east-1e"]
 
   # The "type" parameter controls the type of job, which impacts the scheduler's
