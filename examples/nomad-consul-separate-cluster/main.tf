@@ -16,8 +16,42 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
+# Terraform 0.9.5 suffered from https://github.com/hashicorp/terraform/issues/14399, which causes this template the
+# conditionals in this template to fail.
 terraform {
-  required_version = ">= 0.9.3"
+  required_version = ">= 0.9.3, != 0.9.5"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# AUTOMATICALLY LOOK UP THE LATEST PRE-BUILT AMI
+# This repo contains a CircleCI job that automatically builds and publishes the latest AMI by building the Packer
+# template at /examples/nomad-consul-ami upon every new release. The Terraform data source below automatically looks up
+# the latest AMI so that a simple "terraform apply" will just work without the user needing to manually build an AMI and
+# fill in the right value.
+#
+# WARNING: This Terraform data source must return at least one AMI result or the entire template will fail. See
+# /_ci/publish-amis-in-new-account.md for more information.
+# ---------------------------------------------------------------------------------------------------------------------
+data "aws_ami" "nomad_consul" {
+  most_recent      = true
+
+  # If we change the AWS Account in which test are run, update this value.
+  owners     = ["562637147889"]
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name   = "is-public"
+    values = ["true"]
+  }
+
+  filter {
+    name   = "name"
+    values = ["nomad-consul-ubuntu-*"]
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -38,7 +72,7 @@ module "nomad_servers" {
   max_size         = "${var.num_nomad_servers}"
   desired_capacity = "${var.num_nomad_servers}"
 
-  ami_id    = "${var.ami_id}"
+  ami_id    = "${var.ami_id == "" ? data.aws_ami.nomad_consul.image_id : var.ami_id}"
   user_data = "${data.template_file.user_data_nomad_server.rendered}"
 
   vpc_id     = "${data.aws_vpc.default.id}"
@@ -93,7 +127,7 @@ module "consul_servers" {
   cluster_tag_key   = "${var.cluster_tag_key}"
   cluster_tag_value = "${var.consul_cluster_name}"
 
-  ami_id    = "${var.ami_id}"
+  ami_id    = "${var.ami_id == "" ? data.aws_ami.nomad_consul.image_id : var.ami_id}"
   user_data = "${data.template_file.user_data_consul_server.rendered}"
 
   vpc_id     = "${data.aws_vpc.default.id}"
@@ -139,7 +173,7 @@ module "nomad_clients" {
   max_size         = "${var.num_nomad_clients}"
   desired_capacity = "${var.num_nomad_clients}"
 
-  ami_id    = "${var.ami_id}"
+  ami_id    = "${var.ami_id == "" ? data.aws_ami.nomad_consul.image_id : var.ami_id}"
   user_data = "${data.template_file.user_data_nomad_client.rendered}"
 
   vpc_id     = "${data.aws_vpc.default.id}"

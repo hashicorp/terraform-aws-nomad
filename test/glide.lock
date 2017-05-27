@@ -1,5 +1,5 @@
-hash: 9921f4fd34e2dbf0080043c9b9edbf91b2207a56f84aa0dd185284425fd1037c
-updated: 2017-04-16T15:45:19.452638859+01:00
+hash: ff6395d4eeee698f1e6deb0e7924ed6090923a9a43517377127a8975f7a34ca2
+updated: 2017-05-26T23:52:08.925954464-07:00
 imports:
 - name: github.com/aws/aws-sdk-go
   version: 00fb2125993965df739fa3398b03bef3eb2e198f
@@ -40,9 +40,9 @@ imports:
   - service/sns
   - service/sts
 - name: github.com/go-ini/ini
-  version: e7fea39b01aea8d5671f6858f0532f56e8bff3a5
+  version: 6e4869b434bd001f6983749881c7ead3545887d8
 - name: github.com/gruntwork-io/terratest
-  version: 1109a8bdaebfde366033b4881b81719b79b3b4f3
+  version: ed788d28c4e7f797af1113f34ae386a5409594de
   repo: git@github.com:gruntwork-io/terratest
   vcs: git
   subpackages:
@@ -57,7 +57,7 @@ imports:
 - name: github.com/jmespath/go-jmespath
   version: bd40a432e4c76585ef6b72d3fd96fb9b6dc7b68d
 - name: golang.org/x/crypto
-  version: cbc3d0884eac986df6e78a039b8792e869bff863
+  version: 05d11b2ca14108dfc7f74f4f66b28c7fe92e1fd0
   subpackages:
   - curve25519
   - ed25519
