@@ -79,9 +79,15 @@ configurations:
 1. Use the [install-consul 
    module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/install-consul) from the Consul AWS
    Blueprint and the [install-nomad module](/modules/install-nomad) from this Blueprint in a Packer template to create 
-   an AMI with Consul and Nomad. Or just use our official public AMIs:
+   an AMI with Consul and Nomad. 
+   
+   If you are just experimenting with this Blueprint, you may find it more convenient to use one of our official public AMIs:
    - [Latest Ubuntu 16 AMIs](/_docs/ubuntu16-ami-list.md).
    - [Latest Amazon Linux AMIs](/_docs/amazon-linux-ami-list.md).
+   
+   **WARNING! Do NOT use these AMIs in your production setup. In production, you should build your own AMIs in your own 
+   AWS account.**
+   
 1. Deploy a small number of server nodes (typically, 3) using the [consul-cluster 
    module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/consul-cluster). Execute the 
    [run-consul script](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/run-consul) and the

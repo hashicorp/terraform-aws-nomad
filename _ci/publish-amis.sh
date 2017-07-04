@@ -21,8 +21,13 @@ readonly BRANCH_NAME="${CIRCLE_BRANCH:-master}"
 
 readonly PACKER_BUILD_NAME="$1"
 
-# Build the example AMI. Note that we pass in the example TLS files. In a production setting, you would more likely
-# decrypt or fetch secrets like this when the AMI boots versus embedding them statically into the AMI.
+if [[ -z "$PACKER_BUILD_NAME" ]]; then
+  echo "ERROR: You must pass in the Packer build name as the first argument to this function."
+  exit 1
+fi
+
+# Build the example AMI. WARNING! In a production setting, you should build your own AMI to ensure it has exactly the
+# configuration you want. We build this example AMI solely to make initial use of this Blueprint as easy as possible.
 build-packer-artifact \
   --packer-template-path "$PACKER_TEMPLATE_PATH" \
   --build-name "$PACKER_BUILD_NAME" \
@@ -35,7 +40,8 @@ publish-ami \
   --source-ami-id "$ARTIFACT_ID" \
   --source-ami-region "$PACKER_TEMPLATE_DEFAULT_REGION" \
   --output-markdown > "$AMI_LIST_MARKDOWN_DIR/$PACKER_BUILD_NAME-list.md" \
-  --markdown-title-text "$PACKER_BUILD_NAME: Latest Public AMIs"
+  --markdown-title-text "$PACKER_BUILD_NAME: Latest Public AMIs" \
+  --markdown-description-text "**WARNING! Do NOT use these AMIs in a production setting.** The AMIs are meant only to make initial experiments with this blueprint more convenient."
 
 # Git add, commit, and push the newly created AMI IDs as a markdown doc to the repo
 git-add-commit-push \
