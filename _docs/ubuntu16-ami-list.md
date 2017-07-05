@@ -4,17 +4,17 @@
 
 | AWS Region | AMI ID |
 | ---------- | ------ |
-| ap-south-1 | ami-41ee902e |
-| eu-west-2 | ami-11ddcb75 |
-| eu-west-1 | ami-5ac12723 |
-| ap-northeast-2 | ami-ed61be83 |
-| ap-northeast-1 | ami-028e9365 |
-| sa-east-1 | ami-cf3d48a3 |
-| ca-central-1 | ami-267fc042 |
-| ap-southeast-1 | ami-79bf341a |
-| ap-southeast-2 | ami-0b677568 |
-| eu-central-1 | ami-9ac262f5 |
-| us-east-1 | ami-da1d25cc |
-| us-east-2 | ami-d80d2cbd |
-| us-west-1 | ami-73547b13 |
-| us-west-2 | ami-14d0c06d |
+| ap-south-1 | ami-d8d4aab7 |
+| eu-west-2 | ami-2dc3d549 |
+| eu-west-1 | ami-a78d6cde |
+| ap-northeast-2 | ami-748c521a |
+| ap-northeast-1 | ami-07e5f960 |
+| sa-east-1 | ami-e101748d |
+| ca-central-1 | ami-ca803fae |
+| ap-southeast-1 | ami-90dc56f3 |
+| ap-southeast-2 | ami-26d7c545 |
+| eu-central-1 | ami-7484241b |
+| us-east-1 | ami-bdf4ceab |
+| us-east-2 | ami-ba1938df |
+| us-west-1 | ami-07002f67 |
+| us-west-2 | ami-7d465504 |
