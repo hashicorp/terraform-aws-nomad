@@ -3,7 +3,7 @@
 This folder contains a [Terraform](https://www.terraform.io/) module that can be used to deploy a 
 [Nomad](https://www.nomadproject.io/) cluster in [AWS](https://aws.amazon.com/) on top of an Auto Scaling Group. This 
 module is designed to deploy an [Amazon Machine Image (AMI)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) 
-that had Nomad installed via the [install-nomad](/modules/install-nomad) module in this Blueprint.
+that had Nomad installed via the [install-nomad](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) module in this Blueprint.
 
 Note that this module assumes you have a separate [Consul](https://www.consul.io/) cluster already running. If you want
 to run Consul and Nomad in the same cluster, instead of using this module, see the [Deploy Nomad and Consul in the same 
@@ -46,19 +46,19 @@ Note the following parameters:
 
 * `ami_id`: Use this parameter to specify the ID of a Nomad [Amazon Machine Image 
   (AMI)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) to deploy on each server in the cluster. You
-  should install Nomad in this AMI using the scripts in the [install-nomad](/modules/install-nomad) module.
+  should install Nomad in this AMI using the scripts in the [install-nomad](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) module.
   
 * `user_data`: Use this parameter to specify a [User 
   Data](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html#user-data-shell-scripts) script that each
-  server will run during boot. This is where you can use the [run-nomad script](/modules/run-nomad) to configure and 
-  run Nomad. The `run-nomad` script is one of the scripts installed by the [install-nomad](/modules/install-nomad) 
+  server will run during boot. This is where you can use the [run-nomad script](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad) to configure and 
+  run Nomad. The `run-nomad` script is one of the scripts installed by the [install-nomad](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) 
   module. 
 
 You can find the other parameters in [vars.tf](vars.tf).
 
-Check out the [nomad-consul-separate-cluster example](/examples/nomad-consul-separate-cluster example) for working
+Check out the [nomad-consul-separate-cluster example](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster example) for working
 sample code. Note that if you want to run Nomad and Consul on the same cluster, see the [nomad-consul-colocated-cluster 
-example](/examples/nomad-consul-colocated-cluster example) instead.
+example](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster example) instead.
 
 
 
@@ -71,13 +71,13 @@ example](/examples/nomad-consul-colocated-cluster example) instead.
 If you want to connect to the cluster from your own computer, [install 
 Nomad](https://www.nomadproject.io/docs/install/index.html) and execute commands with the `-address` parameter set to
 the IP address of one of the servers in your Nomad cluster. Note that this only works if the Nomad cluster is running 
-in public subnets and/or your default VPC (as in both [examples](/examples)), which is OK for testing and 
+in public subnets and/or your default VPC (as in both [examples](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples)), which is OK for testing and 
 experimentation, but NOT recommended for production usage.
 
 To use the HTTP API, you first need to get the public IP address of one of the Nomad Instances. If you deployed the
-[nomad-consul-colocated-cluster](/examples/nomad-consul-colocated-cluster) or
-[nomad-consul-separate-cluster](/examples/nomad-consul-separate-cluster) example, the 
-[nomad-examples-helper.sh script](/examples/nomad-examples-helper/nomad-examples-helper.sh) will do the tag lookup for 
+[nomad-consul-colocated-cluster](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster) or
+[nomad-consul-separate-cluster](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster) example, the 
+[nomad-examples-helper.sh script](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-examples-helper/nomad-examples-helper.sh) will do the tag lookup for 
 you automatically (note, you must have the [AWS CLI](https://aws.amazon.com/cli/), 
 [jq](https://stedolan.github.io/jq/), and the [Nomad agent](https://www.nomadproject.io/) installed locally):
 
@@ -145,7 +145,7 @@ documentation](https://www.nomadproject.io/docs/service-discovery/index.html) fo
 
 This module creates the following architecture:
 
-![Nomad architecture](/_docs/architecture.png)
+![Nomad architecture](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/master/_docs/architecture.png)
 
 This architecture consists of the following resources:
 
@@ -159,7 +159,7 @@ This architecture consists of the following resources:
 This module runs Nomad on top of an [Auto Scaling Group (ASG)](https://aws.amazon.com/autoscaling/). Typically, you
 should run the ASG with 3 or 5 EC2 Instances spread across multiple [Availability 
 Zones](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html). Each of the EC2
-Instances should be running an AMI that has had Nomad installed via the [install-nomad](/modules/install-nomad)
+Instances should be running an AMI that has had Nomad installed via the [install-nomad](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad)
 module. You pass in the ID of the AMI to run using the `ami_id` input parameter.
 
 
@@ -253,14 +253,14 @@ Here are some of the main security considerations to keep in mind when using thi
 ### Encryption in transit
 
 Nomad can encrypt all of its network traffic. For instructions on enabling network encryption, have a look at the
-[How do you handle encryption documentation](/modules/run-nomad#how-do-you-handle-encryption).
+[How do you handle encryption documentation](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad#how-do-you-handle-encryption).
 
 
 ### Encryption at rest
 
 The EC2 Instances in the cluster store all their data on the root EBS Volume. To enable encryption for the data at
 rest, you must enable encryption in your Nomad AMI. If you're creating the AMI using Packer (e.g. as shown in
-the [nomad-consul-ami example](/examples/nomad-consul-ami)), you need to set the [encrypt_boot 
+the [nomad-consul-ami example](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-ami)), you need to set the [encrypt_boot 
 parameter](https://www.packer.io/docs/builders/amazon-ebs.html#encrypt_boot) to `true`.  
 
 
