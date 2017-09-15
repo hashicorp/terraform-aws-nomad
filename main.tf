@@ -60,7 +60,7 @@ data "aws_ami" "nomad_consul" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "servers" {
-  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-cluster?ref=v0.0.5"
+  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-cluster?ref=v0.0.1"
 
   cluster_name  = "${var.cluster_name}-server"
   cluster_size  = "${var.num_servers}"
@@ -93,7 +93,7 @@ module "nomad_security_group_rules" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
   # source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-security-group-rules?ref=v0.0.1"
-  source = "../../modules/nomad-security-group-rules"
+  source = "./modules/nomad-security-group-rules"
 
   # To make testing easier, we allow requests from any IP address here but in a production deployment, we strongly
   # recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
@@ -124,7 +124,7 @@ module "clients" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
   # source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.0.1"
-  source = "../../modules/nomad-cluster"
+  source = "./modules/nomad-cluster"
 
   cluster_name  = "${var.cluster_name}-client"
   instance_type = "t2.micro"
@@ -155,7 +155,7 @@ module "clients" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_iam_policies" {
-  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.0.5"
+  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.0.1"
 
   iam_role_id = "${module.clients.iam_role_id}"
 }

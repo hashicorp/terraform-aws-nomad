@@ -1,7 +1,7 @@
 # Nomad Examples Helper
 
 This folder contains a helper script called `nomad-examples-helper.sh` for working with the 
-[nomad-consul-colocated-cluster](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster) and
+[nomad-consul-colocated-cluster](https://github.com/hashicorp/terraform-aws-nomad/tree/master/MAIN.md) and
 [nomad-consul-separate-cluster](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster) examples. After running `terraform apply` on
 the examples, if you run `nomad-examples-helper.sh`, it will automatically:
 

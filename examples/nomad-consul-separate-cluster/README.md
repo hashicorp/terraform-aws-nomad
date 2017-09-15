@@ -2,7 +2,7 @@
 
 This folder shows an example of Terraform code to deploy a [Nomad](https://www.nomadproject.io/) cluster that connects 
 to a separate [Consul](https://www.consul.io/) cluster in [AWS](https://aws.amazon.com/) (if you want to run Nomad and 
-Consul in the same clusters, see the [nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster) 
+Consul in the same clusters, see the [nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/MAIN.md) 
 instead). The Nomad cluster consists of two Auto Scaling Groups (ASGs): one with a small number of Nomad server 
 nodes, which are responsible for being part of the [concensus 
 quorum](https://www.nomadproject.io/docs/internals/consensus.html), and one with a larger number of Nomad client nodes, 

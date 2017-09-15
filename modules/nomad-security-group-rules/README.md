@@ -45,5 +45,5 @@ Note the following parameters:
   
 You can find the other parameters in [vars.tf](vars.tf).
 
-Check out the [nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster) for working
+Check out the [nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/MAIN.md) for working
 sample code.
