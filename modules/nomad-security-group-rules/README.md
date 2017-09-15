@@ -6,12 +6,12 @@ This folder contains a [Terraform](https://www.terraform.io/) module that define
 Normally, you'd get these rules by default if you're using the [nomad-cluster module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-cluster), but if 
 you're running Nomad on top of a different cluster, then you can use this module to add the necessary security group 
 rules that that cluster. For example, imagine you were using the [consul-cluster 
-module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/consul-cluster) to run a cluster of 
+module](https://github.com/gruntwork-io/consul-aws-module/tree/master/modules/consul-cluster) to run a cluster of 
 servers that have both Nomad and Consul on each node:
 
 ```hcl
 module "consul_servers" {
-  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-cluster?ref=v0.0.1"
+  source = "git::git@github.com:gruntwork-io/consul-aws-module.git//modules/consul-cluster?ref=v0.0.1"
   
   # This AMI has both Nomad and Consul installed
   ami_id = "ami-1234abcd"
@@ -24,7 +24,7 @@ servers have the necessary ports open for using Nomad, you can use this module a
 
 ```hcl
 module "security_group_rules" {
-  source = "git::git@github.com:gruntwork-io/nomad-aws-blueprint.git//modules/nomad-security-group-rules?ref=v0.0.1"
+  source = "git::git@github.com:gruntwork-io/terraform-aws-nomad.git//modules/nomad-security-group-rules?ref=v0.0.1"
 
   security_group_id = "${module.consul_servers.security_group_id}"
   

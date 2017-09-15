@@ -16,14 +16,14 @@ There is a good chance it will work on other flavors of Debian, CentOS, and RHEL
 
 ## Quick start
 
-<!-- TODO: update the clone URL to the final URL when this Blueprint is released -->
+<!-- TODO: update the clone URL to the final URL when this Module is released -->
 
 To install Nomad, use `git` to clone this repository at a specific tag (see the [releases page](../../../../releases) 
 for all available tags) and run the `install-nomad` script:
 
 ```
-git clone --branch <VERSION> https://github.com/gruntwork-io/nomad-aws-blueprint.git
-nomad-aws-blueprint/modules/install-nomad/install-nomad --version 0.5.4
+git clone --branch <VERSION> https://github.com/gruntwork-io/terraform-aws-nomad.git
+terraform-aws-nomad/modules/install-nomad/install-nomad --version 0.5.4
 ```
 
 The `install-nomad` script will install Nomad, its dependencies, and the [run-nomad script](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad).
@@ -106,9 +106,9 @@ After the `install-nomad` script finishes running, you may wish to do the follow
 
 ## Why use Git to install this code?
 
-<!-- TODO: update the package managers URL to the final URL when this Blueprint is released -->
+<!-- TODO: update the package managers URL to the final URL when this Module is released -->
 
 We needed an easy way to install these scripts that satisfied a number of requirements, including working on a variety 
 of operating systems and supported versioning. Our current solution is to use `git`, but this may change in the future.
-See [Package Managers](https://github.com/gruntwork-io/consul-aws-blueprint/blob/master/_docs/package-managers.md) for 
+See [Package Managers](https://github.com/gruntwork-io/consul-aws-module/blob/master/_docs/package-managers.md) for 
 a full discussion of the requirements, trade-offs, and why we picked `git`.

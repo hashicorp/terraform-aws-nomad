@@ -1,8 +1,8 @@
 # Nomad and Consul AMI
 
-This folder shows an example of how to use the [install-nomad module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) from this Blueprint and 
-the [install-consul module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/install-consul)
-from the Consul AWS Blueprint with [Packer](https://www.packer.io/) to create [Amazon Machine Images 
+This folder shows an example of how to use the [install-nomad module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) from this Module and 
+the [install-consul module](https://github.com/gruntwork-io/consul-aws-module/tree/master/modules/install-consul)
+from the Consul AWS Module with [Packer](https://www.packer.io/) to create [Amazon Machine Images 
 (AMIs)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) that have Nomad and Consul installed on top of:
  
 1. Ubuntu 16.04
@@ -46,12 +46,12 @@ provisioner. Instead of:
 {
   "provisioners": [{
     "type": "file",
-    "source": "{{template_dir}}/../../../nomad-aws-blueprint",
+    "source": "{{template_dir}}/../../../terraform-aws-nomad",
     "destination": "/tmp"
   },{
     "type": "shell",
     "inline": [
-      "/tmp/nomad-aws-blueprint/modules/install-nomad/install-nomad --version {{user `nomad_version`}}"
+      "/tmp/terraform-aws-nomad/modules/install-nomad/install-nomad --version {{user `nomad_version`}}"
     ],
     "pause_before": "30s"
   }]
@@ -65,16 +65,16 @@ Your code should look more like this:
   "provisioners": [{
     "type": "shell",
     "inline": [
-      "git clone --branch <BLUEPRINT_VERSION> https://github.com/gruntwork-io/nomad-aws-blueprint.git /tmp/nomad-aws-blueprint",
-      "/tmp/nomad-aws-blueprint/modules/install-nomad/install-nomad --version {{user `nomad_version`}}"
+      "git clone --branch <module_VERSION> https://github.com/gruntwork-io/terraform-aws-nomad.git /tmp/terraform-aws-nomad",
+      "/tmp/terraform-aws-nomad/modules/install-nomad/install-nomad --version {{user `nomad_version`}}"
     ],
     "pause_before": "30s"
   }]
 }
 ```
 
-You should replace `<BLUEPRINT_VERSION>` in the code above with the version of this blueprint that you want to use (see
+You should replace `<module_VERSION>` in the code above with the version of this module that you want to use (see
 the [Releases Page](../../releases) for all available versions). That's because for production usage, you should always
-use a fixed, known version of this Blueprint, downloaded from the official Git repo. On the other hand, when you're 
-just experimenting with the Blueprint, it's OK to use a local checkout of the Blueprint, uploaded from your own 
+use a fixed, known version of this Module, downloaded from the official Git repo. On the other hand, when you're 
+just experimenting with the Module, it's OK to use a local checkout of the Module, uploaded from your own 
 computer.
