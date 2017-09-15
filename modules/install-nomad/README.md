@@ -34,7 +34,7 @@ We recommend running the `install-nomad` script as part of a [Packer](https://ww
 Nomad [Amazon Machine Image (AMI)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) (see the 
 [nomad-consul-ami example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-ami) for sample code). You can then deploy the AMI across an Auto 
 Scaling Group using the [nomad-cluster module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/nomad-cluster) (see the 
-[nomad-consul-colocated-cluster](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster) and
+[nomad-consul-colocated-cluster](https://github.com/hashicorp/terraform-aws-nomad/tree/master/MAIN.md) and
 [nomad-consul-separate-cluster](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster) examples for fully-working sample code).
 
 

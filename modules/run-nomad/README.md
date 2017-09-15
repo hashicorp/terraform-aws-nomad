@@ -45,7 +45,7 @@ when the EC2 Instance is first booting. If you are running Consul on the same se
 *after* Consul has booted. After running `run-nomad` on that initial boot, the `supervisord` configuration 
 will automatically restart Nomad if it crashes or the EC2 instance reboots.
 
-See the [nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster example) and 
+See the [nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/MAIN.md) and 
 [nomad-consul-separate-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster example) for fully-working sample code.
 
 

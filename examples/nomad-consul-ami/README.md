@@ -12,7 +12,7 @@ These AMIs will have [Consul](https://www.consul.io/) and [Nomad](https://www.no
 configured to automatically join a cluster during boot-up.
 
 To see how to deploy this AMI, check out the [nomad-consul-colocated-cluster 
-example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster). For more info on Nomad installation and configuration, check out 
+example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/MAIN.md). For more info on Nomad installation and configuration, check out 
 the [install-nomad](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) documentation.
 
 
@@ -31,7 +31,7 @@ To build the Nomad and Consul AMI:
 1. Run `packer build nomad.json`.
 
 When the build finishes, it will output the IDs of the new AMIs. To see how to deploy one of these AMIs, check out the 
-[nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster).
+[nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/MAIN.md).
 
 
 
