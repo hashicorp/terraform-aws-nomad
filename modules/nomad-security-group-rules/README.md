@@ -3,7 +3,7 @@
 This folder contains a [Terraform](https://www.terraform.io/) module that defines the security group rules used by a 
 [Nomad](https://www.nomadproject.io/) cluster to control the traffic that is allowed to go in and out of the cluster. 
 
-Normally, you'd get these rules by default if you're using the [nomad-cluster module](/examples/nomad-cluster), but if 
+Normally, you'd get these rules by default if you're using the [nomad-cluster module](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-cluster), but if 
 you're running Nomad on top of a different cluster, then you can use this module to add the necessary security group 
 rules that that cluster. For example, imagine you were using the [consul-cluster 
 module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/consul-cluster) to run a cluster of 
@@ -45,5 +45,5 @@ Note the following parameters:
   
 You can find the other parameters in [vars.tf](vars.tf).
 
-Check out the [nomad-consul-colocated-cluster example](/examples/nomad-consul-colocated-cluster) for working
+Check out the [nomad-consul-colocated-cluster example](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster) for working
 sample code.
