@@ -22,7 +22,7 @@ To install Nomad, use `git` to clone this repository at a specific tag (see the 
 for all available tags) and run the `install-nomad` script:
 
 ```
-git clone --branch <VERSION> https://github.com/gruntwork-io/terraform-aws-nomad.git
+git clone --branch <VERSION> https://github.com/hashicorp/terraform-aws-nomad.git
 terraform-aws-nomad/modules/install-nomad/install-nomad --version 0.5.4
 ```
 
@@ -110,5 +110,5 @@ After the `install-nomad` script finishes running, you may wish to do the follow
 
 We needed an easy way to install these scripts that satisfied a number of requirements, including working on a variety 
 of operating systems and supported versioning. Our current solution is to use `git`, but this may change in the future.
-See [Package Managers](https://github.com/gruntwork-io/consul-aws-module/blob/master/_docs/package-managers.md) for 
+See [Package Managers](https://github.com/hashicorp/terraform-aws-consul/blob/master/_docs/package-managers.md) for 
 a full discussion of the requirements, trade-offs, and why we picked `git`.

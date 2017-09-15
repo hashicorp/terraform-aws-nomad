@@ -65,7 +65,7 @@ data "aws_ami" "nomad_consul" {
 module "nomad_servers" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
-  # source = "git::git@github.com:gruntwork-io/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.0.1"
+  # source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.0.1"
   source = "../../modules/nomad-cluster"
 
   cluster_name  = "${var.nomad_cluster_name}-server"
@@ -96,7 +96,7 @@ module "nomad_servers" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_iam_policies_servers" {
-  source = "git::git@github.com:gruntwork-io/consul-aws-module.git//modules/consul-iam-policies?ref=v0.0.5"
+  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.0.5"
 
   iam_role_id = "${module.nomad_servers.iam_role_id}"
 }
@@ -121,7 +121,7 @@ data "template_file" "user_data_nomad_server" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_servers" {
-  source = "git::git@github.com:gruntwork-io/consul-aws-module.git//modules/consul-cluster?ref=v0.0.5"
+  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-cluster?ref=v0.0.5"
 
   cluster_name  = "${var.consul_cluster_name}-server"
   cluster_size  = "${var.num_consul_servers}"
@@ -165,7 +165,7 @@ data "template_file" "user_data_consul_server" {
 module "nomad_clients" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
-  # source = "git::git@github.com:gruntwork-io/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.0.1"
+  # source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.0.1"
   source = "../../modules/nomad-cluster"
 
   cluster_name  = "${var.nomad_cluster_name}-client"
@@ -197,7 +197,7 @@ module "nomad_clients" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_iam_policies_clients" {
-  source = "git::git@github.com:gruntwork-io/consul-aws-module.git//modules/consul-iam-policies?ref=v0.0.5"
+  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.0.5"
 
   iam_role_id = "${module.nomad_clients.iam_role_id}"
 }

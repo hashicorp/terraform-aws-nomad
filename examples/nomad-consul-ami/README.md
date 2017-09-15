@@ -1,7 +1,7 @@
 # Nomad and Consul AMI
 
 This folder shows an example of how to use the [install-nomad module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) from this Module and 
-the [install-consul module](https://github.com/gruntwork-io/consul-aws-module/tree/master/modules/install-consul)
+the [install-consul module](https://github.com/hashicorp/terraform-aws-consul/tree/master/modules/install-consul)
 from the Consul AWS Module with [Packer](https://www.packer.io/) to create [Amazon Machine Images 
 (AMIs)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) that have Nomad and Consul installed on top of:
  
@@ -65,7 +65,7 @@ Your code should look more like this:
   "provisioners": [{
     "type": "shell",
     "inline": [
-      "git clone --branch <module_VERSION> https://github.com/gruntwork-io/terraform-aws-nomad.git /tmp/terraform-aws-nomad",
+      "git clone --branch <module_VERSION> https://github.com/hashicorp/terraform-aws-nomad.git /tmp/terraform-aws-nomad",
       "/tmp/terraform-aws-nomad/modules/install-nomad/install-nomad --version {{user `nomad_version`}}"
     ],
     "pause_before": "30s"

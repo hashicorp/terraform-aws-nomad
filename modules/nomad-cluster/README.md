@@ -20,7 +20,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 module "nomad_cluster" {
   # TODO: update this to the final URL
   # Use version v0.0.1 of the nomad-cluster module
-  source = "github.com/gruntwork-io/terraform-aws-nomad//modules/nomad-cluster?ref=v0.0.1"
+  source = "github.com/hashicorp/terraform-aws-nomad//modules/nomad-cluster?ref=v0.0.1"
 
   # Specify the ID of the Nomad AMI. You should build this using the scripts in the install-nomad module.
   ami_id = "ami-abcd1234"

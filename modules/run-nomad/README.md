@@ -204,7 +204,7 @@ tls {
 Note that Nomad relies on Consul, and enabling encryption for Consul requires a separate process. Check out the
 [official Consul encryption docs](https://www.consul.io/docs/agent/encryption.html) and the Consul AWS Module
 [How do you handle encryption
-docs](https://github.com/gruntwork-io/consul-aws-module/tree/master/modules/run-consul#how-do-you-handle-encryption)
+docs](https://github.com/hashicorp/terraform-aws-consul/tree/master/modules/run-consul#how-do-you-handle-encryption)
 for more info.
 
 
