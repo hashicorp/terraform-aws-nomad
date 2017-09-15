@@ -3,7 +3,7 @@
 This folder contains a [Terraform](https://www.terraform.io/) module that can be used to deploy a 
 [Nomad](https://www.nomadproject.io/) cluster in [AWS](https://aws.amazon.com/) on top of an Auto Scaling Group. This 
 module is designed to deploy an [Amazon Machine Image (AMI)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) 
-that had Nomad installed via the [install-nomad](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) module in this Blueprint.
+that had Nomad installed via the [install-nomad](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) module in this Module.
 
 Note that this module assumes you have a separate [Consul](https://www.consul.io/) cluster already running. If you want
 to run Consul and Nomad in the same cluster, instead of using this module, see the [Deploy Nomad and Consul in the same 
@@ -20,7 +20,7 @@ code by adding a `module` configuration and setting its `source` parameter to UR
 module "nomad_cluster" {
   # TODO: update this to the final URL
   # Use version v0.0.1 of the nomad-cluster module
-  source = "github.com/gruntwork-io/nomad-aws-blueprint//modules/nomad-cluster?ref=v0.0.1"
+  source = "github.com/hashicorp/terraform-aws-nomad//modules/nomad-cluster?ref=v0.0.1"
 
   # Specify the ID of the Nomad AMI. You should build this using the scripts in the install-nomad module.
   ami_id = "ami-abcd1234"

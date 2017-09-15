@@ -155,7 +155,7 @@ at all using the `--skip-nomad-config` flag:
 
 Nomad can encrypt all of its network traffic (see the [encryption docs for 
 details](https://www.nomadproject.io/docs/agent/encryption.html)), but by default, encryption is not enabled in this 
-Blueprint. To enable encryption, you need to do the following:
+Module. To enable encryption, you need to do the following:
 
 1. [Gossip encryption: provide an encryption key](#gossip-encryption-provide-an-encryption-key)
 1. [RPC encryption: provide TLS certificates](#rpc-encryption-provide-tls-certificates)
@@ -202,9 +202,9 @@ tls {
 ### Consul encryption
 
 Note that Nomad relies on Consul, and enabling encryption for Consul requires a separate process. Check out the
-[official Consul encryption docs](https://www.consul.io/docs/agent/encryption.html) and the Consul AWS Blueprint
+[official Consul encryption docs](https://www.consul.io/docs/agent/encryption.html) and the Consul AWS Module
 [How do you handle encryption
-docs](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/run-consul#how-do-you-handle-encryption)
+docs](https://github.com/hashicorp/terraform-aws-consul/tree/master/modules/run-consul#how-do-you-handle-encryption)
 for more info.
 
 

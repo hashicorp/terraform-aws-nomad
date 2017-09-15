@@ -9,7 +9,7 @@
 #
 # We also deploy one ASG for Consul which has a small number of Consul server nodes. Note that these templates assume
 # that the AMI you provide via the consul_ami_id input variable is built from the examples/consul-ami/consul.json
-# Packer template in the Consul AWS Blueprint.
+# Packer template in the Consul AWS Module.
 # ---------------------------------------------------------------------------------------------------------------------
 
 provider "aws" {
@@ -65,7 +65,7 @@ data "aws_ami" "nomad_consul" {
 module "nomad_servers" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
-  # source = "git::git@github.com:gruntwork-io/nomad-aws-blueprint.git//modules/nomad-cluster?ref=v0.0.1"
+  # source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.0.1"
   source = "../../modules/nomad-cluster"
 
   cluster_name  = "${var.nomad_cluster_name}-server"
@@ -92,11 +92,11 @@ module "nomad_servers" {
 # ---------------------------------------------------------------------------------------------------------------------
 # ATTACH IAM POLICIES FOR CONSUL
 # To allow our server Nodes to automatically discover the Consul servers, we need to give them the IAM permissions from
-# the Consul AWS Blueprint's consul-iam-policies module.
+# the Consul AWS Module's consul-iam-policies module.
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_iam_policies_servers" {
-  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-iam-policies?ref=v0.0.5"
+  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.0.5"
 
   iam_role_id = "${module.nomad_servers.iam_role_id}"
 }
@@ -121,7 +121,7 @@ data "template_file" "user_data_nomad_server" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_servers" {
-  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-cluster?ref=v0.0.5"
+  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-cluster?ref=v0.0.5"
 
   cluster_name  = "${var.consul_cluster_name}-server"
   cluster_size  = "${var.num_consul_servers}"
@@ -165,7 +165,7 @@ data "template_file" "user_data_consul_server" {
 module "nomad_clients" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
-  # source = "git::git@github.com:gruntwork-io/nomad-aws-blueprint.git//modules/nomad-cluster?ref=v0.0.1"
+  # source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.0.1"
   source = "../../modules/nomad-cluster"
 
   cluster_name  = "${var.nomad_cluster_name}-client"
@@ -193,11 +193,11 @@ module "nomad_clients" {
 # ---------------------------------------------------------------------------------------------------------------------
 # ATTACH IAM POLICIES FOR CONSUL
 # To allow our client Nodes to automatically discover the Consul servers, we need to give them the IAM permissions from
-# the Consul AWS Blueprint's consul-iam-policies module.
+# the Consul AWS Module's consul-iam-policies module.
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_iam_policies_clients" {
-  source = "git::git@github.com:gruntwork-io/consul-aws-blueprint.git//modules/consul-iam-policies?ref=v0.0.5"
+  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.0.5"
 
   iam_role_id = "${module.nomad_clients.iam_role_id}"
 }

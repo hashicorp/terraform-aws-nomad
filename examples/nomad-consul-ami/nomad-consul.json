@@ -3,7 +3,7 @@
   "variables": {
     "aws_region": "us-east-1",
     "nomad_version": "0.5.5",
-    "consul_blueprint_version": "v0.0.5",
+    "consul_module_version": "v0.0.5",
     "consul_version": "0.8.0",
     "github_oauth_token": "{{env `GITHUB_OAUTH_TOKEN`}}"
   },
@@ -48,13 +48,13 @@
   }],
   "provisioners": [{
     "type": "file",
-    "source": "{{template_dir}}/../../../nomad-aws-blueprint",
+    "source": "{{template_dir}}/../../../terraform-aws-nomad",
     "destination": "/tmp",
     "pause_before": "30s"
   },{
     "type": "shell",
     "inline": [
-      "/tmp/nomad-aws-blueprint/modules/install-nomad/install-nomad --version {{user `nomad_version`}}"
+      "/tmp/terraform-aws-nomad/modules/install-nomad/install-nomad --version {{user `nomad_version`}}"
     ]
   },{
     "type": "shell",
@@ -71,8 +71,8 @@
   },{
     "type": "shell",
     "inline": [
-      "git clone --branch {{user `consul_blueprint_version`}} https://{{user `github_oauth_token`}}@github.com/gruntwork-io/consul-aws-blueprint.git /tmp/consul-aws-blueprint",
-      "/tmp/consul-aws-blueprint/modules/install-consul/install-consul --version {{user `consul_version`}}"
+      "git clone --branch {{user `consul_module_version`}} https://{{user `github_oauth_token`}}@github.com/hashicorp/terraform-aws-consul.git /tmp/consul-aws-module",
+      "/tmp/consul-aws-module/modules/install-consul/install-consul --version {{user `consul_version`}}"
     ]
   }]
 }

@@ -1,6 +1,6 @@
 # ubuntu16-ami: Latest Public AMIs
 
-**WARNING! Do NOT use these AMIs in a production setting.** The AMIs are meant only to make initial experiments with this blueprint more convenient.
+**WARNING! Do NOT use these AMIs in a production setting.** The AMIs are meant only to make initial experiments with this module more convenient.
 
 | AWS Region | AMI ID |
 | ---------- | ------ |
