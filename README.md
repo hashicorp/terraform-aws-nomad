@@ -56,6 +56,8 @@ Gruntwork can help with:
 
 Each Module has the following folder structure:
 
+* [root](https://github.com/hashicorp/terraform-aws-nomad/tree/master): This folder shows an example of Terraform code to deploy a [Nomad](https://www.nomadproject.io/) cluster co-located 
+            with a [Consul](https://www.consul.io/) cluster in [AWS](https://aws.amazon.com/)
 * [modules](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules): This folder contains the reusable code for this Module, broken down into one or more modules.
 * [examples](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples): This folder contains examples of how to use the modules.
 * [test](https://github.com/hashicorp/terraform-aws-nomad/tree/master/test): Automated tests for the modules and examples.
