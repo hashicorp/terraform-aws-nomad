@@ -7,7 +7,7 @@ that had Nomad installed via the [install-nomad](https://raw.githubusercontent.c
 
 Note that this module assumes you have a separate [Consul](https://www.consul.io/) cluster already running. If you want
 to run Consul and Nomad in the same cluster, instead of using this module, see the [Deploy Nomad and Consul in the same 
-cluster documentation](/README.md#deploy-nomad-and-consul-in-the-same-cluster).
+cluster documentation](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/README.md#deploy-nomad-and-consul-in-the-same-cluster).
 
 
 
@@ -309,7 +309,7 @@ This module does NOT handle the following items, which you may want to provide o
 
 This module assumes you already have Consul deployed in a separate cluster. If you want to run Nomad and Consul on the
 same cluster, instead of using this module, see the [Deploy Nomad and Consul in the same cluster 
-documentation](/README.md#deploy-nomad-and-consul-in-the-same-cluster).
+documentation](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/README.md#deploy-nomad-and-consul-in-the-same-cluster).
 
 
 ### Monitoring, alerting, log aggregation

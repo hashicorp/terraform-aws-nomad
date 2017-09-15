@@ -122,7 +122,7 @@ sample code.
 
 ## How do I contribute to this Blueprint?
 
-Contributions are very welcome! Check out the [Contribution Guidelines](/CONTRIBUTING.md) for instructions.
+Contributions are very welcome! Check out the [Contribution Guidelines](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/CONTRIBUTING.md) for instructions.
 
 
 
@@ -139,5 +139,5 @@ MINOR, and PATCH versions on each release to indicate any incompatibilities.
 
 ## License
 
-This code is released under the Apache 2.0 License. Please see [LICENSE](/LICENSE) and [NOTICE](/NOTICE) for more details.
+This code is released under the Apache 2.0 License. Please see [LICENSE](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/LICENSE) and [NOTICE](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/NOTICE) for more details.
 
