@@ -1,6 +1,6 @@
 # Nomad and Consul AMI
 
-This folder shows an example of how to use the [install-nomad module](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) from this Blueprint and 
+This folder shows an example of how to use the [install-nomad module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) from this Blueprint and 
 the [install-consul module](https://github.com/gruntwork-io/consul-aws-blueprint/tree/master/modules/install-consul)
 from the Consul AWS Blueprint with [Packer](https://www.packer.io/) to create [Amazon Machine Images 
 (AMIs)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) that have Nomad and Consul installed on top of:
@@ -12,8 +12,8 @@ These AMIs will have [Consul](https://www.consul.io/) and [Nomad](https://www.no
 configured to automatically join a cluster during boot-up.
 
 To see how to deploy this AMI, check out the [nomad-consul-colocated-cluster 
-example](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster). For more info on Nomad installation and configuration, check out 
-the [install-nomad](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) documentation.
+example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster). For more info on Nomad installation and configuration, check out 
+the [install-nomad](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) documentation.
 
 
 
@@ -31,7 +31,7 @@ To build the Nomad and Consul AMI:
 1. Run `packer build nomad.json`.
 
 When the build finishes, it will output the IDs of the new AMIs. To see how to deploy one of these AMIs, check out the 
-[nomad-consul-colocated-cluster example](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster).
+[nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster).
 
 
 

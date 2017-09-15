@@ -1,9 +1,9 @@
 # Nomad Install Script
 
 This folder contains a script for installing Nomad and its dependencies. You can use this script, along with the
-[run-nomad script](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad) it installs to create a Nomad [Amazon Machine Image 
+[run-nomad script](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad) it installs to create a Nomad [Amazon Machine Image 
 (AMI)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) that can be deployed in 
-[AWS](https://aws.amazon.com/) across an Auto Scaling Group using the [nomad-cluster module](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/modules/nomad-cluster).
+[AWS](https://aws.amazon.com/) across an Auto Scaling Group using the [nomad-cluster module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/nomad-cluster).
 
 This script has been tested on the following operating systems:
 
@@ -26,16 +26,16 @@ git clone --branch <VERSION> https://github.com/gruntwork-io/nomad-aws-blueprint
 nomad-aws-blueprint/modules/install-nomad/install-nomad --version 0.5.4
 ```
 
-The `install-nomad` script will install Nomad, its dependencies, and the [run-nomad script](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad).
+The `install-nomad` script will install Nomad, its dependencies, and the [run-nomad script](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad).
 You can then run the `run-nomad` script when the server is booting to start Nomad and configure it to automatically 
 join other nodes to form a cluster.
 
 We recommend running the `install-nomad` script as part of a [Packer](https://www.packer.io/) template to create a
 Nomad [Amazon Machine Image (AMI)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) (see the 
-[nomad-consul-ami example](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-ami) for sample code). You can then deploy the AMI across an Auto 
-Scaling Group using the [nomad-cluster module](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/modules/nomad-cluster) (see the 
-[nomad-consul-colocated-cluster](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster) and
-[nomad-consul-separate-cluster](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster) examples for fully-working sample code).
+[nomad-consul-ami example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-ami) for sample code). You can then deploy the AMI across an Auto 
+Scaling Group using the [nomad-cluster module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/nomad-cluster) (see the 
+[nomad-consul-colocated-cluster](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster) and
+[nomad-consul-separate-cluster](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster) examples for fully-working sample code).
 
 
 
@@ -84,7 +84,7 @@ Install the following:
 * `nomad`: Download the Nomad zip file from the [downloads page](https://www.nomadproject.io/downloads.html) (the 
   version number is configurable via the `--version` argument), and extract the `nomad` binary into 
   `/opt/nomad/bin`. Add a symlink to the `nomad` binary in `/usr/local/bin`.
-* `run-nomad`: Copy the [run-nomad script](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad) into `/opt/nomad/bin`. 
+* `run-nomad`: Copy the [run-nomad script](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad) into `/opt/nomad/bin`. 
 
 
 ### Install supervisord

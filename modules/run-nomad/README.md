@@ -14,7 +14,7 @@ There is a good chance it will work on other flavors of Debian, CentOS, and RHEL
 ## Quick start
 
 This script assumes you installed it, plus all of its dependencies (including Nomad itself), using the [install-nomad 
-module](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad). The default install path is `/opt/nomad/bin`, so to start Nomad in server mode, you 
+module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad). The default install path is `/opt/nomad/bin`, so to start Nomad in server mode, you 
 run:
 
 ```
@@ -45,8 +45,8 @@ when the EC2 Instance is first booting. If you are running Consul on the same se
 *after* Consul has booted. After running `run-nomad` on that initial boot, the `supervisord` configuration 
 will automatically restart Nomad if it crashes or the EC2 instance reboots.
 
-See the [nomad-consul-colocated-cluster example](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster example) and 
-[nomad-consul-separate-cluster example](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster example) for fully-working sample code.
+See the [nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-colocated-cluster example) and 
+[nomad-consul-separate-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster example) for fully-working sample code.
 
 
 
