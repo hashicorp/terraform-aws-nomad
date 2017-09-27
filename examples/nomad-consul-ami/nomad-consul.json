@@ -46,16 +46,6 @@
     "ssh_username": "ec2-user"
   }],
   "provisioners": [{
-    "type": "file",
-    "source": "{{template_dir}}/../../../terraform-aws-nomad",
-    "destination": "/tmp",
-    "pause_before": "30s"
-  },{
-    "type": "shell",
-    "inline": [
-      "/tmp/terraform-aws-nomad/modules/install-nomad/install-nomad --version {{user `nomad_version`}}"
-    ]
-  },{
     "type": "shell",
     "inline": [
       "sudo apt-get install -y git"
@@ -68,10 +58,19 @@
     ],
     "only": ["amazon-linux-ami"]
   },{
-    "type": "shell",
-    "inline": [
-      "git clone --branch {{user `consul_module_version`}} https://github.com/hashicorp/terraform-aws-consul.git /tmp/terraform-aws-consul",
-      "/tmp/terraform-aws-consul/modules/install-consul/install-consul --version {{user `consul_version`}}"
-    ]
+    "type": "file",
+    "source": "{{template_dir}}/../../../terraform-aws-nomad",
+    "destination": "/tmp",
+    "pause_before": "30s"
+  },{
+    "type": "file",
+     "source": "setup_nomad_consul.sh",
+     "destination": "/tmp/"
+  },{
+     "type": "shell",
+     "environment_vars": [ "NOMAD_VERSION={{user `nomad_version`}}",
+                           "CONSUL_VERSION={{user `consul_version`}}",
+                           "CONSUL_MODULE_VERSION={{user `consul_module_version`}}"],
+    "inline": [ "/tmp/setup_nomad_consul.sh" ]
   }]
 }
