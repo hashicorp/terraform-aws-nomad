@@ -9,8 +9,8 @@
   },
   "builders": [
     {
-      "ami_name": "nomad-consul-ubuntu-{{isotime | clean_ami_name}}",
-      "ami_description": "An Ubuntu 16.04 AMI that has Nomad and Consul installed.",
+      "ami_name": "nomad-consul-docker-ubuntu-{{isotime | clean_ami_name}}",
+      "ami_description": "An Ubuntu 16.04 AMI that has Nomad, Consul and Docker installed.",
       "instance_type": "t2.micro",
       "name": "ubuntu16-ami",
       "region": "{{user `aws_region`}}",
@@ -32,8 +32,8 @@
       "ssh_username": "ubuntu"
     },
     {
-      "ami_name": "nomad-consul-amazon-linux-{{isotime | clean_ami_name}}",
-      "ami_description": "An Amazon Linux AMI that has Nomad and Consul installed.",
+      "ami_name": "nomad-consul-docker-amazon-linux-{{isotime | clean_ami_name}}",
+      "ami_description": "An Amazon Linux AMI that has Nomad, Consul and Docker installed.",
       "instance_type": "t2.micro",
       "name": "amazon-linux-ami",
       "region": "{{user `aws_region`}}",
