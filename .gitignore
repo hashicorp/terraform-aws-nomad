@@ -1,8 +1,9 @@
 # Terraform files
 .terraform
 terraform.tfstate
-terraform.tfvars
 *.tfstate*
+*.plan
+*.tfvars
 
 # OS X files
 .history
@@ -20,5 +21,3 @@ out/
 
 # Go best practices dictate that libraries should not include the vendor directory
 vendor
-*.plan
-*.tfvars
