@@ -57,49 +57,23 @@
   ],
   "provisioners": [
     {
-      "type": "file",
-      "source": "setup_ubuntu16.sh",
-      "destination": "/tmp/",
+      "type": "shell",
+      "script": "setup_ubuntu16.sh",
       "only": [
         "ubuntu16-ami"
       ]
     },
     {
       "type": "shell",
-      "inline": [
-        "/tmp/setup_ubuntu16.sh"
-      ],
-      "only": [
-        "ubuntu16-ami"
-      ]
-    },
-    {
-      "type": "file",
-      "source": "setup_amazon-linux.sh",
-      "destination": "/tmp/",
+      "script": "setup_amazon-linux.sh",
       "only": [
         "amazon-linux-ami"
       ]
     },
     {
-      "type": "shell",
-      "inline": [
-        "/tmp/setup_amazon-linux.sh"
-      ],
-      "only": [
-        "amazon-linux-ami"
-      ]
-    },
-    {
-      "type": "file",
-      "source": "setup_ecr_helper.sh",
-      "destination": "/tmp/"
-    },
-    {
-      "type": "shell",
-      "inline": [
-        "/tmp/setup_ecr_helper.sh"
-      ]
+        "type": "shell",
+        "script": "setup_ecr_helper.sh"
+
     },
     {
       "type": "file",
@@ -108,20 +82,13 @@
       "pause_before": "30s"
     },
     {
-      "type": "file",
-      "source": "setup_nomad_consul.sh",
-      "destination": "/tmp/"
-    },
-    {
       "type": "shell",
       "environment_vars": [
         "NOMAD_VERSION={{user `nomad_version`}}",
         "CONSUL_VERSION={{user `consul_version`}}",
         "CONSUL_MODULE_VERSION={{user `consul_module_version`}}"
       ],
-      "inline": [
-        "/tmp/setup_nomad_consul.sh"
-      ]
+      "script": "setup_nomad_consul.sh"
     },
     {
       "type": "file",
