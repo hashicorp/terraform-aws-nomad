@@ -100,34 +100,12 @@
     {
       "type": "file",
       "source": "aws_credentials",
-      "destination": "/home/ubuntu/.aws/credentials",
-      "only": [
-        "ubuntu16-ami"
-      ]
-    },
-    {
-      "type": "file",
-      "source": "aws_credentials",
-      "destination": "/home/ec2-user/.aws/credentials",
-      "only": [
-        "amazon-linux-ami"
-      ]
+      "destination": "$HOME/.aws/credentials"
     },
     {
       "type": "file",
       "source": "docker_config.json",
-      "destination": "/home/ubuntu/.docker/config.json",
-      "only": [
-        "ubuntu16-ami"
-      ]
-    },
-    {
-      "type": "file",
-      "source": "docker_config.json",
-      "destination": "/home/ec2-user/.docker/config.json",
-      "only": [
-        "amazon-linux-ami"
-      ]
+      "destination": "$HOME/.docker/config.json"
     }
   ]
 }
