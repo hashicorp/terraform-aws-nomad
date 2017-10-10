@@ -91,6 +91,13 @@
       "script": "setup_nomad_consul.sh"
     },
     {
+      "type": "shell",
+      "inline": [
+        "mkdir -p ~/.aws/",
+        "mkdir -p ~/.docker/"
+      ]
+    },
+    {
       "type": "file",
       "source": "aws_credentials",
       "destination": "/home/ubuntu/.aws/credentials",
