@@ -33,6 +33,11 @@ variable "cluster_name" {
   default     = "nomad-example"
 }
 
+variable "instance_type" {
+   description = "What kind of instance type to use for the nomad clients"
+   default     = "t2.micro"
+}
+
 variable "num_servers" {
   description = "The number of server nodes to deploy. We strongly recommend using 3 or 5."
   default     = 3
