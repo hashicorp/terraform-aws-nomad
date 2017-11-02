@@ -127,7 +127,7 @@ module "clients" {
   source = "./modules/nomad-cluster"
 
   cluster_name  = "${var.cluster_name}-client"
-  instance_type = "t2.micro"
+  instance_type = "${var.instance_type}"
 
   # To keep the example simple, we are using a fixed-size cluster. In real-world usage, you could use auto scaling
   # policies to dynamically resize the cluster in response to load.
