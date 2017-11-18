@@ -71,11 +71,6 @@
       ]
     },
     {
-        "type": "shell",
-        "script": "setup_ecr_helper.sh"
-
-    },
-    {
       "type": "file",
       "source": "{{template_dir}}/../../../terraform-aws-nomad",
       "destination": "/tmp",
@@ -89,23 +84,6 @@
         "CONSUL_MODULE_VERSION={{user `consul_module_version`}}"
       ],
       "script": "setup_nomad_consul.sh"
-    },
-    {
-      "type": "shell",
-      "inline": [
-        "mkdir -p ~/.aws/",
-        "mkdir -p ~/.docker/"
-      ]
-    },
-    {
-      "type": "file",
-      "source": "aws_credentials",
-      "destination": "$HOME/.aws/credentials"
-    },
-    {
-      "type": "file",
-      "source": "docker_config.json",
-      "destination": "$HOME/.docker/config.json"
     }
   ]
 }

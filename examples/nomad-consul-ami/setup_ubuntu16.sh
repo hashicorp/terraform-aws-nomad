@@ -17,7 +17,3 @@ apt-cache policy docker-ce
 
 sudo apt-get install -y docker-ce
 sudo usermod -a -G docker ubuntu
-
-# Make is needed for the AWS ECR Helper - FIXME: should be removed after setup
-echo "[INFO] [${SCRIPT}] Setup make"
-sudo apt-get install make
