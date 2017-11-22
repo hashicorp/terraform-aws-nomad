@@ -77,21 +77,14 @@
       "destination": "/tmp",
       "pause_before": "30s"
     },
-    {
-      "type": "file",
-      "source": "setup_nomad_consul.sh",
-      "destination": "/tmp/"
-    },
-    {
+      {
       "type": "shell",
       "environment_vars": [
         "NOMAD_VERSION={{user `nomad_version`}}",
         "CONSUL_VERSION={{user `consul_version`}}",
         "CONSUL_MODULE_VERSION={{user `consul_module_version`}}"
       ],
-      "inline": [
-        "/tmp/setup_nomad_consul.sh"
-      ]
+      "script": "{{template_dir}}/setup_nomad_consul.sh"
     }
   ]
 }
