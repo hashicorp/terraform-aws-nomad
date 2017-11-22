@@ -55,14 +55,14 @@
   "provisioners": [
     {
       "type": "shell",
-      "script": "setup_ubuntu16.sh",
+      "script": "{{template_dir}}/setup_ubuntu16.sh",
       "only": [
         "ubuntu16-ami"
       ]
     },
     {
       "type": "shell",
-      "script": "setup_amazon-linux.sh",
+      "script": "{{template_dir}}/setup_amazon-linux.sh",
       "only": [
         "amazon-linux-ami"
       ]
@@ -80,7 +80,7 @@
         "CONSUL_VERSION={{user `consul_version`}}",
         "CONSUL_MODULE_VERSION={{user `consul_module_version`}}"
       ],
-      "script": "setup_nomad_consul.sh"
+      "script": "{{template_dir}}/setup_nomad_consul.sh"
     }
   ]
 }
