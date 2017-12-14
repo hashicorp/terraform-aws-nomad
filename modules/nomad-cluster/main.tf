@@ -46,7 +46,7 @@ resource "aws_launch_configuration" "launch_configuration" {
 
   iam_instance_profile        = "${aws_iam_instance_profile.instance_profile.name}"
   key_name                    = "${var.ssh_key_name}"
-  security_groups             = ["${aws_security_group.lc_security_group.id}"]
+  security_groups             = ["${concat(list(aws_security_group.lc_security_group.id), var.security_groups)}"]
   placement_tenancy           = "${var.tenancy}"
   associate_public_ip_address = "${var.associate_public_ip_address}"
 
