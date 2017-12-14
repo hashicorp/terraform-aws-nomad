@@ -160,3 +160,9 @@ variable "ssh_port" {
   description = "The port used for SSH connections"
   default     = 22
 }
+
+variable "security_groups" {
+  description = "Additional security groups to attach to the EC2 instances"
+  type = "list"
+  default = []
+}
