@@ -28,7 +28,7 @@ To build the Nomad and Consul AMI:
    set the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables.
 1. Update the `variables` section of the `nomad-consul.json` Packer template to configure the AWS region and Nomad version 
    you wish to use.
-1. Run `packer build nomad.json`.
+1. Run `packer build nomad-consul.json`.
 
 When the build finishes, it will output the IDs of the new AMIs. To see how to deploy one of these AMIs, check out the 
 [nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/MAIN.md).
