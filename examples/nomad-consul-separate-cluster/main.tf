@@ -13,7 +13,8 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 provider "aws" {
-  region = "${var.aws_region}"
+  profile = "${var.aws_profile}"
+  region  = "${var.aws_region}"
 }
 
 # Terraform 0.9.5 suffered from https://github.com/hashicorp/terraform/issues/14399, which causes this template the
