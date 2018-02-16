@@ -72,12 +72,6 @@
       ]
     },
     {
-      "type": "file",
-      "source": "{{template_dir}}/../../../terraform-aws-nomad",
-      "destination": "/tmp",
-      "pause_before": "30s"
-    },
-      {
       "type": "shell",
       "environment_vars": [
         "NOMAD_VERSION={{user `nomad_version`}}",
