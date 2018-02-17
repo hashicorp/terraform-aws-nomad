@@ -46,6 +46,11 @@ variable "desired_capacity" {
 # These parameters have reasonable defaults.
 # ---------------------------------------------------------------------------------------------------------------------
 
+variable "asg_name" {
+  description = "The name to use for the Auto Scaling Group"
+  default     = ""
+}
+
 variable "subnet_ids" {
   description = "The subnet IDs into which the EC2 Instances should be deployed. We recommend one subnet ID per node in the cluster_size variable. At least one of var.subnet_ids or var.availability_zones must be non-empty."
   type        = "list"
