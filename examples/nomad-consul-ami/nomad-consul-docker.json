@@ -3,7 +3,8 @@
   "variables": {
     "aws_region": "us-east-1",
     "nomad_version": "0.7.1",
-    "consul_module_version": "v0.1.0",
+    "nomad_module_version": "v0.1.0",
+    "consul_module_version": "v0.1.1",
     "consul_version": "1.0.3"
   },
   "builders": [
@@ -68,17 +69,12 @@
       ]
     },
     {
-      "type": "file",
-      "source": "{{template_dir}}/../../../terraform-aws-nomad",
-      "destination": "/tmp",
-      "pause_before": "30s"
-    },
-    {
       "type": "shell",
       "environment_vars": [
         "NOMAD_VERSION={{user `nomad_version`}}",
         "CONSUL_VERSION={{user `consul_version`}}",
-        "CONSUL_MODULE_VERSION={{user `consul_module_version`}}"
+        "CONSUL_MODULE_VERSION={{user `consul_module_version`}}",
+        "NOMAD_MODULE_VERSION={{user `nomad_module_version`}}"
       ],
       "script": "{{template_dir}}/setup_nomad_consul.sh"
     }
