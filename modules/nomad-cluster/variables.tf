@@ -172,16 +172,8 @@ variable "security_groups" {
   default = []
 }
 
-variable "cluster_extra_tags" {
-  description = "A list of additional tags to add to each Instance in the ASG. Each element in the list must be a map with the keys key, value, and propagate_at_launch"
-  type = "list"
-  #example:
-  # default = [
-  #   {
-  #     key = "Environment"
-  #     value = "Dev"
-  #     propagate_at_launch = true
-  #   }
-  # ]
-  default = []
+variable "tags" {
+  description = "List fo extra tag blocks added to the autoscaling group configuration. Each element in the list is a map containing keys 'key', 'value', and 'propagate_at_launch' mapped to the respective values."
+  type        = "list"
+  default     = []
 }
