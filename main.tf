@@ -81,6 +81,14 @@ module "servers" {
   allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
   ssh_key_name                = "${var.ssh_key_name}"
+
+  tags = [
+    {
+      key                 = "Environment"
+      value               = "development"
+      propagate_at_launch = true
+    },
+  ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -146,6 +154,14 @@ module "clients" {
   allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
   ssh_key_name                = "${var.ssh_key_name}"
+
+  tags = [
+    {
+      key                 = "Environment"
+      value               = "development"
+      propagate_at_launch = true
+    },
+  ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
