@@ -36,7 +36,7 @@ resource "aws_autoscaling_group" "autoscaling_group" {
     },
     {
       key                 = "${var.cluster_tag_key}"
-      value               = "${var.cluster_name}"
+      value               = "${var.cluster_tag_value}"
       propagate_at_launch = true
     },
     "${var.tags}",
