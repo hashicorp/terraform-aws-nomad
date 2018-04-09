@@ -7,7 +7,7 @@ output "cluster_tag_key" {
 }
 
 output "cluster_tag_value" {
-  value = "${var.cluster_name}"
+  value = "${var.cluster_tag_value}"
 }
 
 output "cluster_size" {
