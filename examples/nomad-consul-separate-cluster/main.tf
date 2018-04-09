@@ -77,10 +77,6 @@ module "nomad_servers" {
   max_size         = "${var.num_nomad_servers}"
   desired_capacity = "${var.num_nomad_servers}"
 
-  # The EC2 Instances will use these tags to automatically discover each other and form a cluster
-  cluster_tag_key   = "${var.cluster_tag_key}"
-  cluster_tag_value = "${var.consul_cluster_name}"
-
   ami_id    = "${var.ami_id == "" ? data.aws_ami.nomad_consul.image_id : var.ami_id}"
   user_data = "${data.template_file.user_data_nomad_server.rendered}"
 
