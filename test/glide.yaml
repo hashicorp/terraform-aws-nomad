@@ -1,4 +1,4 @@
-package: github.com/hashicorp/terraform-aws-consul/test
+package: github.com/hashicorp/terraform-aws-nomad/test
 owners:
 - name: Gruntwork
   homepage: http://www.gruntwork.io

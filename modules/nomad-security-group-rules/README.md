@@ -11,7 +11,7 @@ servers that have both Nomad and Consul on each node:
 
 ```hcl
 module "consul_servers" {
-  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-cluster?ref=v0.0.1"
+  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-cluster?ref=v0.3.1"
   
   # This AMI has both Nomad and Consul installed
   ami_id = "ami-1234abcd"
@@ -24,7 +24,7 @@ servers have the necessary ports open for using Nomad, you can use this module a
 
 ```hcl
 module "security_group_rules" {
-  source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-security-group-rules?ref=v0.0.1"
+  source = "github.com/hashicorp/terraform-aws-nomad//modules/nomad-security-group-rules?ref=v0.0.1"
 
   security_group_id = "${module.consul_servers.security_group_id}"
   

@@ -66,7 +66,7 @@ data "aws_ami" "nomad_consul" {
 module "nomad_servers" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
-  # source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.1.0"
+  # source = "github.com/hashicorp/terraform-aws-nomad//modules/nomad-cluster?ref=v0.1.0"
   source = "../../modules/nomad-cluster"
 
   cluster_name  = "${var.nomad_cluster_name}-server"
@@ -76,6 +76,10 @@ module "nomad_servers" {
   min_size         = "${var.num_nomad_servers}"
   max_size         = "${var.num_nomad_servers}"
   desired_capacity = "${var.num_nomad_servers}"
+
+  # The EC2 Instances will use these tags to automatically discover each other and form a cluster
+  cluster_tag_key   = "${var.cluster_tag_key}"
+  cluster_tag_value = "${var.consul_cluster_name}"
 
   ami_id    = "${var.ami_id == "" ? data.aws_ami.nomad_consul.image_id : var.ami_id}"
   user_data = "${data.template_file.user_data_nomad_server.rendered}"
@@ -98,7 +102,7 @@ module "nomad_servers" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_iam_policies_servers" {
-  source = "github.com/hashicorp/terraform-aws-consul/modules/consul-iam-policies"
+  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-iam-policies?ref=v0.3.1"
 
   iam_role_id = "${module.nomad_servers.iam_role_id}"
 }
@@ -123,7 +127,7 @@ data "template_file" "user_data_nomad_server" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_servers" {
-  source = "github.com/hashicorp/terraform-aws-consul/modules/consul-cluster"
+  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-cluster?ref=v0.3.1"
 
   cluster_name  = "${var.consul_cluster_name}-server"
   cluster_size  = "${var.num_consul_servers}"
@@ -168,16 +172,20 @@ data "template_file" "user_data_consul_server" {
 module "nomad_clients" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
-  # source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.0.1"
+  # source = "github.com/hashicorp/terraform-aws-nomad//modules/nomad-cluster?ref=v0.0.1"
   source = "../../modules/nomad-cluster"
 
   cluster_name  = "${var.nomad_cluster_name}-client"
   instance_type = "t2.micro"
 
+  # Give the clients a different tag so they don't try to join the server cluster
+  cluster_tag_key   = "nomad-clients"
+  cluster_tag_value = "${var.nomad_cluster_name}"
+
   # To keep the example simple, we are using a fixed-size cluster. In real-world usage, you could use auto scaling
   # policies to dynamically resize the cluster in response to load.
-  min_size = "${var.num_nomad_clients}"
 
+  min_size         = "${var.num_nomad_clients}"
   max_size         = "${var.num_nomad_clients}"
   desired_capacity = "${var.num_nomad_clients}"
 
@@ -202,7 +210,7 @@ module "nomad_clients" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_iam_policies_clients" {
-  source = "github.com/hashicorp/terraform-aws-consul/modules/consul-iam-policies"
+  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-iam-policies?ref=v0.3.1"
 
   iam_role_id = "${module.nomad_clients.iam_role_id}"
 }
