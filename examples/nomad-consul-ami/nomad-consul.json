@@ -3,7 +3,7 @@
   "variables": {
     "aws_region": "us-east-1",
     "nomad_version": "0.7.1",
-    "consul_module_version": "v0.1.0",
+    "consul_module_version": "v0.3.1",
     "consul_version": "1.0.3"
   },
   "builders": [

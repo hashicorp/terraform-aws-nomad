@@ -60,7 +60,7 @@ data "aws_ami" "nomad_consul" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "servers" {
-  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-cluster?ref=v0.1.0"
+  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-cluster?ref=v0.3.1"
 
   cluster_name  = "${var.cluster_name}-server"
   cluster_size  = "${var.num_servers}"
@@ -100,7 +100,7 @@ module "servers" {
 module "nomad_security_group_rules" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
-  # source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-security-group-rules?ref=v0.0.1"
+  # source = "github.com/hashicorp/terraform-aws-nomad//modules/nomad-security-group-rules?ref=v0.0.1"
   source = "./modules/nomad-security-group-rules"
 
   # To make testing easier, we allow requests from any IP address here but in a production deployment, we strongly
@@ -131,15 +131,15 @@ data "template_file" "user_data_server" {
 module "clients" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
-  # source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.0.1"
+  # source = "github.com/hashicorp/terraform-aws-nomad//modules/nomad-cluster?ref=v0.0.1"
   source = "./modules/nomad-cluster"
 
   cluster_name  = "${var.cluster_name}-client"
   instance_type = "${var.instance_type}"
 
-  # The EC2 Instances will use these tags to automatically discover the servers
-  cluster_tag_key   = "${var.cluster_tag_key}"
-  cluster_tag_value = "${var.cluster_tag_value}"
+  # Give the clients a different tag so they don't try to join the server cluster
+  cluster_tag_key   = "nomad-clients"
+  cluster_tag_value = "${var.cluster_name}"
 
   # To keep the example simple, we are using a fixed-size cluster. In real-world usage, you could use auto scaling
   # policies to dynamically resize the cluster in response to load.
@@ -175,7 +175,7 @@ module "clients" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_iam_policies" {
-  source = "git::git@github.com:hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.1.0"
+  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-iam-policies?ref=v0.3.1"
 
   iam_role_id = "${module.clients.iam_role_id}"
 }
