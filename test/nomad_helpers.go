@@ -1,18 +1,18 @@
 package test
 
 import (
-	"github.com/gruntwork-io/terratest"
 	"testing"
-	"os"
-	terralog "github.com/gruntwork-io/terratest/log"
-	"log"
-	"github.com/gruntwork-io/terratest/util"
 	"time"
 	"fmt"
-	"path/filepath"
 	"net/http"
 	"io/ioutil"
 	"encoding/json"
+	"github.com/gruntwork-io/terratest/modules/test-structure"
+	"github.com/gruntwork-io/terratest/modules/aws"
+	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/gruntwork-io/terratest/modules/random"
+	"github.com/gruntwork-io/terratest/modules/retry"
+	"github.com/gruntwork-io/terratest/modules/logger"
 )
 
 const REPO_ROOT = "../"
@@ -39,6 +39,8 @@ const DEFAULT_NUM_CLIENTS = 6
 
 const AMI_EXAMPLE_PATH = "../examples/nomad-consul-ami/nomad-consul.json"
 
+const SAVED_AWS_REGION = "AwsRegion"
+
 // Test the Nomad/Consul colocated cluster example by:
 //
 // 1. Copying the code in this repo to a temp folder so tests on the Terraform code can run in parallel without the
@@ -46,27 +48,53 @@ const AMI_EXAMPLE_PATH = "../examples/nomad-consul-ami/nomad-consul.json"
 // 2. Building the AMI in the nomad-consul-ami example with the given build name
 // 3. Deploying that AMI using the example Terraform code
 // 4. Checking that the Nomad cluster comes up within a reasonable time period and can respond to requests
-func runNomadClusterColocatedTest(t *testing.T, testName string, packerBuildName string) {
-	rootTempPath := copyRepoToTempFolder(t, REPO_ROOT)
-	defer os.RemoveAll(rootTempPath)
+func runNomadClusterColocatedTest(t *testing.T, packerBuildName string) {
+	examplesDir := test_structure.CopyTerraformFolderToTemp(t, REPO_ROOT, CLUSTER_COLOCATED_EXAMPLE_PATH)
 
-	resourceCollection := createBaseRandomResourceCollection(t)
-	terratestOptions := createBaseTerratestOptions(t, testName, filepath.Join(rootTempPath, CLUSTER_COLOCATED_EXAMPLE_PATH), resourceCollection)
-	defer terratest.Destroy(terratestOptions, resourceCollection)
+	defer test_structure.RunTestStage(t, "teardown", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, examplesDir)
+		terraform.Destroy(t, terraformOptions)
 
-	logger := terralog.NewLogger(testName)
-	amiId := buildAmi(t, AMI_EXAMPLE_PATH, packerBuildName, resourceCollection, logger)
+		amiId := test_structure.LoadAmiId(t, examplesDir)
+		awsRegion := test_structure.LoadString(t, examplesDir, SAVED_AWS_REGION)
+		aws.DeleteAmi(t, awsRegion, amiId)
+	})
 
-	terratestOptions.Vars = map[string]interface{} {
-		VAR_AWS_REGION: resourceCollection.AwsRegion,
-		CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_NAME: "test-" + resourceCollection.UniqueId,
-		CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_SERVERS: DEFAULT_NUM_SERVERS,
-		CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_CLIENTS: DEFAULT_NUM_CLIENTS,
-		VAR_AMI_ID: amiId,
-	}
+	test_structure.RunTestStage(t, "setup_ami", func() {
+		awsRegion := aws.GetRandomRegion(t, nil, nil)
+		amiId := buildAmi(t, AMI_EXAMPLE_PATH, packerBuildName, awsRegion)
 
-	deploy(t, terratestOptions)
-	checkNomadClusterIsWorking(t, CLUSTER_COLOCATED_EXAMPLE_OUTPUT_SERVER_ASG_NAME, terratestOptions, resourceCollection, logger)
+		test_structure.SaveAmiId(t, examplesDir, amiId)
+		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
+	})
+
+	test_structure.RunTestStage(t, "deploy", func() {
+		amiId := test_structure.LoadAmiId(t, examplesDir)
+		awsRegion := test_structure.LoadString(t, examplesDir, SAVED_AWS_REGION)
+		uniqueId := random.UniqueId()
+
+		terraformOptions := &terraform.Options{
+			TerraformDir: examplesDir,
+			Vars: map[string]interface{}{
+				VAR_AWS_REGION:                             awsRegion,
+				CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_NAME: fmt.Sprintf("test-%s", uniqueId),
+				CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_SERVERS:  DEFAULT_NUM_SERVERS,
+				CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_CLIENTS:  DEFAULT_NUM_CLIENTS,
+				VAR_AMI_ID:                                 amiId,
+			},
+		}
+
+		terraform.InitAndApply(t, terraformOptions)
+
+		test_structure.SaveTerraformOptions(t, examplesDir, terraformOptions)
+	})
+
+	test_structure.RunTestStage(t, "validate", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, examplesDir)
+		awsRegion := test_structure.LoadString(t, examplesDir, SAVED_AWS_REGION)
+
+		checkNomadClusterIsWorking(t, CLUSTER_COLOCATED_EXAMPLE_OUTPUT_SERVER_ASG_NAME, terraformOptions, awsRegion)
+	})
 }
 
 // Test the Nomad/Consul separate clusters example by:
@@ -76,40 +104,61 @@ func runNomadClusterColocatedTest(t *testing.T, testName string, packerBuildName
 // 2. Building the AMI in the nomad-consul-ami example with the given build name
 // 3. Deploying that AMI using the example Terraform code
 // 4. Checking that the Nomad cluster comes up within a reasonable time period and can respond to requests
-func runNomadClusterSeparateTest(t *testing.T, testName string, packerBuildName string) {
-	rootTempPath := copyRepoToTempFolder(t, REPO_ROOT)
-	defer os.RemoveAll(rootTempPath)
+func runNomadClusterSeparateTest(t *testing.T, packerBuildName string) {
+	examplesDir := test_structure.CopyTerraformFolderToTemp(t, REPO_ROOT, CLUSTER_SEPARATE_EXAMPLE_PATH)
 
-	resourceCollection := createBaseRandomResourceCollection(t)
-	terratestOptions := createBaseTerratestOptions(t, testName, filepath.Join(rootTempPath, CLUSTER_SEPARATE_EXAMPLE_PATH), resourceCollection)
-	defer terratest.Destroy(terratestOptions, resourceCollection)
+	defer test_structure.RunTestStage(t, "teardown", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, examplesDir)
+		terraform.Destroy(t, terraformOptions)
 
-	logger := terralog.NewLogger(testName)
-	amiId := buildAmi(t, AMI_EXAMPLE_PATH, packerBuildName, resourceCollection, logger)
+		amiId := test_structure.LoadAmiId(t, examplesDir)
+		awsRegion := test_structure.LoadString(t, examplesDir, SAVED_AWS_REGION)
+		aws.DeleteAmi(t, awsRegion, amiId)
+	})
 
-	terratestOptions.Vars = map[string]interface{} {
-		VAR_AWS_REGION: resourceCollection.AwsRegion,
-		CLUSTER_SEPARATE_EXAMPLE_VAR_NOMAD_CLUSTER_NAME: "test-" + resourceCollection.UniqueId,
-		CLUSTER_SEPARATE_EXAMPLE_VAR_CONSUL_CLUSTER_NAME: "test-" + resourceCollection.UniqueId,
-		CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_NOMAD_SERVERS: DEFAULT_NUM_SERVERS,
-		CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_CONSUL_SERVERS: DEFAULT_NUM_SERVERS,
-		CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_NOMAD_CLIENTS: DEFAULT_NUM_CLIENTS,
-		VAR_AMI_ID: amiId,
-	}
+	test_structure.RunTestStage(t, "setup_ami", func() {
+		awsRegion := aws.GetRandomRegion(t, nil, nil)
+		amiId := buildAmi(t, AMI_EXAMPLE_PATH, packerBuildName, awsRegion)
 
-	deploy(t, terratestOptions)
-	checkNomadClusterIsWorking(t, CLUSTER_SEPARATE_EXAMPLE_OUTPUT_NOMAD_SERVER_ASG_NAME, terratestOptions, resourceCollection, logger)
+		test_structure.SaveAmiId(t, examplesDir, amiId)
+		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
+	})
+
+	test_structure.RunTestStage(t, "deploy", func() {
+		amiId := test_structure.LoadAmiId(t, examplesDir)
+		awsRegion := test_structure.LoadString(t, examplesDir, SAVED_AWS_REGION)
+		uniqueId := random.UniqueId()
+
+		terraformOptions := &terraform.Options{
+			TerraformDir: examplesDir,
+			Vars: map[string]interface{}{
+				VAR_AWS_REGION:                                   awsRegion,
+				CLUSTER_SEPARATE_EXAMPLE_VAR_NOMAD_CLUSTER_NAME:  fmt.Sprintf("test-%s", uniqueId),
+				CLUSTER_SEPARATE_EXAMPLE_VAR_CONSUL_CLUSTER_NAME: fmt.Sprintf("test-%s", uniqueId),
+				CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_NOMAD_SERVERS:   DEFAULT_NUM_SERVERS,
+				CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_CONSUL_SERVERS:  DEFAULT_NUM_SERVERS,
+				CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_NOMAD_CLIENTS:   DEFAULT_NUM_CLIENTS,
+				VAR_AMI_ID:                                       amiId,
+			},
+		}
+		terraform.InitAndApply(t, terraformOptions)
+
+		test_structure.SaveTerraformOptions(t, examplesDir, terraformOptions)
+	})
+
+	test_structure.RunTestStage(t, "validate", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, examplesDir)
+		awsRegion := test_structure.LoadString(t, examplesDir, SAVED_AWS_REGION)
+
+		checkNomadClusterIsWorking(t, CLUSTER_SEPARATE_EXAMPLE_OUTPUT_NOMAD_SERVER_ASG_NAME, terraformOptions, awsRegion)
+	})
 }
 
 // Check that the Nomad cluster comes up within a reasonable time period and can respond to requests
-func checkNomadClusterIsWorking(t *testing.T, asgNameOutputVar string, terratestOptions *terratest.TerratestOptions, resourceCollection *terratest.RandomResourceCollection, logger *log.Logger) {
-	asgName, err := terratest.Output(terratestOptions, asgNameOutputVar)
-	if err != nil {
-		t.Fatalf("Could not read output %s due to error: %v", asgNameOutputVar, err)
-	}
-
-	nodeIpAddress := getIpAddressOfAsgInstance(t, asgName, resourceCollection.AwsRegion)
-	testNomadCluster(t, nodeIpAddress, logger)
+func checkNomadClusterIsWorking(t *testing.T, asgNameOutputVar string, terraformOptions *terraform.Options, awsRegion string) {
+	asgName := terraform.Output(t, terraformOptions, asgNameOutputVar)
+	nodeIpAddress := getIpAddressOfAsgInstance(t, asgName, awsRegion)
+	testNomadCluster(t, nodeIpAddress)
 }
 
 // Use a Nomad client to connect to the given node and use it to verify that:
@@ -117,12 +166,12 @@ func checkNomadClusterIsWorking(t *testing.T, asgNameOutputVar string, terratest
 // 1. The Nomad cluster has deployed
 // 2. The cluster has the expected number of server nodes
 // 2. The cluster has the expected number of client nodes
-func testNomadCluster(t *testing.T, nodeIpAddress string, logger *log.Logger) {
+func testNomadCluster(t *testing.T, nodeIpAddress string) {
 	maxRetries := 60
 	sleepBetweenRetries := 10 * time.Second
 
-	response, err := util.DoWithRetry("Check Nomad cluster has expected number of servers and clients", maxRetries, sleepBetweenRetries, logger, func() (string, error) {
-		clients, err := callNomadApi(nodeIpAddress, "v1/nodes", logger)
+	response := retry.DoWithRetry(t, "Check Nomad cluster has expected number of servers and clients", maxRetries, sleepBetweenRetries, func() (string, error) {
+		clients, err := callNomadApi(t, nodeIpAddress, "v1/nodes")
 		if err != nil {
 			return "", err
 		}
@@ -131,7 +180,7 @@ func testNomadCluster(t *testing.T, nodeIpAddress string, logger *log.Logger) {
 			return "", fmt.Errorf("Expected the cluster to have %d clients, but found %d", DEFAULT_NUM_CLIENTS, len(clients))
 		}
 
-		servers, err := callNomadApi(nodeIpAddress, "v1/status/peers", logger)
+		servers, err := callNomadApi(t, nodeIpAddress, "v1/status/peers")
 		if err != nil {
 			return "", err
 		}
@@ -143,17 +192,13 @@ func testNomadCluster(t *testing.T, nodeIpAddress string, logger *log.Logger) {
 		return fmt.Sprintf("Got back expected number of clients (%d) and servers (%d)", len(clients), len(servers)), nil
 	})
 
-	if err != nil {
-		t.Fatalf("Could not verify Nomad node at %s was working: %v", nodeIpAddress, err)
-	}
-
-	logger.Printf("Nomad cluster is properly deployed: %s", response)
+	logger.Logf(t, "Nomad cluster is properly deployed: %s", response)
 }
 
 // A quick, hacky way to call the Nomad HTTP API: https://www.nomadproject.io/docs/http/index.html
-func callNomadApi(nodeIpAddress string, path string, logger *log.Logger) ([]interface{}, error) {
+func callNomadApi(t *testing.T, nodeIpAddress string, path string) ([]interface{}, error) {
 	url := fmt.Sprintf("http://%s:4646/%s", nodeIpAddress, path)
-	logger.Printf("Making an HTTP GET to URL %s", url)
+	logger.Logf(t, "Making an HTTP GET to URL %s", url)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -166,7 +211,7 @@ func callNomadApi(nodeIpAddress string, path string, logger *log.Logger) ([]inte
 		return nil, err
 	}
 
-	logger.Printf("Response from Nomad for URL %s: %s", url, string(body))
+	logger.Logf(t, "Response from Nomad for URL %s: %s", url, string(body))
 
 	result := []interface{}{}
 	if err := json.Unmarshal(body, &result); err != nil {
