@@ -17,7 +17,8 @@ import (
 
 const REPO_ROOT = "../"
 
-const VAR_AWS_REGION = "aws_region"
+const ENV_VAR_AWS_REGION = "AWS_DEFAULT_REGION"
+
 const VAR_AMI_ID = "ami_id"
 
 const CLUSTER_COLOCATED_EXAMPLE_PATH = "/"
@@ -62,10 +63,10 @@ func runNomadClusterColocatedTest(t *testing.T, packerBuildName string) {
 
 	test_structure.RunTestStage(t, "setup_ami", func() {
 		awsRegion := aws.GetRandomRegion(t, nil, nil)
-		amiId := buildAmi(t, AMI_EXAMPLE_PATH, packerBuildName, awsRegion)
-
-		test_structure.SaveAmiId(t, examplesDir, amiId)
 		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
+
+		amiId := buildAmi(t, AMI_EXAMPLE_PATH, packerBuildName, awsRegion)
+		test_structure.SaveAmiId(t, examplesDir, amiId)
 	})
 
 	test_structure.RunTestStage(t, "deploy", func() {
@@ -76,17 +77,18 @@ func runNomadClusterColocatedTest(t *testing.T, packerBuildName string) {
 		terraformOptions := &terraform.Options{
 			TerraformDir: examplesDir,
 			Vars: map[string]interface{}{
-				VAR_AWS_REGION:                             awsRegion,
 				CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_NAME: fmt.Sprintf("test-%s", uniqueId),
 				CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_SERVERS:  DEFAULT_NUM_SERVERS,
 				CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_CLIENTS:  DEFAULT_NUM_CLIENTS,
 				VAR_AMI_ID:                                 amiId,
 			},
+			EnvVars: map[string]string{
+				ENV_VAR_AWS_REGION: awsRegion,
+			},
 		}
+		test_structure.SaveTerraformOptions(t, examplesDir, terraformOptions)
 
 		terraform.InitAndApply(t, terraformOptions)
-
-		test_structure.SaveTerraformOptions(t, examplesDir, terraformOptions)
 	})
 
 	test_structure.RunTestStage(t, "validate", func() {
@@ -118,10 +120,10 @@ func runNomadClusterSeparateTest(t *testing.T, packerBuildName string) {
 
 	test_structure.RunTestStage(t, "setup_ami", func() {
 		awsRegion := aws.GetRandomRegion(t, nil, nil)
-		amiId := buildAmi(t, AMI_EXAMPLE_PATH, packerBuildName, awsRegion)
-
-		test_structure.SaveAmiId(t, examplesDir, amiId)
 		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
+
+		amiId := buildAmi(t, AMI_EXAMPLE_PATH, packerBuildName, awsRegion)
+		test_structure.SaveAmiId(t, examplesDir, amiId)
 	})
 
 	test_structure.RunTestStage(t, "deploy", func() {
@@ -132,7 +134,6 @@ func runNomadClusterSeparateTest(t *testing.T, packerBuildName string) {
 		terraformOptions := &terraform.Options{
 			TerraformDir: examplesDir,
 			Vars: map[string]interface{}{
-				VAR_AWS_REGION:                                   awsRegion,
 				CLUSTER_SEPARATE_EXAMPLE_VAR_NOMAD_CLUSTER_NAME:  fmt.Sprintf("test-%s", uniqueId),
 				CLUSTER_SEPARATE_EXAMPLE_VAR_CONSUL_CLUSTER_NAME: fmt.Sprintf("test-%s", uniqueId),
 				CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_NOMAD_SERVERS:   DEFAULT_NUM_SERVERS,
@@ -140,10 +141,13 @@ func runNomadClusterSeparateTest(t *testing.T, packerBuildName string) {
 				CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_NOMAD_CLIENTS:   DEFAULT_NUM_CLIENTS,
 				VAR_AMI_ID:                                       amiId,
 			},
+			EnvVars: map[string]string{
+				ENV_VAR_AWS_REGION: awsRegion,
+			},
 		}
-		terraform.InitAndApply(t, terraformOptions)
-
 		test_structure.SaveTerraformOptions(t, examplesDir, terraformOptions)
+
+		terraform.InitAndApply(t, terraformOptions)
 	})
 
 	test_structure.RunTestStage(t, "validate", func() {

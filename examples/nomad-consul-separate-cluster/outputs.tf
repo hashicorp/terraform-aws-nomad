@@ -71,7 +71,7 @@ output "security_group_id_nomad_clients" {
 }
 
 output "aws_region" {
-  value = "${var.aws_region}"
+  value = "${data.aws_region.current.name}"
 }
 
 output "nomad_servers_cluster_tag_key" {

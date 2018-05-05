@@ -23,14 +23,16 @@ For more info on how the Nomad cluster works, check out the [nomad-cluster](http
 To deploy a Nomad Cluster:
 
 1. `git clone` this repo to your computer.
-1. Build a Nomad and Consul AMI. See the [nomad-consul-ami example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-ami) documentation for 
+1. Optional: build a Nomad and Consul AMI. See the [nomad-consul-ami
+   example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-ami) documentation for
    instructions. Make sure to note down the ID of the AMI.
 1. Install [Terraform](https://www.terraform.io/).
 1. Open `vars.tf`, set the environment variables specified at the top of the file, and fill in any other variables that
-   don't have a default, including putting your AMI ID into the `ami_id` variable.
-1. Run `terraform get`.
-1. Run `terraform plan`.
-1. If the plan looks good, run `terraform apply`.
-1. Run the [nomad-examples-helper.sh script](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-examples-helper/nomad-examples-helper.sh) to print out 
+   don't have a default. If you built a custom AMI, put the AMI ID into the `ami_id` variable. Otherwise, one of our
+   public example AMIs will be used by default. These AMIs are great for learning/experimenting, but are NOT
+   recommended for production use.
+1. Run `terraform init`.
+1. Run `terraform apply`.
+1. Run the [nomad-examples-helper.sh script](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-examples-helper/nomad-examples-helper.sh) to print out
    the IP addresses of the Nomad servers and some example commands you can run to interact with the cluster:
    `../nomad-examples-helper/nomad-examples-helper.sh`.

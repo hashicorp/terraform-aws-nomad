@@ -5,6 +5,7 @@
 
 # AWS_ACCESS_KEY_ID
 # AWS_SECRET_ACCESS_KEY
+# AWS_DEFAULT_REGION
 
 # ---------------------------------------------------------------------------------------------------------------------
 # REQUIRED PARAMETERS
@@ -21,11 +22,6 @@
 variable "ami_id" {
   description = "The ID of the AMI to run in the cluster. This should be an AMI built from the Packer template under examples/nomad-consul-ami/nomad-consul.json. If no AMI is specified, the template will 'just work' by using the example public AMIs. WARNING! Do not use the example AMIs in a production setting!"
   default = ""
-}
-
-variable "aws_region" {
-  description = "The AWS region to deploy into (e.g. us-east-1)."
-  default     = "us-east-1"
 }
 
 variable "cluster_name" {
