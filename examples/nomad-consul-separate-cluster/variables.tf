@@ -5,12 +5,7 @@
 
 # AWS_ACCESS_KEY_ID
 # AWS_SECRET_ACCESS_KEY
-# or
-# AWS_PROFILE
-# or
-# Beside this it is as well possible to make use of the provided variable "aws_profile".
-# Either specifiy it in your tfvars configuration or as configuration parameter:
-#  "terraform plan -var 'aws_profile=<local_profile_name>'"
+# AWS_DEFAULT_REGION
 
 # ---------------------------------------------------------------------------------------------------------------------
 # REQUIRED PARAMETERS
@@ -27,16 +22,6 @@
 variable "ami_id" {
   description = "The ID of the AMI to run in the cluster. This should be an AMI built from the Packer template under examples/nomad-consul-ami/nomad-consul.json. If no AMI is specified, the template will 'just work' by using the example public AMIs. WARNING! Do not use the example AMIs in a production setting!"
   default = ""
-}
-
-variable "aws_profile" {
-  description = "Specify the local AWS profile configuration to use."
-  default     = "default"
-}
-
-variable "aws_region" {
-  description = "The AWS region to deploy into (e.g. us-east-1)."
-  default     = "us-east-1"
 }
 
 variable "nomad_cluster_name" {
