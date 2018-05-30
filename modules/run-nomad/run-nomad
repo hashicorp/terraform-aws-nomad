@@ -29,6 +29,7 @@ function print_usage {
   echo -e "  --log-dir\t\tThe path to the Nomad log folder. Optional. Default is the absolute path of '../log', relative to this script."
   echo -e "  --user\t\tThe user to run Nomad as. Optional. Default is to use the owner of --config-dir."
   echo -e "  --use-sudo\t\tIf set, run the Nomad agent with sudo. By default, sudo is only used if --client is set."
+  echo -e "  --environment\t\A single environment variable in the key/value pair form 'KEY=\"val\"' to pass to Nomad as environment variable when starting it up. Repeat this option for additional variables. Optional."
   echo -e "  --skip-nomad-config\tIf this flag is set, don't generate a Nomad configuration file. Optional. Default is false."
   echo
   echo "Example:"
@@ -74,6 +75,13 @@ function assert_not_empty {
     print_usage
     exit 1
   fi
+}
+
+# Based on https://stackoverflow.com/a/17841619
+function join_by {
+  local IFS="$1"
+  shift
+  echo "$*"
 }
 
 function lookup_path_in_instance_metadata {
@@ -182,6 +190,8 @@ function generate_supervisor_config {
   local readonly nomad_log_dir="$5"
   local readonly nomad_user="$6"
   local readonly use_sudo="$7"
+  shift 7
+  local readonly environment=("$@")
 
   if [[ "$use_sudo" == "true" ]]; then
     log_info "The --use-sudo flag is set, so running Nomad as the root user"
@@ -199,6 +209,7 @@ autostart=true
 autorestart=true
 stopsignal=INT
 user=$nomad_user
+environment=$(join_by "," "${environment[@]}")
 EOF
 }
 
@@ -225,6 +236,7 @@ function run {
   local user=""
   local skip_nomad_config="false"
   local use_sudo=""
+  local environment=()
   local all_args=()
 
   while [[ $# > 0 ]]; do
@@ -281,6 +293,11 @@ function run {
         ;;
       --use-sudo)
         use_sudo="true"
+        ;;
+      --environment)
+        assert_not_empty "$key" "$2"
+        environment+=("$2")
+        shift
         ;;
       --help)
         print_usage
@@ -344,7 +361,7 @@ function run {
     generate_nomad_config "$server" "$client" "$num_servers" "$config_dir" "$user"
   fi
 
-  generate_supervisor_config "$SUPERVISOR_CONFIG_PATH" "$config_dir" "$data_dir" "$bin_dir" "$log_dir" "$user" "$use_sudo"
+  generate_supervisor_config "$SUPERVISOR_CONFIG_PATH" "$config_dir" "$data_dir" "$bin_dir" "$log_dir" "$user" "$use_sudo" "${environment[@]}"
   start_nomad
 }
 
