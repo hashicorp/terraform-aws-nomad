@@ -170,3 +170,19 @@ variable "tags" {
   type        = "list"
   default     = []
 }
+
+# Example for a ebs_block_device created from a snapshot and one with a certain size.
+# ebs_block_devices = [{
+#    "device_name" = "/dev/xvdf"
+#    "snapshot_id" = "snap-XYZ"
+#  },
+#  {
+#    "device_name" = "/dev/xvde"
+#    "volume_size" = "50"
+#  }]
+variable "ebs_block_devices" {
+  description = "List of ebs volume definitions for those ebs_volumes that should be added to the instances created with the EC2 launch-configurationd. Each element in the list is a map containing keys defined for ebs_block_device (see: https://www.terraform.io/docs/providers/aws/r/launch_configuration.html#ebs_block_device."
+  type        = "list"
+
+  default = []
+}
