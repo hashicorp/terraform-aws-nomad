@@ -182,6 +182,5 @@ variable "tags" {
 variable "ebs_block_devices" {
   description = "List of ebs volume definitions for those ebs_volumes that should be added to the instances created with the EC2 launch-configuration. Each element in the list is a map containing keys defined for ebs_block_device (see: https://www.terraform.io/docs/providers/aws/r/launch_configuration.html#ebs_block_device."
   type        = "list"
-
-  default = []
+  default     = []
 }
