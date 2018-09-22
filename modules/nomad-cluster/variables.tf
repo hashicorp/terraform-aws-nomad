@@ -40,7 +40,6 @@ variable "desired_capacity" {
   description = "The desired number of nodes to have in the cluster. If you're using this to run Nomad servers, we strongly recommend setting this to 3 or 5."
 }
 
-
 # ---------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These parameters have reasonable defaults.
@@ -141,17 +140,17 @@ variable "instance_profile_path" {
 
 variable "http_port" {
   description = "The port to use for HTTP"
-  default = 4646
+  default     = 4646
 }
 
 variable "rpc_port" {
   description = "The port to use for RPC"
-  default = 4647
+  default     = 4647
 }
 
 variable "serf_port" {
   description = "The port to use for Serf"
-  default = 4648
+  default     = 4648
 }
 
 variable "ssh_port" {
@@ -161,8 +160,8 @@ variable "ssh_port" {
 
 variable "security_groups" {
   description = "Additional security groups to attach to the EC2 instances"
-  type = "list"
-  default = []
+  type        = "list"
+  default     = []
 }
 
 variable "tags" {

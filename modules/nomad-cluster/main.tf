@@ -13,7 +13,7 @@ terraform {
 resource "aws_autoscaling_group" "autoscaling_group" {
   launch_configuration = "${aws_launch_configuration.launch_configuration.name}"
 
-  name = "${var.asg_name}"
+  name                = "${var.asg_name}"
   availability_zones  = ["${var.availability_zones}"]
   vpc_zone_identifier = ["${var.subnet_ids}"]
 
@@ -95,7 +95,6 @@ resource "aws_security_group" "lc_security_group" {
     create_before_destroy = true
   }
 }
-
 
 resource "aws_security_group_rule" "allow_ssh_inbound" {
   type        = "ingress"
