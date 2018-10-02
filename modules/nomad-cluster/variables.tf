@@ -40,7 +40,6 @@ variable "desired_capacity" {
   description = "The desired number of nodes to have in the cluster. If you're using this to run Nomad servers, we strongly recommend setting this to 3 or 5."
 }
 
-
 # ---------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These parameters have reasonable defaults.
@@ -141,17 +140,17 @@ variable "instance_profile_path" {
 
 variable "http_port" {
   description = "The port to use for HTTP"
-  default = 4646
+  default     = 4646
 }
 
 variable "rpc_port" {
   description = "The port to use for RPC"
-  default = 4647
+  default     = 4647
 }
 
 variable "serf_port" {
   description = "The port to use for Serf"
-  default = 4648
+  default     = 4648
 }
 
 variable "ssh_port" {
@@ -161,12 +160,27 @@ variable "ssh_port" {
 
 variable "security_groups" {
   description = "Additional security groups to attach to the EC2 instances"
-  type = "list"
-  default = []
+  type        = "list"
+  default     = []
 }
 
 variable "tags" {
   description = "List of extra tag blocks added to the autoscaling group configuration. Each element in the list is a map containing keys 'key', 'value', and 'propagate_at_launch' mapped to the respective values."
+  type        = "list"
+  default     = []
+}
+
+# Example for a ebs_block_device created from a snapshot and one with a certain size.
+# ebs_block_devices = [{
+#    "device_name" = "/dev/xvdf"
+#    "snapshot_id" = "snap-XYZ"
+#  },
+#  {
+#    "device_name" = "/dev/xvde"
+#    "volume_size" = "50"
+#  }]
+variable "ebs_block_devices" {
+  description = "List of ebs volume definitions for those ebs_volumes that should be added to the instances created with the EC2 launch-configuration. Each element in the list is a map containing keys defined for ebs_block_device (see: https://www.terraform.io/docs/providers/aws/r/launch_configuration.html#ebs_block_device."
   type        = "list"
   default     = []
 }

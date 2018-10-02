@@ -179,19 +179,19 @@ module "nomad_clients" {
   min_size         = "${var.num_nomad_clients}"
   max_size         = "${var.num_nomad_clients}"
   desired_capacity = "${var.num_nomad_clients}"
-
-  ami_id    = "${var.ami_id == "" ? data.aws_ami.nomad_consul.image_id : var.ami_id}"
-  user_data = "${data.template_file.user_data_nomad_client.rendered}"
-
-  vpc_id     = "${data.aws_vpc.default.id}"
-  subnet_ids = "${data.aws_subnet_ids.default.ids}"
-
+  ami_id           = "${var.ami_id == "" ? data.aws_ami.nomad_consul.image_id : var.ami_id}"
+  user_data        = "${data.template_file.user_data_nomad_client.rendered}"
+  vpc_id           = "${data.aws_vpc.default.id}"
+  subnet_ids       = "${data.aws_subnet_ids.default.ids}"
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
   allowed_ssh_cidr_blocks = ["0.0.0.0/0"]
-
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
   ssh_key_name                = "${var.ssh_key_name}"
+  ebs_block_devices = [{
+    "device_name" = "/dev/xvde"
+    "volume_size" = "10"
+  }]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
