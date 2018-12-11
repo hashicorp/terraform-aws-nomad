@@ -84,7 +84,7 @@ module "nomad_servers" {
 
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
   ssh_key_name                = "${var.ssh_key_name}"
-  tags                        = "${var.tags}"
+  tags                        = ["${var.tags}"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -129,7 +129,7 @@ module "consul_servers" {
   cluster_tag_key   = "${var.cluster_tag_key}"
   cluster_tag_value = "${var.consul_cluster_name}"
 
-  tags                        = "${var.tags}"
+  tags                        = ["${var.tags}"]
 
   ami_id    = "${var.ami_id == "" ? data.aws_ami.nomad_consul.image_id : var.ami_id}"
   user_data = "${data.template_file.user_data_consul_server.rendered}"
@@ -176,7 +176,7 @@ module "nomad_clients" {
   cluster_tag_key   = "nomad-clients"
   cluster_tag_value = "${var.nomad_cluster_name}"
 
-  tags                        = "${var.tags}"
+  tags                        = ["${var.tags}"]
 
   # To keep the example simple, we are using a fixed-size cluster. In real-world usage, you could use auto scaling
   # policies to dynamically resize the cluster in response to load.
