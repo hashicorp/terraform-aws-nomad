@@ -1,3 +1,4 @@
+[![Maintained by Gruntwork.io](https://img.shields.io/badge/maintained%20by-gruntwork.io-%235849a6.svg)](https://gruntwork.io)
 # Nomad AWS Module
 
 This repo contains a Module for how to deploy a [Nomad](https://www.nomadproject.io/) cluster on 
