@@ -1,6 +1,6 @@
 # Nomad AWS Module
 
-This repo contains a Module for how to deploy a [Nomad](https://www.nomadproject.io/) cluster on 
+This repo contains a set of modules in the [modules folder](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules) for deploying a [Nomad](https://www.nomadproject.io/) cluster on 
 [AWS](https://aws.amazon.com/) using [Terraform](https://www.terraform.io/). Nomad is a distributed, highly-available 
 data-center aware scheduler. A Nomad cluster typically includes a small number of server nodes, which are responsible 
 for being part of the [concensus protocol](https://www.nomadproject.io/docs/internals/consensus.html), and a larger 
@@ -8,7 +8,7 @@ number of client nodes, which are used for running jobs:
 
 ![Nomad architecture](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/master/_docs/architecture.png)
 
-This Module includes:
+This repo includes:
 
 * [install-nomad](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad): This module can be used to install Nomad. It can be used in a 
   [Packer](https://www.packer.io/) template to create a Nomad 
@@ -24,49 +24,16 @@ This Module includes:
   
 
 
-
-## What's a Module?
-
-A Module is a canonical, reusable, best-practices definition for how to run a single piece of infrastructure, such 
-as a database or server cluster. Each Module is created primarily using [Terraform](https://www.terraform.io/), 
-includes automated tests, examples, and documentation, and is maintained both by the open source community and 
-companies that provide commercial support. 
-
-Instead of having to figure out the details of how to run a piece of infrastructure from scratch, you can reuse 
-existing code that has been proven in production. And instead of maintaining all that infrastructure code yourself, 
-you can leverage the work of the Module community and maintainers, and pick up infrastructure improvements through
-a version number bump.
- 
- 
- 
-## Who maintains this Module?
-
-This Module is maintained by [Gruntwork](http://www.gruntwork.io/). If you're looking for help or commercial 
-support, send an email to [modules@gruntwork.io](mailto:modules@gruntwork.io?Subject=Nomad%20Module). 
-Gruntwork can help with:
-
-* Setup, customization, and support for this Module.
-* Modules for other types of infrastructure, such as VPCs, Docker clusters, databases, and continuous integration.
-* Modules that meet compliance requirements, such as HIPAA.
-* Consulting & Training on AWS, Terraform, and DevOps.
-
-
-
 ## How do you use this Module?
 
-Each Module has the following folder structure:
+This reop has the following folder structure:
 
-* [root](https://github.com/hashicorp/terraform-aws-nomad/tree/master): This folder shows an example of Terraform code to deploy a [Nomad](https://www.nomadproject.io/) cluster co-located 
-            with a [Consul](https://www.consul.io/) cluster in [AWS](https://aws.amazon.com/)
-* [modules](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules): This folder contains the reusable code for this Module, broken down into one or more modules.
-* [examples](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples): This folder contains examples of how to use the modules.
+* [modules](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules): This folder contains several standalone, reusable, production-grade modules that you can use to deploy Nomad.
+* [examples](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples): This folder shows examples of different ways to combine the modules in the `modules` folder to deploy Vault.
 * [test](https://github.com/hashicorp/terraform-aws-nomad/tree/master/test): Automated tests for the modules and examples.
+* [root](https://github.com/hashicorp/terraform-aws-nomad/tree/master): The root folder is *an example* of how to use the [nomad-cluster module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/nomad-cluster) module to deploy a [Nomad](https://www.nomadproject.io/) cluster in [AWS](https://aws.amazon.com/). The Terraform Registry requires the root of every repo to contain Terraform code, so we've put one of the examples there. This example is great for learning and experimenting, but for production use, please use the underlying modules in the [modules folder](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules) directly.
 
-Click on each of the modules above for more details.
-
-<!-- TODO: update the consul-aws-module URL to the final URL -->
-
-To run a Nomad cluster, you need to deploy a small number of server nodes (typically 3), which are responsible 
+To run a production Nomad cluster, you need to deploy a small number of server nodes (typically 3), which are responsible 
 for being part of the [concensus protocol](https://www.nomadproject.io/docs/internals/consensus.html), and a larger 
 number of client nodes, which are used for running jobs. You must also have a [Consul](https://www.consul.io/) cluster 
 deployed (see the [Consul AWS Module](https://github.com/hashicorp/terraform-aws-consul)) in one of the following 
@@ -102,6 +69,35 @@ configurations:
 
 Check out the [nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/MAIN.md) for working
 sample code.
+
+
+
+
+## What's a Module?
+
+A Module is a canonical, reusable, best-practices definition for how to run a single piece of infrastructure, such 
+as a database or server cluster. Each Module is created primarily using [Terraform](https://www.terraform.io/), 
+includes automated tests, examples, and documentation, and is maintained both by the open source community and 
+companies that provide commercial support. 
+
+Instead of having to figure out the details of how to run a piece of infrastructure from scratch, you can reuse 
+existing code that has been proven in production. And instead of maintaining all that infrastructure code yourself, 
+you can leverage the work of the Module community and maintainers, and pick up infrastructure improvements through
+a version number bump.
+ 
+ 
+ 
+## Who maintains this Module?
+
+This Module is maintained by [Gruntwork](http://www.gruntwork.io/). If you're looking for help or commercial 
+support, send an email to [modules@gruntwork.io](mailto:modules@gruntwork.io?Subject=Nomad%20Module). 
+Gruntwork can help with:
+
+* Setup, customization, and support for this Module.
+* Modules for other types of infrastructure, such as VPCs, Docker clusters, databases, and continuous integration.
+* Modules that meet compliance requirements, such as HIPAA.
+* Consulting & Training on AWS, Terraform, and DevOps.
+
 
 
 ### Deploy Nomad and Consul in separate clusters
