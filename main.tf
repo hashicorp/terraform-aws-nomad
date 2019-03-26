@@ -29,10 +29,10 @@ terraform {
 # /_ci/publish-amis-in-new-account.md for more information.
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_ami" "nomad_consul" {
-  most_recent      = true
+  most_recent = true
 
   # If we change the AWS Account in which test are run, update this value.
-  owners     = ["562637147889"]
+  owners = ["562637147889"]
 
   filter {
     name   = "virtualization-type"
@@ -74,7 +74,8 @@ module "servers" {
 
   # To make testing easier, we allow requests from any IP address here but in a production deployment, we strongly
   # recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
-  allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
+  allowed_ssh_cidr_blocks = ["0.0.0.0/0"]
+
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
   ssh_key_name                = "${var.ssh_key_name}"
 
@@ -102,6 +103,7 @@ module "nomad_security_group_rules" {
   # To make testing easier, we allow requests from any IP address here but in a production deployment, we strongly
   # recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
   security_group_id = "${module.servers.security_group_id}"
+
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
 }
 
@@ -139,7 +141,8 @@ module "clients" {
 
   # To keep the example simple, we are using a fixed-size cluster. In real-world usage, you could use auto scaling
   # policies to dynamically resize the cluster in response to load.
-  min_size         = "${var.num_clients}"
+  min_size = "${var.num_clients}"
+
   max_size         = "${var.num_clients}"
   desired_capacity = "${var.num_clients}"
 
@@ -151,7 +154,8 @@ module "clients" {
 
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
-  allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
+  allowed_ssh_cidr_blocks = ["0.0.0.0/0"]
+
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
   ssh_key_name                = "${var.ssh_key_name}"
 
