@@ -1,18 +1,18 @@
 package test
 
 import (
-	"testing"
-	"time"
-	"fmt"
-	"net/http"
-	"io/ioutil"
 	"encoding/json"
-	"github.com/gruntwork-io/terratest/modules/test-structure"
+	"fmt"
 	"github.com/gruntwork-io/terratest/modules/aws"
-	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/retry"
-	"github.com/gruntwork-io/terratest/modules/logger"
+	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/gruntwork-io/terratest/modules/test-structure"
+	"io/ioutil"
+	"net/http"
+	"testing"
+	"time"
 )
 
 const REPO_ROOT = "../"
@@ -62,7 +62,7 @@ func runNomadClusterColocatedTest(t *testing.T, packerBuildName string) {
 	})
 
 	test_structure.RunTestStage(t, "setup_ami", func() {
-		awsRegion := aws.GetRandomRegion(t, nil, nil)
+		awsRegion := getRandomRegion(t)
 		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
 
 		amiId := buildAmi(t, AMI_EXAMPLE_PATH, packerBuildName, awsRegion)
@@ -80,7 +80,7 @@ func runNomadClusterColocatedTest(t *testing.T, packerBuildName string) {
 				CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_NAME: fmt.Sprintf("test-%s", uniqueId),
 				CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_SERVERS:  DEFAULT_NUM_SERVERS,
 				CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_CLIENTS:  DEFAULT_NUM_CLIENTS,
-				VAR_AMI_ID:                                 amiId,
+				VAR_AMI_ID: amiId,
 			},
 			EnvVars: map[string]string{
 				ENV_VAR_AWS_REGION: awsRegion,
@@ -119,7 +119,7 @@ func runNomadClusterSeparateTest(t *testing.T, packerBuildName string) {
 	})
 
 	test_structure.RunTestStage(t, "setup_ami", func() {
-		awsRegion := aws.GetRandomRegion(t, nil, nil)
+		awsRegion := getRandomRegion(t)
 		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
 
 		amiId := buildAmi(t, AMI_EXAMPLE_PATH, packerBuildName, awsRegion)
@@ -139,7 +139,7 @@ func runNomadClusterSeparateTest(t *testing.T, packerBuildName string) {
 				CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_NOMAD_SERVERS:   DEFAULT_NUM_SERVERS,
 				CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_CONSUL_SERVERS:  DEFAULT_NUM_SERVERS,
 				CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_NOMAD_CLIENTS:   DEFAULT_NUM_CLIENTS,
-				VAR_AMI_ID:                                       amiId,
+				VAR_AMI_ID: amiId,
 			},
 			EnvVars: map[string]string{
 				ENV_VAR_AWS_REGION: awsRegion,

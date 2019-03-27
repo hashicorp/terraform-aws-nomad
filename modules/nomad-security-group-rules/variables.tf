@@ -19,15 +19,15 @@ variable "allowed_inbound_cidr_blocks" {
 
 variable "http_port" {
   description = "The port to use for HTTP"
-  default = 4646
+  default     = 4646
 }
 
 variable "rpc_port" {
   description = "The port to use for RPC"
-  default = 4647
+  default     = 4647
 }
 
 variable "serf_port" {
   description = "The port to use for Serf"
-  default = 4648
+  default     = 4648
 }
