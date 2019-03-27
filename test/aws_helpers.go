@@ -18,5 +18,5 @@ func getIpAddressOfAsgInstance(t *testing.T, asgName string, awsRegion string) s
 }
 
 func getRandomRegion(t *testing.T) string {
-	return aws.GetRandomStableRegion(t, nil, []string{"eu-north-1"})
+	return aws.GetRandomRegion(t, nil, []string{"eu-north-1"})
 }
