@@ -1,8 +1,8 @@
 package test
 
 import (
-	"testing"
 	"github.com/gruntwork-io/terratest/modules/aws"
+	"testing"
 )
 
 // Get the IP address from a randomly chosen EC2 Instance in an Auto Scaling Group of the given name in the given
@@ -15,4 +15,8 @@ func getIpAddressOfAsgInstance(t *testing.T, asgName string, awsRegion string) s
 	}
 
 	return aws.GetPublicIpOfEc2Instance(t, instanceIds[0], awsRegion)
+}
+
+func getRandomRegion(t *testing.T) string {
+	return aws.GetRandomStableRegion(t, nil, []string{"eu-north-1"})
 }
