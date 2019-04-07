@@ -3,7 +3,7 @@
 This repo contains a set of modules in the [modules folder](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules) for deploying a [Nomad](https://www.nomadproject.io/) cluster on 
 [AWS](https://aws.amazon.com/) using [Terraform](https://www.terraform.io/). Nomad is a distributed, highly-available 
 data-center aware scheduler. A Nomad cluster typically includes a small number of server nodes, which are responsible 
-for being part of the [concensus protocol](https://www.nomadproject.io/docs/internals/consensus.html), and a larger 
+for being part of the [consensus protocol](https://www.nomadproject.io/docs/internals/consensus.html), and a larger 
 number of client nodes, which are used for running jobs:
 
 ![Nomad architecture](https://raw.githubusercontent.com/hashicorp/terraform-aws-nomad/master/_docs/architecture.png)
@@ -26,7 +26,7 @@ This repo includes:
 
 ## How do you use this Module?
 
-This reop has the following folder structure:
+This repo has the following folder structure:
 
 * [modules](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules): This folder contains several standalone, reusable, production-grade modules that you can use to deploy Nomad.
 * [examples](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples): This folder shows examples of different ways to combine the modules in the `modules` folder to deploy Vault.
@@ -34,7 +34,7 @@ This reop has the following folder structure:
 * [root](https://github.com/hashicorp/terraform-aws-nomad/tree/master): The root folder is *an example* of how to use the [nomad-cluster module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/nomad-cluster) module to deploy a [Nomad](https://www.nomadproject.io/) cluster in [AWS](https://aws.amazon.com/). The Terraform Registry requires the root of every repo to contain Terraform code, so we've put one of the examples there. This example is great for learning and experimenting, but for production use, please use the underlying modules in the [modules folder](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules) directly.
 
 To run a production Nomad cluster, you need to deploy a small number of server nodes (typically 3), which are responsible 
-for being part of the [concensus protocol](https://www.nomadproject.io/docs/internals/consensus.html), and a larger 
+for being part of the [consensus protocol](https://www.nomadproject.io/docs/internals/consensus.html), and a larger 
 number of client nodes, which are used for running jobs. You must also have a [Consul](https://www.consul.io/) cluster 
 deployed (see the [Consul AWS Module](https://github.com/hashicorp/terraform-aws-consul)) in one of the following 
 configurations:
