@@ -4,7 +4,7 @@ This folder shows an example of Terraform code to deploy a [Nomad](https://www.n
 with a [Consul](https://www.consul.io/) cluster in [AWS](https://aws.amazon.com/) (if you want to run Nomad and Consul 
 on separate clusters, see the [nomad-consul-separate-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster) 
 instead). The cluster consists of two Auto Scaling Groups (ASGs): one with a small number of Nomad and Consul server 
-nodes, which are responsible for being part of the [concensus 
+nodes, which are responsible for being part of the [consensus 
 protocol](https://www.nomadproject.io/docs/internals/consensus.html), and one with a larger number of Nomad and Consul 
 client nodes, which are used to run jobs:
 
