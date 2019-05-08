@@ -151,6 +151,7 @@ function generate_nomad_config {
   instance_ip_address=$(get_instance_ip_address)
   instance_region=$(get_instance_region)
   availability_zone=$(get_instance_availability_zone)
+  client_meta=$(build_client_meta "${meta[@]}")
 
   local server_config=""
   if [[ "$server" == "true" ]]; then
