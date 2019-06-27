@@ -5,22 +5,22 @@
 
 variable "cluster_name" {
   description = "The name of the Nomad cluster (e.g. nomad-servers-stage). This variable is used to namespace all resources created by this module."
-  type=string
+  type        = string
 }
 
 variable "ami_id" {
   description = "The ID of the AMI to run in this cluster. Should be an AMI that had Nomad installed and configured by the install-nomad module."
-  type=string
+  type        = string
 }
 
 variable "instance_type" {
   description = "The type of EC2 Instances to run for each node in the cluster (e.g. t2.micro)."
-  type=string
+  type        = string
 }
 
 variable "vpc_id" {
   description = "The ID of the VPC in which to deploy the cluster"
-  type=string
+  type        = string
 }
 
 variable "allowed_inbound_cidr_blocks" {
@@ -30,22 +30,22 @@ variable "allowed_inbound_cidr_blocks" {
 
 variable "user_data" {
   description = "A User Data script to execute while the server is booting. We remmend passing in a bash script that executes the run-nomad script, which should have been installed in the AMI by the install-nomad module."
-  type=string
+  type        = string
 }
 
 variable "min_size" {
   description = "The minimum number of nodes to have in the cluster. If you're using this to run Nomad servers, we strongly recommend setting this to 3 or 5."
-  type=number
+  type        = number
 }
 
 variable "max_size" {
   description = "The maximum number of nodes to have in the cluster. If you're using this to run Nomad servers, we strongly recommend setting this to 3 or 5."
-  type=number
+  type        = number
 }
 
 variable "desired_capacity" {
   description = "The desired number of nodes to have in the cluster. If you're using this to run Nomad servers, we strongly recommend setting this to 3 or 5."
-  type=number
+  type        = number
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ variable "desired_capacity" {
 
 variable "asg_name" {
   description = "The name to use for the Auto Scaling Group"
-  type=string
+  type        = string
   default     = ""
 }
 
@@ -73,7 +73,7 @@ variable "availability_zones" {
 
 variable "ssh_key_name" {
   description = "The name of an EC2 Key Pair that can be used to SSH to the EC2 Instances in this cluster. Set to an empty string to not associate a Key Pair."
-  type=string
+  type        = string
   default     = ""
 }
 
@@ -85,103 +85,103 @@ variable "allowed_ssh_cidr_blocks" {
 
 variable "cluster_tag_key" {
   description = "Add a tag with this key and the value var.cluster_tag_value to each Instance in the ASG."
-  type=string
+  type        = string
   default     = "nomad-servers"
 }
 
 variable "cluster_tag_value" {
   description = "Add a tag with key var.cluster_tag_key and this value to each Instance in the ASG. This can be used to automatically find other Consul nodes and form a cluster."
-  type=string
+  type        = string
   default     = "auto-join"
 }
 
 variable "termination_policies" {
   description = "A list of policies to decide how the instances in the auto scale group should be terminated. The allowed values are OldestInstance, NewestInstance, OldestLaunchConfiguration, ClosestToNextInstanceHour, Default."
-  type=string
+  type        = string
   default     = "Default"
 }
 
 variable "associate_public_ip_address" {
   description = "If set to true, associate a public IP address with each EC2 Instance in the cluster."
-  type=bool
+  type        = bool
   default     = false
 }
 
 variable "tenancy" {
   description = "The tenancy of the instance. Must be one of: default or dedicated."
-  type=string
+  type        = string
   default     = "default"
 }
 
 variable "root_volume_ebs_optimized" {
   description = "If true, the launched EC2 instance will be EBS-optimized."
-  type=bool
+  type        = bool
   default     = false
 }
 
 variable "root_volume_type" {
   description = "The type of volume. Must be one of: standard, gp2, or io1."
-  type=string
+  type        = string
   default     = "standard"
 }
 
 variable "root_volume_size" {
   description = "The size, in GB, of the root EBS volume."
-  type=number
+  type        = number
   default     = 50
 }
 
 variable "root_volume_delete_on_termination" {
   description = "Whether the volume should be destroyed on instance termination."
   default     = true
-  type=bool
+  type        = bool
 }
 
 variable "wait_for_capacity_timeout" {
   description = "A maximum duration that Terraform should wait for ASG instances to be healthy before timing out. Setting this to '0' causes Terraform to skip all Capacity Waiting behavior."
-  type=string
+  type        = string
   default     = "10m"
 }
 
 variable "health_check_type" {
   description = "Controls how health checking is done. Must be one of EC2 or ELB."
-  type=string
+  type        = string
   default     = "EC2"
 }
 
 variable "health_check_grace_period" {
   description = "Time, in seconds, after instance comes into service before checking health."
-  type=number
+  type        = number
   default     = 300
 }
 
 variable "instance_profile_path" {
   description = "Path in which to create the IAM instance profile."
-  type=string
+  type        = string
   default     = "/"
 }
 
 variable "http_port" {
   description = "The port to use for HTTP"
-  type=number
+  type        = number
   default     = 4646
 }
 
 variable "rpc_port" {
   description = "The port to use for RPC"
-  type=number
+  type        = number
   default     = 4647
 }
 
 variable "serf_port" {
   description = "The port to use for Serf"
-  type=number
+  type        = number
   default     = 4648
 }
 
 variable "ssh_port" {
   description = "The port used for SSH connections"
-  type=number
+  type        = number
   default     = 22
 }
 
@@ -204,7 +204,7 @@ variable "ebs_block_devices" {
   # the values in the map must be of the same type, whereas we need some to be strings, some to be bools, and some to
   # be ints. So, we have to fall back to just any ugly "any."
   type    = any
-  default     = []
+  default = []
   # Example:
   #
   # default = [
