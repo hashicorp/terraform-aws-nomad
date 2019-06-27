@@ -46,8 +46,6 @@ jobs:
       - run:
           <<: *install_gruntwork_utils
                 
-      - run: echo 'export PATH=$HOME/terraform:$HOME/packer:$PATH' >> $BASH_ENV
-
       - run:
           name: create log directory
           command: mkdir -p /tmp/logs
