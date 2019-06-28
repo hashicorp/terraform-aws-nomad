@@ -11,6 +11,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/test-structure"
 	"io/ioutil"
 	"net/http"
+	"path/filepath"
 	"testing"
 	"time"
 )
@@ -50,7 +51,7 @@ const SAVED_AWS_REGION = "AwsRegion"
 // 3. Deploying that AMI using the example Terraform code
 // 4. Checking that the Nomad cluster comes up within a reasonable time period and can respond to requests
 func runNomadClusterColocatedTest(t *testing.T, packerBuildName string) {
-	examplesDir := test_structure.CopyTerraformFolderToTemp(t, REPO_ROOT, CLUSTER_COLOCATED_EXAMPLE_PATH)
+	examplesDir := test_structure.CopyTerraformFolderToTemp(t, REPO_ROOT, "examples")
 
 	defer test_structure.RunTestStage(t, "teardown", func() {
 		terraformOptions := test_structure.LoadTerraformOptions(t, examplesDir)
@@ -65,7 +66,8 @@ func runNomadClusterColocatedTest(t *testing.T, packerBuildName string) {
 		awsRegion := getRandomRegion(t)
 		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
 
-		amiId := buildAmi(t, AMI_EXAMPLE_PATH, packerBuildName, awsRegion)
+		packerTemplatePath := filepath.Join(examplesDir, "nomad-consul-ami", "nomad-consul.json")
+		amiId := buildAmi(t, packerTemplatePath, packerBuildName, awsRegion)
 		test_structure.SaveAmiId(t, examplesDir, amiId)
 	})
 
@@ -122,7 +124,8 @@ func runNomadClusterSeparateTest(t *testing.T, packerBuildName string) {
 		awsRegion := getRandomRegion(t)
 		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
 
-		amiId := buildAmi(t, AMI_EXAMPLE_PATH, packerBuildName, awsRegion)
+		packerTemplatePath := filepath.Join(examplesDir, "nomad-consul-ami", "nomad-consul.json")
+		amiId := buildAmi(t, packerTemplatePath, packerBuildName, awsRegion)
 		test_structure.SaveAmiId(t, examplesDir, amiId)
 	})
 
