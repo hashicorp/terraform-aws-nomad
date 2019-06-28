@@ -39,7 +39,7 @@ const CLUSTER_SEPARATE_EXAMPLE_OUTPUT_NOMAD_SERVER_ASG_NAME = "asg_name_nomad_se
 const DEFAULT_NUM_SERVERS = 3
 const DEFAULT_NUM_CLIENTS = 6
 
-const AMI_EXAMPLE_PATH = "../examples/nomad-consul-ami/nomad-consul.json"
+// const AMI_EXAMPLE_PATH = "../examples/nomad-consul-ami/nomad-consul.json"
 
 const SAVED_AWS_REGION = "AwsRegion"
 
@@ -51,7 +51,7 @@ const SAVED_AWS_REGION = "AwsRegion"
 // 3. Deploying that AMI using the example Terraform code
 // 4. Checking that the Nomad cluster comes up within a reasonable time period and can respond to requests
 func runNomadClusterColocatedTest(t *testing.T, packerBuildName string) {
-	examplesDir := test_structure.CopyTerraformFolderToTemp(t, REPO_ROOT, "examples")
+	examplesDir := test_structure.CopyTerraformFolderToTemp(t, REPO_ROOT, CLUSTER_COLOCATED_EXAMPLE_PATH)
 
 	defer test_structure.RunTestStage(t, "teardown", func() {
 		terraformOptions := test_structure.LoadTerraformOptions(t, examplesDir)
@@ -66,8 +66,7 @@ func runNomadClusterColocatedTest(t *testing.T, packerBuildName string) {
 		awsRegion := getRandomRegion(t)
 		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
 
-		packerTemplatePath := filepath.Join(examplesDir, "nomad-consul-ami", "nomad-consul.json")
-		amiId := buildAmi(t, packerTemplatePath, packerBuildName, awsRegion)
+		amiId := buildAmi(t, filepath.Join(examplesDir, "examples", "nomad-consul-ami", "nomad-consul.json"), packerBuildName, awsRegion)
 		test_structure.SaveAmiId(t, examplesDir, amiId)
 	})
 
@@ -109,7 +108,7 @@ func runNomadClusterColocatedTest(t *testing.T, packerBuildName string) {
 // 3. Deploying that AMI using the example Terraform code
 // 4. Checking that the Nomad cluster comes up within a reasonable time period and can respond to requests
 func runNomadClusterSeparateTest(t *testing.T, packerBuildName string) {
-	examplesDir := test_structure.CopyTerraformFolderToTemp(t, REPO_ROOT, "examples")
+	examplesDir := test_structure.CopyTerraformFolderToTemp(t, REPO_ROOT, "/")
 
 	defer test_structure.RunTestStage(t, "teardown", func() {
 		terraformOptions := test_structure.LoadTerraformOptions(t, examplesDir)
@@ -124,8 +123,7 @@ func runNomadClusterSeparateTest(t *testing.T, packerBuildName string) {
 		awsRegion := getRandomRegion(t)
 		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
 
-		packerTemplatePath := filepath.Join(examplesDir, "nomad-consul-ami", "nomad-consul.json")
-		amiId := buildAmi(t, packerTemplatePath, packerBuildName, awsRegion)
+		amiId := buildAmi(t, filepath.Join(examplesDir, "examples", "nomad-consul-ami", "nomad-consul.json"), packerBuildName, awsRegion)
 		test_structure.SaveAmiId(t, examplesDir, amiId)
 	})
 
@@ -135,7 +133,7 @@ func runNomadClusterSeparateTest(t *testing.T, packerBuildName string) {
 		uniqueId := random.UniqueId()
 
 		terraformOptions := &terraform.Options{
-			TerraformDir: filepath.Join(examplesDir, "nomad-consul-separate-cluster"),
+			TerraformDir: examplesDir,
 			Vars: map[string]interface{}{
 				CLUSTER_SEPARATE_EXAMPLE_VAR_NOMAD_CLUSTER_NAME:  fmt.Sprintf("test-%s", uniqueId),
 				CLUSTER_SEPARATE_EXAMPLE_VAR_CONSUL_CLUSTER_NAME: fmt.Sprintf("test-%s", uniqueId),
