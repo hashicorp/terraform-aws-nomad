@@ -133,7 +133,7 @@ func runNomadClusterSeparateTest(t *testing.T, packerBuildName string) {
 		uniqueId := random.UniqueId()
 
 		terraformOptions := &terraform.Options{
-			TerraformDir: examplesDir,
+			TerraformDir: filepath.Join(examplesDir, "examples", "nomad-consul-separate-cluster"),
 			Vars: map[string]interface{}{
 				CLUSTER_SEPARATE_EXAMPLE_VAR_NOMAD_CLUSTER_NAME:  fmt.Sprintf("test-%s", uniqueId),
 				CLUSTER_SEPARATE_EXAMPLE_VAR_CONSUL_CLUSTER_NAME: fmt.Sprintf("test-%s", uniqueId),

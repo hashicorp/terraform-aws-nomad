@@ -76,7 +76,6 @@ resource "aws_launch_configuration" "launch_configuration" {
 
     content {
       device_name           = ebs_block_device.value["device_name"]
-      volume_type           = ebs_block_device.value["volume_type"]
       volume_size           = ebs_block_device.value["volume_size"]
       iops                  = lookup(ebs_block_device.value, "iops", null)
       encrypted             = lookup(ebs_block_device.value, "encrypted", null)
