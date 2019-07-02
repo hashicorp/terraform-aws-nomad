@@ -39,8 +39,6 @@ const CLUSTER_SEPARATE_EXAMPLE_OUTPUT_NOMAD_SERVER_ASG_NAME = "asg_name_nomad_se
 const DEFAULT_NUM_SERVERS = 3
 const DEFAULT_NUM_CLIENTS = 6
 
-// const AMI_EXAMPLE_PATH = "../examples/nomad-consul-ami/nomad-consul.json"
-
 const SAVED_AWS_REGION = "AwsRegion"
 
 // Test the Nomad/Consul colocated cluster example by:
