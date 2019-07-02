@@ -25,7 +25,7 @@ servers have the necessary ports open for using Nomad, you can use this module a
 module "security_group_rules" {
   source = "github.com/hashicorp/terraform-aws-nomad//modules/nomad-security-group-rules?ref=v0.0.1"
 
-  security_group_id = "${module.consul_servers.security_group_id}"
+  security_group_id = module.consul_servers.security_group_id
 
   # ... (other params omitted) ...
 }
