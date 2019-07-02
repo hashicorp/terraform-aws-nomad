@@ -43,9 +43,19 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      
+      - restore_cache:
+          keys:
+            - dep-v2-{{ checksum "test/Gopkg.lock" }}
+
       - run:
           <<: *install_gruntwork_utils
-                
+
+      - save_cache:
+          key: dep-v2-{{ checksum "test/Gopkg.lock" }}
+          paths:
+            - /go/src/github.com/hashicorp/terraform-aws-nomad/test/vendor
+
       - run:
           name: create log directory
           command: mkdir -p /tmp/logs
