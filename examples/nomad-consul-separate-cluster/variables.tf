@@ -22,7 +22,7 @@
 variable "ami_id" {
   description = "The ID of the AMI to run in the cluster. This should be an AMI built from the Packer template under examples/nomad-consul-ami/nomad-consul.json. If no AMI is specified, the template will 'just work' by using the example public AMIs. WARNING! Do not use the example AMIs in a production setting!"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "nomad_cluster_name" {
@@ -62,8 +62,8 @@ variable "cluster_tag_key" {
 }
 
 variable "ssh_key_name" {
-  description = "The name of an EC2 Key Pair that can be used to SSH to the EC2 Instances in this cluster. Set to an empty string to not associate a Key Pair."
+  description = "The name of an EC2 Key Pair that can be used to SSH to the EC2 Instances in this cluster. Set to null to not associate a Key Pair."
   type        = string
-  default     = ""
+  default     = null
 }
 

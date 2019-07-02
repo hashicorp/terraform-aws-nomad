@@ -74,7 +74,7 @@ module "nomad_servers" {
   max_size         = var.num_nomad_servers
   desired_capacity = var.num_nomad_servers
 
-  ami_id    = var.ami_id == "" ? data.aws_ami.nomad_consul.image_id : var.ami_id
+  ami_id    = var.ami_id == null ? data.aws_ami.nomad_consul.image_id : var.ami_id
   user_data = data.template_file.user_data_nomad_server.rendered
 
   vpc_id     = data.aws_vpc.default.id
@@ -130,7 +130,7 @@ module "consul_servers" {
   cluster_tag_key   = var.cluster_tag_key
   cluster_tag_value = var.consul_cluster_name
 
-  ami_id    = var.ami_id == "" ? data.aws_ami.nomad_consul.image_id : var.ami_id
+  ami_id    = var.ami_id == null ? data.aws_ami.nomad_consul.image_id : var.ami_id
   user_data = data.template_file.user_data_consul_server.rendered
 
   vpc_id     = data.aws_vpc.default.id
@@ -181,7 +181,7 @@ module "nomad_clients" {
   min_size         = var.num_nomad_clients
   max_size         = var.num_nomad_clients
   desired_capacity = var.num_nomad_clients
-  ami_id           = var.ami_id == "" ? data.aws_ami.nomad_consul.image_id : var.ami_id
+  ami_id           = var.ami_id == null ? data.aws_ami.nomad_consul.image_id : var.ami_id
   user_data        = data.template_file.user_data_nomad_client.rendered
   vpc_id           = data.aws_vpc.default.id
   subnet_ids       = data.aws_subnet_ids.default.ids
