@@ -67,12 +67,8 @@ module "nomad_servers" {
   source = "../../modules/nomad-cluster"
 
   cluster_name  = "${var.nomad_cluster_name}-server"
+  cluster_size  = var.num_nomad_servers
   instance_type = "t2.micro"
-
-  # You should typically use a fixed size of 3 or 5 for your Nomad server cluster
-  min_size         = var.num_nomad_servers
-  max_size         = var.num_nomad_servers
-  desired_capacity = var.num_nomad_servers
 
   ami_id    = var.ami_id == null ? data.aws_ami.nomad_consul.image_id : var.ami_id
   user_data = data.template_file.user_data_nomad_server.rendered
