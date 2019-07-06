@@ -135,18 +135,12 @@ module "clients" {
   source = "./modules/nomad-cluster"
 
   cluster_name  = "${var.cluster_name}-client"
+  cluster_size  = var.num_servers
   instance_type = var.instance_type
 
   # Give the clients a different tag so they don't try to join the server cluster
   cluster_tag_key   = "nomad-clients"
   cluster_tag_value = var.cluster_name
-
-  # To keep the example simple, we are using a fixed-size cluster. In real-world usage, you could use auto scaling
-  # policies to dynamically resize the cluster in response to load.
-  min_size = var.num_clients
-
-  max_size         = var.num_clients
-  desired_capacity = var.num_clients
 
   ami_id    = var.ami_id == null ? data.aws_ami.nomad_consul.image_id : var.ami_id
   user_data = data.template_file.user_data_client.rendered
