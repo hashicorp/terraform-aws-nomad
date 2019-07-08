@@ -71,7 +71,7 @@ jobs:
 
       - run:
           name: run tests
-          command: run-go-tests --path test --timeout 2h | tee /tmp/logs/all.log
+          command: run-go-tests --circle-ci-2 --path test --timeout 2h | tee /tmp/logs/all.log
           no_output_timeout: 3600s
 
       - run:
