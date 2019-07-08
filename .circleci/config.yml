@@ -21,7 +21,7 @@ install_gruntwork_utils: &install_gruntwork_utils
     curl -Ls https://raw.githubusercontent.com/gruntwork-io/gruntwork-installer/master/bootstrap-gruntwork-installer.sh | bash /dev/stdin --version "${GRUNTWORK_INSTALLER_VERSION}"
     sudo -E gruntwork-install --module-name "gruntwork-module-circleci-helpers" --repo "https://github.com/gruntwork-io/module-ci" --tag "${MODULE_CI_VERSION}"
     sudo -E gruntwork-install --binary-name "docs-generator" --repo "https://github.com/gruntwork-io/module-ci" --tag "v0.13.11"
-    sudo -E gruntwork-install --binary-name "terratest_log_parser" --repo "https://github.com/gruntwork-io/terratest" --tag "${TERRATEST_LOG_PARSER_VERSION}"
+    # sudo -E gruntwork-install --binary-name "terratest_log_parser" --repo "https://github.com/gruntwork-io/terratest" --tag "${TERRATEST_LOG_PARSER_VERSION}"
     configure-environment-for-gruntwork-module \
       --terraform-version ${TERRAFORM_VERSION} \
       --terragrunt-version ${TERRAGRUNT_VERSION} \
@@ -74,10 +74,10 @@ jobs:
           command: run-go-tests --circle-ci-2 --path test --timeout 2h | tee /tmp/logs/all.log
           no_output_timeout: 3600s
 
-      - run:
-          name: parse test output
-          command: terratest_log_parser --testlog /tmp/logs/all.log --outputdir /tmp/logs
-          when: always
+      # - run:
+      #     name: parse test output
+      #     command: terratest_log_parser --testlog /tmp/logs/all.log --outputdir /tmp/logs
+      #     when: always
 
       - store_artifacts:
           path: /tmp/logs
