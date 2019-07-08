@@ -1,4 +1,4 @@
-workspace_root: &workspace_root /go/src/github.com/hashicorp/terraform-aws-consul
+workspace_root: &workspace_root /go/src/github.com/hashicorp/terraform-aws-nomad
 defaults: &defaults
   working_directory: *workspace_root
   docker:
