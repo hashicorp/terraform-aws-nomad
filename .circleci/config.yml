@@ -21,11 +21,11 @@ install_gruntwork_utils: &install_gruntwork_utils
     sudo -E gruntwork-install --binary-name "docs-generator" --repo "https://github.com/gruntwork-io/module-ci" --tag "v0.13.11"
     sudo -E gruntwork-install --binary-name "terratest_log_parser" --repo "https://github.com/gruntwork-io/terratest" --tag "${TERRATEST_LOG_PARSER_VERSION}"
     configure-environment-for-gruntwork-module \
-      --circle-ci-2-machine-executor \
       --terraform-version ${TERRAFORM_VERSION} \
       --terragrunt-version ${TERRAGRUNT_VERSION} \
       --packer-version ${PACKER_VERSION} \
       --use-go-dep \
+      --circle-ci-2 \
       --go-version ${GOLANG_VERSION} \
       --go-src-path test    
 
