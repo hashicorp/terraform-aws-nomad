@@ -1,4 +1,6 @@
+workspace_root: &workspace_root /go/src/github.com/hashicorp/terraform-aws-nomad
 defaults: &defaults
+  working_directory: *workspace_root
   docker:
     - image: 087285199408.dkr.ecr.us-east-1.amazonaws.com/circle-ci-test-image-base:latest
   #machine:
@@ -15,6 +17,7 @@ defaults: &defaults
 install_gruntwork_utils: &install_gruntwork_utils
   name: install gruntwork utils
   command: |
+    echo 'export PATH=$HOME/terraform:$HOME/packer:$PATH' >> $BASH_ENV
     curl -Ls https://raw.githubusercontent.com/gruntwork-io/gruntwork-installer/master/bootstrap-gruntwork-installer.sh | bash /dev/stdin --version "${GRUNTWORK_INSTALLER_VERSION}"
     sudo -E gruntwork-install --module-name "gruntwork-module-circleci-helpers" --repo "https://github.com/gruntwork-io/module-ci" --tag "${MODULE_CI_VERSION}"
     sudo -E gruntwork-install --binary-name "docs-generator" --repo "https://github.com/gruntwork-io/module-ci" --tag "v0.13.11"
@@ -49,6 +52,7 @@ jobs:
             - dep-v2-{{ checksum "test/Gopkg.lock" }}
 
       - run:
+          <<: *defaults
           <<: *install_gruntwork_utils
 
       - save_cache:
