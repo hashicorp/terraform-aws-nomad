@@ -1,6 +1,4 @@
-workspace_root: &workspace_root /go/src/github.com/hashicorp/terraform-aws-nomad
 defaults: &defaults
-  working_directory: *workspace_root
   docker:
     - image: 087285199408.dkr.ecr.us-east-1.amazonaws.com/circle-ci-test-image-base:latest
   #machine:
@@ -52,7 +50,6 @@ jobs:
             - dep-v2-{{ checksum "test/Gopkg.lock" }}
 
       - run:
-          <<: *defaults
           <<: *install_gruntwork_utils
 
       - save_cache:
