@@ -12,10 +12,12 @@
 # Packer template in the Consul AWS Module.
 # ---------------------------------------------------------------------------------------------------------------------
 
-# Terraform 0.9.5 suffered from https://github.com/hashicorp/terraform/issues/14399, which causes this template the
-# conditionals in this template to fail.
+# ----------------------------------------------------------------------------------------------------------------------
+# REQUIRE A SPECIFIC TERRAFORM VERSION OR HIGHER
+# This module has been updated with 0.12 syntax, which means it is no longer compatible with any versions below 0.12.
+# ----------------------------------------------------------------------------------------------------------------------
 terraform {
-  required_version = ">= 0.9.3, != 0.9.5"
+  required_version = ">= 0.12"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -68,22 +70,22 @@ module "nomad_servers" {
   instance_type = "t2.micro"
 
   # You should typically use a fixed size of 3 or 5 for your Nomad server cluster
-  min_size         = "${var.num_nomad_servers}"
-  max_size         = "${var.num_nomad_servers}"
-  desired_capacity = "${var.num_nomad_servers}"
+  min_size         = var.num_nomad_servers
+  max_size         = var.num_nomad_servers
+  desired_capacity = var.num_nomad_servers
 
-  ami_id    = "${var.ami_id == "" ? data.aws_ami.nomad_consul.image_id : var.ami_id}"
-  user_data = "${data.template_file.user_data_nomad_server.rendered}"
+  ami_id    = var.ami_id == null ? data.aws_ami.nomad_consul.image_id : var.ami_id
+  user_data = data.template_file.user_data_nomad_server.rendered
 
-  vpc_id     = "${data.aws_vpc.default.id}"
-  subnet_ids = "${data.aws_subnet_ids.default.ids}"
+  vpc_id     = data.aws_vpc.default.id
+  subnet_ids = data.aws_subnet_ids.default.ids
 
   # To make testing easier, we allow requests from any IP address here but in a production deployment, we strongly
   # recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
   allowed_ssh_cidr_blocks = ["0.0.0.0/0"]
 
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
-  ssh_key_name                = "${var.ssh_key_name}"
+  ssh_key_name                = var.ssh_key_name
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -93,9 +95,9 @@ module "nomad_servers" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_iam_policies_servers" {
-  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-iam-policies?ref=v0.3.1"
+  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-iam-policies?ref=v0.7.0"
 
-  iam_role_id = "${module.nomad_servers.iam_role_id}"
+  iam_role_id = module.nomad_servers.iam_role_id
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -104,12 +106,12 @@ module "consul_iam_policies_servers" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 data "template_file" "user_data_nomad_server" {
-  template = "${file("${path.module}/user-data-nomad-server.sh")}"
+  template = file("${path.module}/user-data-nomad-server.sh")
 
-  vars {
-    num_servers       = "${var.num_nomad_servers}"
-    cluster_tag_key   = "${var.cluster_tag_key}"
-    cluster_tag_value = "${var.consul_cluster_name}"
+  vars = {
+    num_servers       = var.num_nomad_servers
+    cluster_tag_key   = var.cluster_tag_key
+    cluster_tag_value = var.consul_cluster_name
   }
 }
 
@@ -118,28 +120,28 @@ data "template_file" "user_data_nomad_server" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_servers" {
-  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-cluster?ref=v0.3.1"
+  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-cluster?ref=v0.7.0"
 
   cluster_name  = "${var.consul_cluster_name}-server"
-  cluster_size  = "${var.num_consul_servers}"
+  cluster_size  = var.num_consul_servers
   instance_type = "t2.micro"
 
   # The EC2 Instances will use these tags to automatically discover each other and form a cluster
-  cluster_tag_key   = "${var.cluster_tag_key}"
-  cluster_tag_value = "${var.consul_cluster_name}"
+  cluster_tag_key   = var.cluster_tag_key
+  cluster_tag_value = var.consul_cluster_name
 
-  ami_id    = "${var.ami_id == "" ? data.aws_ami.nomad_consul.image_id : var.ami_id}"
-  user_data = "${data.template_file.user_data_consul_server.rendered}"
+  ami_id    = var.ami_id == null ? data.aws_ami.nomad_consul.image_id : var.ami_id
+  user_data = data.template_file.user_data_consul_server.rendered
 
-  vpc_id     = "${data.aws_vpc.default.id}"
-  subnet_ids = "${data.aws_subnet_ids.default.ids}"
+  vpc_id     = data.aws_vpc.default.id
+  subnet_ids = data.aws_subnet_ids.default.ids
 
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
   allowed_ssh_cidr_blocks = ["0.0.0.0/0"]
 
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
-  ssh_key_name                = "${var.ssh_key_name}"
+  ssh_key_name                = var.ssh_key_name
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -148,11 +150,11 @@ module "consul_servers" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 data "template_file" "user_data_consul_server" {
-  template = "${file("${path.module}/user-data-consul-server.sh")}"
+  template = file("${path.module}/user-data-consul-server.sh")
 
-  vars {
-    cluster_tag_key   = "${var.cluster_tag_key}"
-    cluster_tag_value = "${var.consul_cluster_name}"
+  vars = {
+    cluster_tag_key   = var.cluster_tag_key
+    cluster_tag_value = var.consul_cluster_name
   }
 }
 
@@ -171,27 +173,30 @@ module "nomad_clients" {
 
   # Give the clients a different tag so they don't try to join the server cluster
   cluster_tag_key   = "nomad-clients"
-  cluster_tag_value = "${var.nomad_cluster_name}"
+  cluster_tag_value = var.nomad_cluster_name
 
   # To keep the example simple, we are using a fixed-size cluster. In real-world usage, you could use auto scaling
   # policies to dynamically resize the cluster in response to load.
 
-  min_size         = "${var.num_nomad_clients}"
-  max_size         = "${var.num_nomad_clients}"
-  desired_capacity = "${var.num_nomad_clients}"
-  ami_id           = "${var.ami_id == "" ? data.aws_ami.nomad_consul.image_id : var.ami_id}"
-  user_data        = "${data.template_file.user_data_nomad_client.rendered}"
-  vpc_id           = "${data.aws_vpc.default.id}"
-  subnet_ids       = "${data.aws_subnet_ids.default.ids}"
+  min_size         = var.num_nomad_clients
+  max_size         = var.num_nomad_clients
+  desired_capacity = var.num_nomad_clients
+  ami_id           = var.ami_id == null ? data.aws_ami.nomad_consul.image_id : var.ami_id
+  user_data        = data.template_file.user_data_nomad_client.rendered
+  vpc_id           = data.aws_vpc.default.id
+  subnet_ids       = data.aws_subnet_ids.default.ids
+
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
-  allowed_ssh_cidr_blocks = ["0.0.0.0/0"]
+  allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
-  ssh_key_name                = "${var.ssh_key_name}"
-  ebs_block_devices = [{
-    "device_name" = "/dev/xvde"
-    "volume_size" = "10"
-  }]
+  ssh_key_name                = var.ssh_key_name
+  ebs_block_devices = [
+    {
+      "device_name" = "/dev/xvde"
+      "volume_size" = "10"
+    },
+  ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -201,9 +206,9 @@ module "nomad_clients" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_iam_policies_clients" {
-  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-iam-policies?ref=v0.3.1"
+  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-iam-policies?ref=v0.7.0"
 
-  iam_role_id = "${module.nomad_clients.iam_role_id}"
+  iam_role_id = module.nomad_clients.iam_role_id
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -212,11 +217,11 @@ module "consul_iam_policies_clients" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 data "template_file" "user_data_nomad_client" {
-  template = "${file("${path.module}/user-data-nomad-client.sh")}"
+  template = file("${path.module}/user-data-nomad-client.sh")
 
-  vars {
-    cluster_tag_key   = "${var.cluster_tag_key}"
-    cluster_tag_value = "${var.consul_cluster_name}"
+  vars = {
+    cluster_tag_key   = var.cluster_tag_key
+    cluster_tag_value = var.consul_cluster_name
   }
 }
 
@@ -232,7 +237,9 @@ data "aws_vpc" "default" {
 }
 
 data "aws_subnet_ids" "default" {
-  vpc_id = "${data.aws_vpc.default.id}"
+  vpc_id = data.aws_vpc.default.id
 }
 
-data "aws_region" "current" {}
+data "aws_region" "current" {
+}
+

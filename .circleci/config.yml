@@ -1,11 +1,32 @@
----
-workspace_root: &workspace_root
-  /go/src/github.com/hashicorp/terraform-aws-nomad
-
+workspace_root: &workspace_root /go/src/github.com/hashicorp/terraform-aws-nomad
 defaults: &defaults
   working_directory: *workspace_root
   docker:
     - image: 087285199408.dkr.ecr.us-east-1.amazonaws.com/circle-ci-test-image-base:latest
+  environment:
+    GRUNTWORK_INSTALLER_VERSION: v0.0.21
+    TERRATEST_LOG_PARSER_VERSION: v0.17.4
+    MODULE_CI_VERSION: v0.13.15
+    TERRAFORM_VERSION: 0.12.2
+    TERRAGRUNT_VERSION: NONE
+    PACKER_VERSION: 1.4.1
+    GOLANG_VERSION: 1.11
+
+install_gruntwork_utils: &install_gruntwork_utils
+  name: install gruntwork utils
+  command: |
+    echo 'export PATH=$HOME/terraform:$HOME/packer:$PATH' >> $BASH_ENV
+    curl -Ls https://raw.githubusercontent.com/gruntwork-io/gruntwork-installer/master/bootstrap-gruntwork-installer.sh | bash /dev/stdin --version "${GRUNTWORK_INSTALLER_VERSION}"
+    sudo -E gruntwork-install --module-name "gruntwork-module-circleci-helpers" --repo "https://github.com/gruntwork-io/module-ci" --tag "${MODULE_CI_VERSION}"
+    sudo -E gruntwork-install --binary-name "docs-generator" --repo "https://github.com/gruntwork-io/module-ci" --tag "v0.13.11"
+    configure-environment-for-gruntwork-module \
+      --terraform-version ${TERRAFORM_VERSION} \
+      --terragrunt-version ${TERRAGRUNT_VERSION} \
+      --packer-version ${PACKER_VERSION} \
+      --use-go-dep \
+      --circle-ci-2 \
+      --go-version ${GOLANG_VERSION} \
+      --go-src-path test    
 
 version: 2
 jobs:
@@ -18,32 +39,42 @@ jobs:
           name: Validate Terraform Formatting
           command: "[ -z \"$(terraform fmt -write=false)\" ] || { terraform fmt -write=false -diff; exit 1; }"
 
-  build:
-    <<: *defaults
-    steps:
-      - checkout
-      - attach_workspace:
-          at: *workspace_root
-      - restore_cache:
-          keys:
-            - dep-{{ checksum "test/Gopkg.lock" }}
-      - run: configure-environment-for-gruntwork-module --go-src-path test --use-go-dep --circle-ci-2
-      - save_cache:
-          key: dep-{{ checksum "test/Gopkg.lock" }}
-          paths:
-            - /go/src/github.com/hashicorp/terraform-aws-nomad/test/vendor
-      - persist_to_workspace:
-          root: *workspace_root
-          paths: test/vendor
-
   test:
     <<: *defaults
     steps:
       - checkout
-      - run: echo 'export PATH=$HOME/terraform:$HOME/packer:$PATH' >> $BASH_ENV
       - attach_workspace:
           at: *workspace_root
-      - run: run-go-tests --circle-ci-2 --path test
+
+      - restore_cache:
+          keys:
+            - dep-v2-{{ checksum "test/Gopkg.lock" }}
+
+      - run:
+          <<: *install_gruntwork_utils
+
+      - save_cache:
+          key: dep-v2-{{ checksum "test/Gopkg.lock" }}
+          paths:
+            - /go/src/github.com/hashicorp/terraform-aws-nomad/test/vendor
+      
+      - persist_to_workspace:
+          root: *workspace_root
+          paths: test/vendor
+
+      - run:
+          name: create log directory
+          command: mkdir -p /tmp/logs
+
+      - run:
+          name: run tests
+          command: run-go-tests --circle-ci-2 --path test --timeout 2h | tee /tmp/logs/all.log
+          no_output_timeout: 3600s
+
+      - store_artifacts:
+          path: /tmp/logs
+      - store_test_results:
+          path: /tmp/logs      
 
   deploy:
     <<: *defaults
@@ -64,16 +95,13 @@ workflows:
   version: 2
   build-and-test:
     jobs:
-      - build
       - test:
-          requires:
-            - build
           filters:
             branches:
               ignore: publish-amis
       - deploy:
           requires:
-            - build
+            - test
           filters:
             branches:
               only: publish-amis
@@ -88,7 +116,4 @@ workflows:
               only:
                 - master
     jobs:
-      - build
-      - test:
-          requires:
-            - build
+      - test

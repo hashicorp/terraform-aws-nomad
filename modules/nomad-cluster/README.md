@@ -9,8 +9,6 @@ Note that this module assumes you have a separate [Consul](https://www.consul.io
 to run Consul and Nomad in the same cluster, instead of using this module, see the [Deploy Nomad and Consul in the same
 cluster documentation](https://github.com/hashicorp/terraform-aws-nomad/tree/master/README.md#deploy-nomad-and-consul-in-the-same-cluster).
 
-
-
 ## How do you use this module?
 
 This folder defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your
@@ -38,17 +36,17 @@ module "nomad_cluster" {
 
 Note the following parameters:
 
-* `source`: Use this parameter to specify the URL of the nomad-cluster module. The double slash (`//`) is intentional
+- `source`: Use this parameter to specify the URL of the nomad-cluster module. The double slash (`//`) is intentional
   and required. Terraform uses it to specify subfolders within a Git repo (see [module
   sources](https://www.terraform.io/docs/modules/sources.html)). The `ref` parameter specifies a specific Git tag in
   this repo. That way, instead of using the latest version of this module from the `master` branch, which
   will change every time you run Terraform, you're using a fixed version of the repo.
 
-* `ami_id`: Use this parameter to specify the ID of a Nomad [Amazon Machine Image
+- `ami_id`: Use this parameter to specify the ID of a Nomad [Amazon Machine Image
   (AMI)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) to deploy on each server in the cluster. You
   should install Nomad in this AMI using the scripts in the [install-nomad](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) module.
 
-* `user_data`: Use this parameter to specify a [User
+- `user_data`: Use this parameter to specify a [User
   Data](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html#user-data-shell-scripts) script that each
   server will run during boot. This is where you can use the [run-nomad script](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad) to configure and
   run Nomad. The `run-nomad` script is one of the scripts installed by the [install-nomad](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad)
@@ -59,10 +57,6 @@ You can find the other parameters in [vars.tf](vars.tf).
 Check out the [nomad-consul-separate-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster example) for working
 sample code. Note that if you want to run Nomad and Consul on the same cluster, see the [nomad-consul-colocated-cluster
 example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/MAIN.md example) instead.
-
-
-
-
 
 ## How do you connect to the Nomad cluster?
 
@@ -129,17 +123,12 @@ And to submit a job called `example.nomad`:
 ==> Evaluation "0d159869" finished with status "complete"
 ```
 
-
-
 ### Using the Nomad agent on another EC2 Instance
 
 For production usage, your EC2 Instances should be running the [Nomad
 agent](https://www.nomadproject.io/docs/agent/index.html). The agent nodes should discover the Nomad server nodes
 automatically using Consul. Check out the [Service Discovery
 documentation](https://www.nomadproject.io/docs/service-discovery/index.html) for details.
-
-
-
 
 ## What's included in this module?
 
@@ -149,10 +138,9 @@ This module creates the following architecture:
 
 This architecture consists of the following resources:
 
-* [Auto Scaling Group](#auto-scaling-group)
-* [Security Group](#security-group)
-* [IAM Role and Permissions](#iam-role-and-permissions)
-
+- [Auto Scaling Group](#auto-scaling-group)
+- [Security Group](#security-group)
+- [IAM Role and Permissions](#iam-role-and-permissions)
 
 ### Auto Scaling Group
 
@@ -162,19 +150,17 @@ Zones](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availabi
 Instances should be running an AMI that has had Nomad installed via the [install-nomad](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad)
 module. You pass in the ID of the AMI to run using the `ami_id` input parameter.
 
-
 ### Security Group
 
 Each EC2 Instance in the ASG has a Security Group that allows:
 
-* All outbound requests
-* All the inbound ports specified in the [Nomad
+- All outbound requests
+- All the inbound ports specified in the [Nomad
   documentation](https://www.nomadproject.io/docs/agent/configuration/index.html#ports)
 
 The Security Group ID is exported as an output variable if you need to add additional rules.
 
 Check out the [Security section](#security) for more details.
-
 
 ### IAM Role and Permissions
 
@@ -183,10 +169,6 @@ We give this IAM role a small set of IAM permissions that each EC2 Instance can 
 Instances in its ASG and form a cluster with them.
 
 The IAM Role ARN is exported as an output variable if you need to add additional permissions.
-
-
-
-
 
 ## How do you roll out updates?
 
@@ -201,15 +183,15 @@ NOT actually deploy those new instances. To make that happen, you should do the 
 
 1. Issue an API call to one of the old Instances in the ASG to have it leave gracefully. E.g.:
 
-    ```
-    nomad server-force-leave -address=<OLD_INSTANCE_IP>:4646
-    ```
+   ```
+   nomad server-force-leave -address=<OLD_INSTANCE_IP>:4646
+   ```
 
 1. Once the instance has left the cluster, terminate it:
 
-    ```
-    aws ec2 terminate-instances --instance-ids <OLD_INSTANCE_ID>
-    ```
+   ```
+   aws ec2 terminate-instances --instance-ids <OLD_INSTANCE_ID>
+   ```
 
 1. After a minute or two, the ASG should automatically launch a new Instance, with the new AMI, to replace the old one.
 
@@ -218,10 +200,6 @@ NOT actually deploy those new instances. To make that happen, you should do the 
 1. Repeat these steps for each of the other old Instances in the ASG.
 
 We will add a script in the future to automate this process (PRs are welcome!).
-
-
-
-
 
 ## What happens if a node crashes?
 
@@ -234,10 +212,6 @@ There are two ways a Nomad node may go down:
    command](https://www.nomadproject.io/docs/commands/server-force-leave.html). We may add a script to do this
    automatically in the future. For more info, see the [Nomad Outage
    documentation](https://www.nomadproject.io/guides/outage.html).
-
-
-
-
 
 ## How do you connect load balancers to the Auto Scaling Group (ASG)?
 
@@ -258,8 +232,8 @@ module "nomad" {
 
 # Create a new load balancer attachment
 resource "aws_autoscaling_attachment" "asg_attachment_bar" {
-  autoscaling_group_name = "${module.nomad.asg_name}"
-  alb_target_group_arn   = "${aws_alb_target_group.test.arn}"
+  autoscaling_group_name = module.nomad.asg_name
+  alb_target_group_arn   = aws_alb_target_group.test.arn
 }
 ```
 
@@ -279,14 +253,10 @@ module "nomad" {
 
 # Create a new load balancer attachment
 resource "aws_autoscaling_attachment" "asg_attachment_bar" {
-  autoscaling_group_name = "${module.nomad.asg_name}"
-  elb                    = "${aws_elb.bar.id}"
+  autoscaling_group_name = module.nomad.asg_name
+  elb                    = aws_elb.bar.id
 }
 ```
-
-
-
-
 
 ## Security
 
@@ -298,12 +268,10 @@ Here are some of the main security considerations to keep in mind when using thi
 1. [Security groups](#security-groups)
 1. [SSH access](#ssh-access)
 
-
 ### Encryption in transit
 
 Nomad can encrypt all of its network traffic. For instructions on enabling network encryption, have a look at the
 [How do you handle encryption documentation](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad#how-do-you-handle-encryption).
-
 
 ### Encryption at rest
 
@@ -312,27 +280,23 @@ rest, you must enable encryption in your Nomad AMI. If you're creating the AMI u
 the [nomad-consul-ami example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-ami)), you need to set the [encrypt_boot
 parameter](https://www.packer.io/docs/builders/amazon-ebs.html#encrypt_boot) to `true`.
 
-
 ### Dedicated instances
 
 If you wish to use dedicated instances, you can set the `tenancy` parameter to `"dedicated"` in this module.
-
 
 ### Security groups
 
 This module attaches a security group to each EC2 Instance that allows inbound requests as follows:
 
-* **Nomad**: For all the [ports used by Nomad](https://www.nomadproject.io/docs/agent/configuration/index.html#ports),
+- **Nomad**: For all the [ports used by Nomad](https://www.nomadproject.io/docs/agent/configuration/index.html#ports),
   you can use the `allowed_inbound_cidr_blocks` parameter to control the list of
   [CIDR blocks](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) that will be allowed access.
 
-* **SSH**: For the SSH port (default: 22), you can use the `allowed_ssh_cidr_blocks` parameter to control the list of
+- **SSH**: For the SSH port (default: 22), you can use the `allowed_ssh_cidr_blocks` parameter to control the list of
   [CIDR blocks](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) that will be allowed access.
 
 Note that all the ports mentioned above are configurable via the `xxx_port` variables (e.g. `http_port`). See
 [vars.tf](vars.tf) for the full list.
-
-
 
 ### SSH access
 
@@ -340,19 +304,14 @@ You can associate an [EC2 Key Pair](http://docs.aws.amazon.com/AWSEC2/latest/Use
 of the EC2 Instances in this cluster by specifying the Key Pair's name in the `ssh_key_name` variable. If you don't
 want to associate a Key Pair with these servers, set `ssh_key_name` to an empty string.
 
-
-
-
-
 ## What's NOT included in this module?
 
 This module does NOT handle the following items, which you may want to provide on your own:
 
-* [Consul](#consul)
-* [Monitoring, alerting, log aggregation](#monitoring-alerting-log-aggregation)
-* [VPCs, subnets, route tables](#vpcs-subnets-route-tables)
-* [DNS entries](#dns-entries)
-
+- [Consul](#consul)
+- [Monitoring, alerting, log aggregation](#monitoring-alerting-log-aggregation)
+- [VPCs, subnets, route tables](#vpcs-subnets-route-tables)
+- [DNS entries](#dns-entries)
 
 ### Consul
 
@@ -360,13 +319,11 @@ This module assumes you already have Consul deployed in a separate cluster. If y
 same cluster, instead of using this module, see the [Deploy Nomad and Consul in the same cluster
 documentation](https://github.com/hashicorp/terraform-aws-nomad/tree/master/README.md#deploy-nomad-and-consul-in-the-same-cluster).
 
-
 ### Monitoring, alerting, log aggregation
 
 This module does not include anything for monitoring, alerting, or log aggregation. All ASGs and EC2 Instances come
 with limited [CloudWatch](https://aws.amazon.com/cloudwatch/) metrics built-in, but beyond that, you will have to
 provide your own solutions.
-
 
 ### VPCs, subnets, route tables
 
@@ -374,9 +331,6 @@ This module assumes you've already created your network topology (VPC, subnets, 
 pass in the the relevant info about your network topology (e.g. `vpc_id`, `subnet_ids`) as input variables to this
 module.
 
-
 ### DNS entries
 
 This module does not create any DNS entries for Nomad (e.g. in Route 53).
-
-
