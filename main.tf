@@ -135,7 +135,7 @@ module "clients" {
   source = "./modules/nomad-cluster"
 
   cluster_name  = "${var.cluster_name}-client"
-  cluster_size  = var.num_servers
+  cluster_size  = var.num_clients
   instance_type = var.instance_type
 
   # Give the clients a different tag so they don't try to join the server cluster
