@@ -105,9 +105,9 @@ variable "spot_price" {
 }
 
 variable "tenancy" {
-  description = "The tenancy of the instance. Must be one of: default or dedicated."
+  description = "The tenancy of the instance. Must be one of: null, default or dedicated. For EC2 Spot Instances only null or dedicated can be used."
   type        = string
-  default     = "default"
+  default     = null
 }
 
 variable "root_volume_ebs_optimized" {
