@@ -8,6 +8,28 @@
   },
   "builders": [
     {
+      "name": "ubuntu18-ami",
+      "ami_name": "nomad-consul-ubuntu18-{{isotime | clean_ami_name}}",
+      "ami_description": "An example of how to build an Ubuntu 18.04 AMI that has Nomad and Consul installed",
+      "instance_type": "t2.micro",
+      "region": "{{user `aws_region`}}",
+      "type": "amazon-ebs",
+      "source_ami_filter": {
+       "filters": {
+         "virtualization-type": "hvm",
+         "architecture": "x86_64",
+         "name": "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*",
+         "block-device-mapping.volume-type": "gp2",
+         "root-device-type": "ebs"
+       },
+       "owners": [
+         "099720109477"
+       ],
+       "most_recent": true
+      },
+      "ssh_username": "ubuntu"
+    },
+    {
       "ami_name": "nomad-consul-ubuntu-{{isotime | clean_ami_name}}",
       "ami_description": "An Ubuntu 16.04 AMI that has Nomad and Consul installed.",
       "instance_type": "t2.micro",
@@ -59,7 +81,8 @@
         "sudo apt-get install -y git"
       ],
       "only": [
-        "ubuntu16-ami"
+        "ubuntu16-ami",
+        "ubuntu18-ami"
       ]
     },
     {
