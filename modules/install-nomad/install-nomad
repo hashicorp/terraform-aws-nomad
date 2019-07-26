@@ -3,7 +3,8 @@
 # operating systems:
 #
 # 1. Ubuntu 16.04
-# 1. Amazon Linux
+# 2. Ubuntu 18.04
+# 3. Amazon Linux
 
 set -e
 
@@ -22,7 +23,7 @@ function print_usage {
   echo
   echo "Usage: install-nomad [OPTIONS]"
   echo
-  echo "This script can be used to install Nomad and its dependencies. This script has been tested with Ubuntu 16.04 and Amazon Linux."
+  echo "This script can be used to install Nomad and its dependencies. This script has been tested with Ubuntu 16.04, Ubuntu 18.04 and Amazon Linux."
   echo
   echo "Options:"
   echo
