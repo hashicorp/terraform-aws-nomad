@@ -1,3 +1,4 @@
+[![Maintained by Gruntwork.io](https://img.shields.io/badge/maintained%20by-gruntwork.io-%235849a6.svg)](https://gruntwork.io/?ref=aws_nomad_repo)
 # Nomad AWS Module
 
 This repo contains a set of modules in the [modules folder](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules) for deploying a [Nomad](https://www.nomadproject.io/) cluster on
