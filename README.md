@@ -38,11 +38,11 @@ number of client nodes, which are used for running jobs.
 
 ## Learn
 
-This repo is a part of [the Gruntwork Infrastructure as Code
-Library](https://gruntwork.io/infrastructure-as-code-library/), a collection of reusable, battle-tested, production
-ready infrastructure code. If you've never used the Infrastructure as Code Library before, make sure to read [How to use
-the Gruntwork Infrastructure as Code
-Library](https://gruntwork.io/guides/foundations/how-to-use-gruntwork-infrastructure-as-code-library/)!
+This repo is maintained by [Gruntwork](https://www.gruntwork.io), and follows the same patterns as [the Gruntwork
+Infrastructure as Code Library](https://gruntwork.io/infrastructure-as-code-library/), a collection of reusable,
+battle-tested, production ready infrastructure code. You can read [How to use the Gruntwork Infrastructure as Code
+Library](https://gruntwork.io/guides/foundations/how-to-use-gruntwork-infrastructure-as-code-library/) for an overview
+of how to use modules maintained by Gruntwork!
 
 ### Core concepts
 
@@ -111,14 +111,14 @@ If you need help with this repo or anything else related to infrastructure or De
 
 Contributions to this repo are very welcome and appreciated! If you find a bug or want to add a new feature or even contribute an entirely new module, we are very happy to accept pull requests, provide feedback, and run your changes through our automated test suite.
 
-Please see [Contributing to the Gruntwork Infrastructure as Code Library](https://gruntwork.io/guides/foundations/how-to-use-gruntwork-infrastructure-as-code-library/#contributing-to-the-gruntwork-infrastructure-as-code-library) for instructions.
+Please see [CONTRIBUTING.md](https://github.com/hashicorp/terraform-aws-nomad/tree/master/CONTRIBUTING.md) for instructions.
 
 
 
 
 ## License
 
-Please see [LICENSE](LICENSE) for details on how the code in this repo is licensed.
+Please see [LICENSE](https://github.com/hashicorp/terraform-aws-nomad/tree/master/LICENSE) for details on how the code in this repo is licensed.
 
 
 Copyright &copy; 2019 Gruntwork, Inc.

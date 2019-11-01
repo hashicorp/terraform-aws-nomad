@@ -8,6 +8,7 @@ process](https://help.github.com/articles/about-pull-requests/) for contribution
 1. [Update the tests](#update-the-tests)
 1. [Update the code](#update-the-code)
 1. [Create a pull request](#create-a-pull-request)
+1. [Sign HashiCorp CLA](#sign-hashicorp-cla)
 1. [Merge and release](#merge-and-release)
 
 ## File a GitHub issue
@@ -80,7 +81,13 @@ to include the following:
    test output so we can verify that everything is working.
 1. Any notes on backwards incompatibility or downtime.
 
+## Sign HashiCorp CLA
+
+We require that all contributors sign our Contributor License Agreement ("CLA") before we can accept the contribution. You can read more about HashiCorp's CLA and why we require all contributors to sign it in our [guide to the CLA](https://www.hashicorp.com/cla).
+
+
 ## Merge and release   
 
 The maintainers for this repo will review your code and provide feedback. If everything looks good, they will merge the
 code and release a new version, which you'll be able to find in the [releases page](../../releases).
+
