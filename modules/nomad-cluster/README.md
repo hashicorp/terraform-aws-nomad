@@ -30,7 +30,7 @@ module "nomad_cluster" {
               /opt/nomad/bin/run-nomad --server --num-servers 3
               EOF
 
-  # ... See vars.tf for the other parameters you must define for the nomad-cluster module
+  # ... See variables.tf for the other parameters you must define for the nomad-cluster module
 }
 ```
 
@@ -52,7 +52,7 @@ Note the following parameters:
   run Nomad. The `run-nomad` script is one of the scripts installed by the [install-nomad](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad)
   module.
 
-You can find the other parameters in [vars.tf](vars.tf).
+You can find the other parameters in [variables.tf](variables.tf).
 
 Check out the [nomad-consul-separate-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster example) for working
 sample code. Note that if you want to run Nomad and Consul on the same cluster, see the [nomad-consul-colocated-cluster
@@ -296,7 +296,7 @@ This module attaches a security group to each EC2 Instance that allows inbound r
   [CIDR blocks](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) that will be allowed access.
 
 Note that all the ports mentioned above are configurable via the `xxx_port` variables (e.g. `http_port`). See
-[vars.tf](vars.tf) for the full list.
+[variables.tf](variables.tf) for the full list.
 
 ### SSH access
 
