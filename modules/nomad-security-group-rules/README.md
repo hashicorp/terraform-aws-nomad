@@ -3,10 +3,10 @@
 This folder contains a [Terraform](https://www.terraform.io/) module that defines the security group rules used by a
 [Nomad](https://www.nomadproject.io/) cluster to control the traffic that is allowed to go in and out of the cluster.
 
-Normally, you'd get these rules by default if you're using the [nomad-cluster module](../nomad-cluster/README.md), but if
+Normally, you'd get these rules by default if you're using the [nomad-cluster module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-cluster), but if
 you're running Nomad on top of a different cluster, then you can use this module to add the necessary security group
 rules that that cluster. For example, imagine you were using the [consul-cluster
-module](../consul-cluster.README.md) to run a cluster of
+module](https://github.com/hashicorp/terraform-aws-consul/tree/master/modules/consul-cluster) to run a cluster of
 servers that have both Nomad and Consul on each node:
 
 ```hcl
@@ -43,3 +43,6 @@ Note the following parameters:
   should be added.
 
 You can find the other parameters in [variables.tf](variables.tf).
+
+Check out the [nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/root-example) for working	
+sample code.
