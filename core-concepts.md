@@ -6,8 +6,8 @@ number of client nodes, which are used for running jobs. You must also have a [C
 deployed (see the [Consul AWS Module](https://github.com/hashicorp/terraform-aws-consul)) in one of the following
 configurations:
 
-  1. [Deploy Nomad and Consul in the same cluster](#deploy-nomad-and-consul-in-the-same-cluster)
-  2. [Deploy Nomad and Consul in separate clusters](#deploy-nomad-and-consul-in-separate-clusters)
+1. [Deploy Nomad and Consul in the same cluster](#deploy-nomad-and-consul-in-the-same-cluster)
+1. [Deploy Nomad and Consul in separate clusters](#deploy-nomad-and-consul-in-separate-clusters)
 
 
 ## Deploy Nomad and Consul in the same cluster
