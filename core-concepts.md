@@ -34,7 +34,7 @@ configurations:
    [run-nomad script](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad) on each node during boot, setting the `--client` flag in both
    scripts.
 
-Check out the [nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/MAIN.md) for working
+Check out the [nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/root-example) for working	
 sample code.
 
 ## Deploy Nomad and Consul in separate clusters
@@ -42,11 +42,10 @@ sample code.
 1. Deploy a standalone Consul cluster by following the instructions in the [Consul AWS
    Module](https://github.com/hashicorp/terraform-aws-consul).
 1. Use the scripts from the [install-nomad module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/install-nomad) in a Packer template to create a Nomad AMI.
-1. Deploy a small number of server nodes (typically, 3) using the [nomad-cluster module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/nomad). Execute the
+1. Deploy a small number of server nodes (typically, 3) using the [nomad-cluster module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/nomad-cluster). Execute the
    [run-nomad script](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad) on each node during boot, setting the `--server` flag. You will
    need to configure each node with the connection details for your standalone Consul cluster.
-1. Deploy as many client nodes as you need using the [nomad-cluster module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/nomad). Execute the
+1. Deploy as many client nodes as you need using the [nomad-cluster module](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/nomad-cluster). Execute the	
    [run-nomad script](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad) on each node during boot, setting the `--client` flag.
 
-Check out the [nomad-consul-separate-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster) for working
-sample code.
+Check out the [nomad-consul-separate-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster) for working sample code.
