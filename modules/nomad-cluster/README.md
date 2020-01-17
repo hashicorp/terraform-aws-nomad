@@ -54,7 +54,7 @@ Note the following parameters:
 
 You can find the other parameters in [variables.tf](variables.tf).
 
-Check out the [nomad-consul-separate-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster example) for working
+Check out the [nomad-consul-separate-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster) example for working
 sample code. Note that if you want to run Nomad and Consul on the same cluster, see the [nomad-consul-colocated-cluster
 example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/MAIN.md example) instead.
 
