@@ -9,7 +9,7 @@ This script has been tested on the following operating systems:
 
 * Ubuntu 16.04
 * Ubuntu 18.04
-* Amazon Linux
+* Amazon Linux 2
 
 There is a good chance it will work on other flavors of Debian, CentOS, and RHEL as well.
 
@@ -63,7 +63,6 @@ The `install-nomad` script does the following:
 
 1. [Create a user and folders for Nomad](#create-a-user-and-folders-for-nomad)
 1. [Install Nomad binaries and scripts](#install-nomad-binaries-and-scripts)
-1. [Install supervisord](#install-supervisord)
 1. [Follow-up tasks](#follow-up-tasks)
 
 
@@ -88,12 +87,6 @@ Install the following:
 * `run-nomad`: Copy the [run-nomad script](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/run-nomad) into `/opt/nomad/bin`.
 
 
-### Install supervisord
-
-Install [supervisord](http://supervisord.org/). We use it as a cross-platform supervisor to ensure Nomad is started
-whenever the system boots and restarted if the Nomad process crashes.
-
-
 ### Follow-up tasks
 
 After the `install-nomad` script finishes running, you may wish to do the following:
@@ -103,6 +96,13 @@ After the `install-nomad` script finishes running, you may wish to do the follow
 1. If `/usr/local/bin` isn't already part of `PATH`, you should add it so you can run the `nomad` command without
    specifying the full path.
 
+
+
+## Dependencies
+
+The install script assumes that `systemd` is already installed.  We use it as a cross-platform supervisor to ensure Nomad is started
+whenever the system boots and restarted if the Nomad process crashes.  Additionally, it is used to store all logs which can be accessed
+using `journalctl`.
 
 
 ## Why use Git to install this code?

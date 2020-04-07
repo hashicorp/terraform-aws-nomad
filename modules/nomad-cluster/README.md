@@ -205,7 +205,7 @@ We will add a script in the future to automate this process (PRs are welcome!).
 
 There are two ways a Nomad node may go down:
 
-1. The Nomad process may crash. In that case, `supervisor` should restart it automatically.
+1. The Nomad process may crash. In that case, `systemd` should restart it automatically.
 1. The EC2 Instance running Nomad dies. In that case, the Auto Scaling Group should launch a replacement automatically.
    Note that in this case, since the Nomad agent did not exit gracefully, and the replacement will have a different ID,
    you may have to manually clean out the old nodes using the [server-force-leave

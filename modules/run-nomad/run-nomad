@@ -4,7 +4,7 @@
 set -e
 
 readonly NOMAD_CONFIG_FILE="default.hcl"
-readonly SUPERVISOR_CONFIG_PATH="/etc/supervisor/conf.d/run-nomad.conf"
+readonly SYSTEMD_CONFIG_PATH="/etc/systemd/system/nomad.service"
 
 readonly EC2_INSTANCE_METADATA_URL="http://169.254.169.254/latest/meta-data"
 readonly EC2_INSTANCE_DYNAMIC_DATA_URL="http://169.254.169.254/latest/dynamic"
@@ -26,7 +26,8 @@ function print_usage {
   echo -e "  --config-dir\t\tThe path to the Nomad config folder. Optional. Default is the absolute path of '../config', relative to this script."
   echo -e "  --data-dir\t\tThe path to the Nomad data folder. Optional. Default is the absolute path of '../data', relative to this script."
   echo -e "  --bin-dir\t\tThe path to the folder with Nomad binary. Optional. Default is the absolute path of the parent folder of this script."
-  echo -e "  --log-dir\t\tThe path to the Nomad log folder. Optional. Default is the absolute path of '../log', relative to this script."
+  echo -e "  --systemd-stdout\t\tThe StandardOutput option of the systemd unit.  Optional.  If not configured, uses systemd's default (journal)."
+  echo -e "  --systemd-stderr\t\tThe StandardError option of the systemd unit.  Optional.  If not configured, uses systemd's default (inherit)."
   echo -e "  --user\t\tThe user to run Nomad as. Optional. Default is to use the owner of --config-dir."
   echo -e "  --use-sudo\t\tIf set, run the Nomad agent with sudo. By default, sudo is only used if --client is set."
   echo -e "  --environment\t\A single environment variable in the key/value pair form 'KEY=\"val\"' to pass to Nomad as environment variable when starting it up. Repeat this option for additional variables. Optional."
@@ -77,11 +78,13 @@ function assert_not_empty {
   fi
 }
 
-# Based on https://stackoverflow.com/a/17841619
-function join_by {
-  local IFS="$1"
+function split_by_lines {
+  local prefix="$1"
   shift
-  echo "$*"
+
+  for var in "$@"; do
+    echo "${prefix}${var}"
+  done
 }
 
 function lookup_path_in_instance_metadata {
@@ -182,41 +185,75 @@ EOF
   chown "$user:$user" "$config_path"
 }
 
-function generate_supervisor_config {
-  local readonly supervisor_config_path="$1"
+function generate_systemd_config {
+  local readonly systemd_config_path="$1"
   local readonly nomad_config_dir="$2"
   local readonly nomad_data_dir="$3"
   local readonly nomad_bin_dir="$4"
-  local readonly nomad_log_dir="$5"
-  local readonly nomad_user="$6"
-  local readonly use_sudo="$7"
-  shift 7
+  local readonly nomad_sytemd_stdout="$5"
+  local readonly nomad_sytemd_stderr="$6"
+  local readonly nomad_user="$7"
+  local readonly use_sudo="$8"
+  shift 8
   local readonly environment=("$@")
+  local readonly config_path="$nomad_config_dir/$NOMAD_CONFIG_FILE"
 
   if [[ "$use_sudo" == "true" ]]; then
     log_info "The --use-sudo flag is set, so running Nomad as the root user"
     nomad_user="root"
   fi
 
-  log_info "Creating Supervisor config file to run Nomad in $supervisor_config_path"
-  cat > "$supervisor_config_path" <<EOF
-[program:nomad]
-command=$nomad_bin_dir/nomad agent -config $nomad_config_dir -data-dir $nomad_data_dir
-stdout_logfile=$nomad_log_dir/nomad-stdout.log
-stderr_logfile=$nomad_log_dir/nomad-error.log
-numprocs=1
-autostart=true
-autorestart=true
-stopsignal=INT
-user=$nomad_user
-environment=$(join_by "," "${environment[@]}")
+  log_info "Creating systemd config file to run Nomad in $systemd_config_path"
+
+  local readonly unit_config=$(cat <<EOF
+[Unit]
+Description="HashiCorp Nomad"
+Documentation=https://www.nomadproject.io/
+Requires=network-online.target
+After=network-online.target
+ConditionalFileNotEmpty=$config_path
 EOF
+)
+
+  local readonly service_config=$(cat <<EOF
+[Service]
+User=$nomad_user
+Group=$nomad_user
+ExecStart=$nomad_bin_dir/nomad agent -config $nomad_config_dir -data-dir $nomad_data_dir
+KillMode=process
+Restart=on-failure
+LimitNOFILE=65536
+$(split_by_lines "Environment=" "${environment[@]}")
+
+EOF
+)
+
+  local log_config=""
+  if [[ ! -z $nomad_sytemd_stdout ]]; then
+    log_config+="StandardOutput=$nomad_sytemd_stdout\n"
+  fi
+  if [[ ! -z $nomad_sytemd_stderr ]]; then
+    log_config+="StandardError=$nomad_sytemd_stderr\n"
+  fi
+
+  local readonly install_config=$(cat <<EOF
+[Install]
+WantedBy=multi-user.target
+EOF
+)
+
+  echo -e "$unit_config" > "$systemd_config_path"
+  echo -e "$service_config" >> "$systemd_config_path"
+  echo -e "$log_config" >> "$systemd_config_path"
+  echo -e "$install_config" >> "$systemd_config_path"
 }
 
 function start_nomad {
-  log_info "Reloading Supervisor config and starting Nomad"
-  supervisorctl reread
-  supervisorctl update
+  log_info "Reloading systemd config and starting Nomad"
+
+  sudo systemctl daemon-reload
+  sudo systemctl enable nomad.service
+  sudo systemctl restart nomad.service
 }
 
 # Based on: http://unix.stackexchange.com/a/7732/215969
@@ -232,7 +269,8 @@ function run {
   local config_dir=""
   local data_dir=""
   local bin_dir=""
-  local log_dir=""
+  local systemd_stdout=""
+  local systemd_stderr=""
   local user=""
   local skip_nomad_config="false"
   local use_sudo=""
@@ -268,9 +306,14 @@ function run {
         bin_dir="$2"
         shift
         ;;
-      --log-dir)
+      --systemd-stdout)
         assert_not_empty "$key" "$2"
-        log_dir="$2"
+        systemd_stdout="$2"
+        shift
+        ;;
+      --systemd-stderr)
+        assert_not_empty "$key" "$2"
+        systemd_stderr="$2"
         shift
         ;;
       --user)
@@ -330,7 +373,7 @@ function run {
     fi
   fi
 
-  assert_is_installed "supervisorctl"
+  assert_is_installed "systemctl"
   assert_is_installed "aws"
   assert_is_installed "curl"
   assert_is_installed "jq"
@@ -347,9 +390,7 @@ function run {
     bin_dir=$(cd "$SCRIPT_DIR/../bin" && pwd)
   fi
 
-  if [[ -z "$log_dir" ]]; then
-    log_dir=$(cd "$SCRIPT_DIR/../log" && pwd)
-  fi
+  # If $systemd_stdout and/or $systemd_stderr are empty, we leave them empty so that generate_systemd_config will use systemd's defaults (journal and inherit, respectively)
 
   if [[ -z "$user" ]]; then
     user=$(get_owner_of_path "$config_dir")
@@ -361,7 +402,7 @@ function run {
     generate_nomad_config "$server" "$client" "$num_servers" "$config_dir" "$user"
   fi
 
-  generate_supervisor_config "$SUPERVISOR_CONFIG_PATH" "$config_dir" "$data_dir" "$bin_dir" "$log_dir" "$user" "$use_sudo" "${environment[@]}"
+  generate_systemd_config "$SYSTEMD_CONFIG_PATH" "$config_dir" "$data_dir" "$bin_dir" "$systemd_stdout" "$systemd_stderr" "$user" "$use_sudo" "${environment[@]}"
   start_nomad
 }
 

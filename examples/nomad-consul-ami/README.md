@@ -7,7 +7,7 @@ from the Consul AWS Module with [Packer](https://www.packer.io/) to create [Amaz
 
 1. Ubuntu 16.04
 1. Ubuntu 18.04
-1. Amazon Linux
+1. Amazon Linux 2
 
 These AMIs will have [Consul](https://www.consul.io/) and [Nomad](https://www.nomadproject.io/) installed and
 configured to automatically join a cluster during boot-up.
