@@ -5,7 +5,7 @@ script has been tested on the following operating systems:
 
 * Ubuntu 16.04
 * Ubuntu 18.04
-* Amazon Linux
+* Amazon Linux 2
 
 There is a good chance it will work on other flavors of Debian, CentOS, and RHEL as well.
 
@@ -34,17 +34,23 @@ This will:
    See [Nomad configuration](#nomad-configuration) for details on what this configuration file will contain and how
    to override it with your own configuration.
 
-1. Generate a [Supervisor](http://supervisord.org/) configuration file called `run-nomad.conf` in the Supervisor
+1. Generate a [systemd](https://www.freedesktop.org/wiki/Software/systemd/) configuration file called `nomad.service` in the systemd
    config dir (default: `/etc/supervisor/conf.d`) with a command that will run Nomad:  
    `nomad agent -config=/opt/nomad/config -data-dir=/opt/nomad/data`.
 
-1. Tell Supervisor to load the new configuration file, thereby starting Nomad.
+1. Tell systemd to load the new configuration file, thereby starting Nomad.
 
 We recommend using the `run-nomad` command as part of [User
 Data](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html#user-data-shell-scripts), so that it executes
 when the EC2 Instance is first booting. If you are running Consul on the same server, make sure to use this script
-*after* Consul has booted. After running `run-nomad` on that initial boot, the `supervisord` configuration
+*after* Consul has booted. After running `run-nomad` on that initial boot, the `systemd` configuration
 will automatically restart Nomad if it crashes or the EC2 instance reboots.
+
+Note that `systemd` logs to its own journal by default.  To view the Nomad logs, run `journalctl -u nomad.service`.  To change
+the log output location, you can specify the `StandardOutput` and `StandardError` options by using the `--systemd-stdout` and `--systemd-stderr`
+options.  See the [`systemd.exec` man pages](https://www.freedesktop.org/software/systemd/man/systemd.exec.html#StandardOutput=) for available
+options, but note that the `file:path` option requires [systemd version >= 236](https://stackoverflow.com/a/48052152), which is not provided 
+in the base Ubuntu 16.04 and Amazon Linux 2 images.
 
 See the [nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/MAIN.md) and
 [nomad-consul-separate-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/nomad-consul-separate-cluster example) for fully-working sample code.
@@ -63,6 +69,8 @@ The `run-nomad` script accepts the following arguments:
   relative to the `run-nomad` script itself.
 * `data-dir` (optional): The path to the Nomad config folder. Default is to take the absolute path of `../data`,
   relative to the `run-nomad` script itself.
+* `systemd-stdout` (optional): The StandardOutput option of the systemd unit. If not specified, it will use systemd's default (journal).
+* `systemd-stderr` (optional): The StandardError option of the systemd unit. If not specified, it will use systemd's default (inherit).
 * `user` (optional): The user to run Nomad as. Default is to use the owner of `config-dir`.
 * `use-sudo` (optional): Nomad clients make use of operating system primitives for resource isolation that require
   elevated (root) permissions (see [the
