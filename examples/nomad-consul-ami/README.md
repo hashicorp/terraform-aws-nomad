@@ -32,7 +32,7 @@ To build the Nomad and Consul AMI:
 1. Run `packer build nomad-consul.json`.
 
 When the build finishes, it will output the IDs of the new AMIs. To see how to deploy one of these AMIs, check out the
-[nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/MAIN.md).
+[nomad-consul-colocated-cluster example](https://github.com/hashicorp/terraform-aws-nomad/tree/master/examples/root-example).
 
 
 
