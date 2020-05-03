@@ -8,5 +8,6 @@ sudo yum install -y git
 
 echo "[INFO] [${SCRIPT}] Setup docker"
 sudo yum install -y docker
-sudo service docker start
+sudo systemctl enable docker
+sudo systemctl start docker
 sudo usermod -a -G docker ec2-user
