@@ -26,6 +26,8 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   health_check_grace_period = var.health_check_grace_period
   wait_for_capacity_timeout = var.wait_for_capacity_timeout
 
+  protect_from_scale_in = var.protect_from_scale_in
+
   tag {
     key                 = "Name"
     value               = var.cluster_name
