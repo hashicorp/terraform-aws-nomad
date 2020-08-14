@@ -4,12 +4,13 @@
     "aws_region": "us-east-1",
     "nomad_version": "0.9.1",
     "consul_module_version": "v0.7.4",
-    "consul_version": "1.5.1"
+    "consul_version": "1.5.1",
+    "ami_name_prefix": "nomad-consul"
   },
   "builders": [
     {
       "name": "ubuntu18-ami",
-      "ami_name": "nomad-consul-ubuntu18-{{isotime | clean_resource_name}}",
+      "ami_name": "{{user `ami_name_prefix`}}-ubuntu18-{{isotime | clean_resource_name}}",
       "ami_description": "An example of how to build an Ubuntu 18.04 AMI that has Nomad and Consul installed",
       "instance_type": "t2.micro",
       "region": "{{user `aws_region`}}",
@@ -30,7 +31,7 @@
       "ssh_username": "ubuntu"
     },
     {
-      "ami_name": "nomad-consul-ubuntu-{{isotime | clean_resource_name}}",
+      "ami_name": "{{user `ami_name_prefix`}}-ubuntu-{{isotime | clean_resource_name}}",
       "ami_description": "An Ubuntu 16.04 AMI that has Nomad and Consul installed.",
       "instance_type": "t2.micro",
       "name": "ubuntu16-ami",
@@ -52,7 +53,7 @@
       "ssh_username": "ubuntu"
     },
     {
-      "ami_name": "nomad-consul-amazon-linux-2-{{isotime | clean_resource_name}}",
+      "ami_name": "{{user `ami_name_prefix`}}-amazon-linux-2-{{isotime | clean_resource_name}}",
       "ami_description": "An Amazon Linux 2 AMI that has Nomad and Consul installed.",
       "instance_type": "t2.micro",
       "name": "amazon-linux-2-ami",

@@ -41,6 +41,7 @@ const DEFAULT_NUM_SERVERS = 3
 const DEFAULT_NUM_CLIENTS = 6
 
 const SAVED_AWS_REGION = "AwsRegion"
+const SAVED_UNIQUE_ID = "UniqueId"
 
 // Test the Nomad/Consul colocated cluster example by:
 //
@@ -65,14 +66,17 @@ func runNomadClusterColocatedTest(t *testing.T, packerBuildName string) {
 		awsRegion := getRandomRegion(t)
 		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
 
-		amiId := buildAmi(t, filepath.Join(examplesDir, "examples", "nomad-consul-ami", "nomad-consul.json"), packerBuildName, awsRegion)
+		uniqueId := random.UniqueId()
+		test_structure.SaveString(t, examplesDir, SAVED_UNIQUE_ID, uniqueId)
+
+		amiId := buildAmi(t, filepath.Join(examplesDir, "examples", "nomad-consul-ami", "nomad-consul.json"), packerBuildName, awsRegion, uniqueId)
 		test_structure.SaveAmiId(t, examplesDir, amiId)
 	})
 
 	test_structure.RunTestStage(t, "deploy", func() {
 		amiId := test_structure.LoadAmiId(t, examplesDir)
 		awsRegion := test_structure.LoadString(t, examplesDir, SAVED_AWS_REGION)
-		uniqueId := random.UniqueId()
+		uniqueId := test_structure.LoadString(t, examplesDir, SAVED_UNIQUE_ID)
 
 		terraformOptions := &terraform.Options{
 			TerraformDir: examplesDir,
@@ -122,14 +126,17 @@ func runNomadClusterSeparateTest(t *testing.T, packerBuildName string) {
 		awsRegion := getRandomRegion(t)
 		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
 
-		amiId := buildAmi(t, filepath.Join(examplesDir, "examples", "nomad-consul-ami", "nomad-consul.json"), packerBuildName, awsRegion)
+		uniqueId := random.UniqueId()
+		test_structure.SaveString(t, examplesDir, SAVED_UNIQUE_ID, uniqueId)
+
+		amiId := buildAmi(t, filepath.Join(examplesDir, "examples", "nomad-consul-ami", "nomad-consul.json"), packerBuildName, awsRegion, uniqueId)
 		test_structure.SaveAmiId(t, examplesDir, amiId)
 	})
 
 	test_structure.RunTestStage(t, "deploy", func() {
 		amiId := test_structure.LoadAmiId(t, examplesDir)
 		awsRegion := test_structure.LoadString(t, examplesDir, SAVED_AWS_REGION)
-		uniqueId := random.UniqueId()
+		uniqueId := test_structure.LoadString(t, examplesDir, SAVED_UNIQUE_ID)
 
 		terraformOptions := &terraform.Options{
 			TerraformDir: filepath.Join(examplesDir, "examples", "nomad-consul-separate-cluster"),
