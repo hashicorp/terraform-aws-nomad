@@ -178,7 +178,7 @@ func checkNomadClusterIsWorking(t *testing.T, asgNameOutputVar string, terraform
 // 2. The cluster has the expected number of server nodes
 // 2. The cluster has the expected number of client nodes
 func testNomadCluster(t *testing.T, nodeIpAddress string) {
-	maxRetries := 60
+	maxRetries := 90
 	sleepBetweenRetries := 10 * time.Second
 
 	response := retry.DoWithRetry(t, "Check Nomad cluster has expected number of servers and clients", maxRetries, sleepBetweenRetries, func() (string, error) {
