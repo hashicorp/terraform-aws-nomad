@@ -25,6 +25,7 @@ const VAR_AMI_ID = "ami_id"
 
 const CLUSTER_COLOCATED_EXAMPLE_PATH = "/"
 const CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_NAME = "cluster_name"
+const CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_TAG_VALUE = "cluster_tag_value"
 const CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_SERVERS = "num_servers"
 const CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_CLIENTS = "num_clients"
 const CLUSTER_COLOCATED_EXAMPLE_OUTPUT_SERVER_ASG_NAME = "asg_name_servers"
@@ -41,6 +42,7 @@ const DEFAULT_NUM_SERVERS = 3
 const DEFAULT_NUM_CLIENTS = 6
 
 const SAVED_AWS_REGION = "AwsRegion"
+const SAVED_UNIQUE_ID = "UniqueId"
 
 // Test the Nomad/Consul colocated cluster example by:
 //
@@ -65,21 +67,25 @@ func runNomadClusterColocatedTest(t *testing.T, packerBuildName string) {
 		awsRegion := getRandomRegion(t)
 		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
 
-		amiId := buildAmi(t, filepath.Join(examplesDir, "examples", "nomad-consul-ami", "nomad-consul.json"), packerBuildName, awsRegion)
+		uniqueId := random.UniqueId()
+		test_structure.SaveString(t, examplesDir, SAVED_UNIQUE_ID, uniqueId)
+
+		amiId := buildAmi(t, filepath.Join(examplesDir, "examples", "nomad-consul-ami", "nomad-consul.json"), packerBuildName, awsRegion, uniqueId)
 		test_structure.SaveAmiId(t, examplesDir, amiId)
 	})
 
 	test_structure.RunTestStage(t, "deploy", func() {
 		amiId := test_structure.LoadAmiId(t, examplesDir)
 		awsRegion := test_structure.LoadString(t, examplesDir, SAVED_AWS_REGION)
-		uniqueId := random.UniqueId()
+		uniqueId := test_structure.LoadString(t, examplesDir, SAVED_UNIQUE_ID)
 
 		terraformOptions := &terraform.Options{
 			TerraformDir: examplesDir,
 			Vars: map[string]interface{}{
-				CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_NAME: fmt.Sprintf("test-%s", uniqueId),
-				CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_SERVERS:  DEFAULT_NUM_SERVERS,
-				CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_CLIENTS:  DEFAULT_NUM_CLIENTS,
+				CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_NAME:      fmt.Sprintf("test-%s", uniqueId),
+				CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_TAG_VALUE: fmt.Sprintf("auto-join-%s", uniqueId),
+				CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_SERVERS:       DEFAULT_NUM_SERVERS,
+				CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_CLIENTS:       DEFAULT_NUM_CLIENTS,
 				VAR_AMI_ID: amiId,
 			},
 			EnvVars: map[string]string{
@@ -122,14 +128,17 @@ func runNomadClusterSeparateTest(t *testing.T, packerBuildName string) {
 		awsRegion := getRandomRegion(t)
 		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
 
-		amiId := buildAmi(t, filepath.Join(examplesDir, "examples", "nomad-consul-ami", "nomad-consul.json"), packerBuildName, awsRegion)
+		uniqueId := random.UniqueId()
+		test_structure.SaveString(t, examplesDir, SAVED_UNIQUE_ID, uniqueId)
+
+		amiId := buildAmi(t, filepath.Join(examplesDir, "examples", "nomad-consul-ami", "nomad-consul.json"), packerBuildName, awsRegion, uniqueId)
 		test_structure.SaveAmiId(t, examplesDir, amiId)
 	})
 
 	test_structure.RunTestStage(t, "deploy", func() {
 		amiId := test_structure.LoadAmiId(t, examplesDir)
 		awsRegion := test_structure.LoadString(t, examplesDir, SAVED_AWS_REGION)
-		uniqueId := random.UniqueId()
+		uniqueId := test_structure.LoadString(t, examplesDir, SAVED_UNIQUE_ID)
 
 		terraformOptions := &terraform.Options{
 			TerraformDir: filepath.Join(examplesDir, "examples", "nomad-consul-separate-cluster"),
@@ -171,7 +180,7 @@ func checkNomadClusterIsWorking(t *testing.T, asgNameOutputVar string, terraform
 // 2. The cluster has the expected number of server nodes
 // 2. The cluster has the expected number of client nodes
 func testNomadCluster(t *testing.T, nodeIpAddress string) {
-	maxRetries := 60
+	maxRetries := 90
 	sleepBetweenRetries := 10 * time.Second
 
 	response := retry.DoWithRetry(t, "Check Nomad cluster has expected number of servers and clients", maxRetries, sleepBetweenRetries, func() (string, error) {

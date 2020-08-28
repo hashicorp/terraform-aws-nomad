@@ -58,7 +58,7 @@ data "aws_ami" "nomad_consul" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "servers" {
-  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-cluster?ref=v0.7.0"
+  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-cluster?ref=v0.7.7"
 
   cluster_name  = "${var.cluster_name}-server"
   cluster_size  = var.num_servers
@@ -177,7 +177,7 @@ module "clients" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_iam_policies" {
-  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-iam-policies?ref=v0.7.0"
+  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-iam-policies?ref=v0.7.7"
 
   iam_role_id = module.clients.iam_role_id
 }

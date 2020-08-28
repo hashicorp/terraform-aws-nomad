@@ -62,13 +62,13 @@ variable "asg_name" {
 variable "subnet_ids" {
   description = "The subnet IDs into which the EC2 Instances should be deployed. We recommend one subnet ID per node in the cluster_size variable. At least one of var.subnet_ids or var.availability_zones must be non-empty."
   type        = list(string)
-  default     = []
+  default     = null
 }
 
 variable "availability_zones" {
   description = "The availability zones into which the EC2 Instances should be deployed. We recommend one availability zone per node in the cluster_size variable. At least one of var.subnet_ids or var.availability_zones must be non-empty."
   type        = list(string)
-  default     = []
+  default     = null
 }
 
 variable "ssh_key_name" {
