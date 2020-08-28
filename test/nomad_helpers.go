@@ -25,6 +25,7 @@ const VAR_AMI_ID = "ami_id"
 
 const CLUSTER_COLOCATED_EXAMPLE_PATH = "/"
 const CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_NAME = "cluster_name"
+const CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_TAG_VALUE = "cluster_tag_value"
 const CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_SERVERS = "num_servers"
 const CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_CLIENTS = "num_clients"
 const CLUSTER_COLOCATED_EXAMPLE_OUTPUT_SERVER_ASG_NAME = "asg_name_servers"
@@ -81,9 +82,10 @@ func runNomadClusterColocatedTest(t *testing.T, packerBuildName string) {
 		terraformOptions := &terraform.Options{
 			TerraformDir: examplesDir,
 			Vars: map[string]interface{}{
-				CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_NAME: fmt.Sprintf("test-%s", uniqueId),
-				CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_SERVERS:  DEFAULT_NUM_SERVERS,
-				CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_CLIENTS:  DEFAULT_NUM_CLIENTS,
+				CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_NAME:      fmt.Sprintf("test-%s", uniqueId),
+				CLUSTER_COLOCATED_EXAMPLE_VAR_CLUSTER_TAG_VALUE: fmt.Sprintf("auto-join-%s", uniqueId),
+				CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_SERVERS:       DEFAULT_NUM_SERVERS,
+				CLUSTER_COLOCATED_EXAMPLE_VAR_NUM_CLIENTS:       DEFAULT_NUM_CLIENTS,
 				VAR_AMI_ID: amiId,
 			},
 			EnvVars: map[string]string{
