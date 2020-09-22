@@ -228,3 +228,8 @@ variable "protect_from_scale_in" {
   default     = false
 }
 
+variable "iam_permissions_boundary" {
+  description = "If set, restricts the created IAM role to the given permissions boundary"
+  type        = string
+  default     = null
+}
