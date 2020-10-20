@@ -96,10 +96,14 @@
       ]
     },
     {
-      "type": "file",
-      "source": "{{template_dir}}/../../../terraform-aws-nomad",
-      "destination": "/tmp",
+      "type": "shell",
+      "inline": ["mkdir -p /tmp/terraform-aws-nomad"],
       "pause_before": "30s"
+    },
+    {
+      "type": "file",
+      "source": "{{template_dir}}/../../",
+      "destination": "/tmp/terraform-aws-nomad"
     },
       {
       "type": "shell",
