@@ -199,7 +199,7 @@ variable "tags" {
     propagate_at_launch = bool
   }))
   default = []
-  
+
 }
 
 variable "ebs_block_devices" {
