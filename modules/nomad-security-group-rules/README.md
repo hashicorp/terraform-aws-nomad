@@ -11,7 +11,7 @@ servers that have both Nomad and Consul on each node:
 
 ```hcl
 module "consul_servers" {
-  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-cluster?ref=v0.7.7"
+  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-cluster?ref=v0.8.0"
 
   # This AMI has both Nomad and Consul installed
   ami_id = "ami-1234abcd"
