@@ -1,9 +1,11 @@
 # ----------------------------------------------------------------------------------------------------------------------
 # REQUIRE A SPECIFIC TERRAFORM VERSION OR HIGHER
-# This module has been updated with 0.12 syntax, which means it is no longer compatible with any versions below 0.12.
 # ----------------------------------------------------------------------------------------------------------------------
 terraform {
-  required_version = ">= 0.12"
+  # This module is now only being tested with Terraform 0.13.x. However, to make upgrading easier, we are setting
+  # 0.12.26 as the minimum version, as that version added support for required_providers with source URLs, making it
+  # forwards compatible with 0.13.x code.
+  required_version = ">= 0.12.26"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -33,7 +35,7 @@ resource "aws_autoscaling_group" "autoscaling_group" {
     value               = var.cluster_name
     propagate_at_launch = true
   }
-  
+
   tag {
     key                 = var.cluster_tag_key
     value               = var.cluster_tag_value
@@ -49,7 +51,7 @@ resource "aws_autoscaling_group" "autoscaling_group" {
       propagate_at_launch = tag.value["propagate_at_launch"]
     }
   }
-  
+
   lifecycle {
     # As of AWS Provider 3.x, inline load_balancers and target_group_arns
     # in an aws_autoscaling_group take precedence over attachment resources.

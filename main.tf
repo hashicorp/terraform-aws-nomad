@@ -10,10 +10,12 @@
 
 # ----------------------------------------------------------------------------------------------------------------------
 # REQUIRE A SPECIFIC TERRAFORM VERSION OR HIGHER
-# This module has been updated with 0.12 syntax, which means it is no longer compatible with any versions below 0.12.
 # ----------------------------------------------------------------------------------------------------------------------
 terraform {
-  required_version = ">= 0.12"
+  # This module is now only being tested with Terraform 0.13.x. However, to make upgrading easier, we are setting
+  # 0.12.26 as the minimum version, as that version added support for required_providers with source URLs, making it
+  # forwards compatible with 0.13.x code.
+  required_version = ">= 0.12.26"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -58,7 +60,7 @@ data "aws_ami" "nomad_consul" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "servers" {
-  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-cluster?ref=v0.7.7"
+  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-cluster?ref=v0.8.0"
 
   cluster_name  = "${var.cluster_name}-server"
   cluster_size  = var.num_servers
@@ -177,7 +179,7 @@ module "clients" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_iam_policies" {
-  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-iam-policies?ref=v0.7.7"
+  source = "github.com/hashicorp/terraform-aws-consul//modules/consul-iam-policies?ref=v0.8.0"
 
   iam_role_id = module.clients.iam_role_id
 }
