@@ -111,10 +111,10 @@ function wait_for_all_nomad_servers_to_register {
   log_info "Waiting for $expected_num_nomad_servers Nomad servers to register in the cluster"
 
   for (( i=1; i<="$MAX_RETRIES"; i++ )); do
-    log_info "Running 'nomad server-members' command against server at IP address $server_ip"
-    # Intentionally use local and readonly here so that this script doesn't exit if the nomad server-members or grep
+    log_info "Running 'nomad server members' command against server at IP address $server_ip"
+    # Intentionally use local and readonly here so that this script doesn't exit if the nomad server members or grep
     # commands exit with an error.
-    local readonly members=$(nomad server-members -address="http://$server_ip:4646")
+    local readonly members=$(nomad server members -address="http://$server_ip:4646")
     local readonly alive_members=$(echo "$members" | grep "alive")
     local readonly num_nomad_servers=$(echo "$alive_members" | wc -l | tr -d ' ')
 
@@ -158,8 +158,8 @@ function print_instructions {
   local instructions=()
   instructions+=("\nYour Nomad servers are running at the following IP addresses:\n\n${server_ips[@]/#/    }\n")
   instructions+=("Some commands for you to try:\n")
-  instructions+=("    nomad server-members -address=http://$server_ip:4646")
-  instructions+=("    nomad node-status -address=http://$server_ip:4646")
+  instructions+=("    nomad server members -address=http://$server_ip:4646")
+  instructions+=("    nomad node status -address=http://$server_ip:4646")
   instructions+=("    nomad run -address=http://$server_ip:4646 $SCRIPT_DIR/example.nomad")
   instructions+=("    nomad status -address=http://$server_ip:4646 example\n")
 
