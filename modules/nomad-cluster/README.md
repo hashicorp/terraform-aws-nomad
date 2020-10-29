@@ -90,7 +90,7 @@ command](https://www.nomadproject.io/docs/commands/index.html). For example, to 
 servers:
 
 ```
-> nomad server-members -address=http://<INSTANCE_IP_ADDR>:4646
+> nomad server members -address=http://<INSTANCE_IP_ADDR>:4646
 
 ip-172-31-23-140.global  172.31.23.140  4648  alive   true    2         0.5.4  dc1         global
 ip-172-31-23-141.global  172.31.23.141  4648  alive   true    2         0.5.4  dc1         global
@@ -100,7 +100,7 @@ ip-172-31-23-142.global  172.31.23.142  4648  alive   true    2         0.5.4  d
 To see the status of all the Nomad agents:
 
 ```
-> nomad node-status -address=http://<INSTANCE_IP_ADDR>:4646
+> nomad node status -address=http://<INSTANCE_IP_ADDR>:4646
 
 ID        DC          Name                 Class   Drain  Status
 ec2796cd  us-east-1e  i-0059e5cafb8103834  <none>  false  ready
@@ -184,7 +184,7 @@ NOT actually deploy those new instances. To make that happen, you should do the 
 1. Issue an API call to one of the old Instances in the ASG to have it leave gracefully. E.g.:
 
    ```
-   nomad server-force-leave -address=<OLD_INSTANCE_IP>:4646
+   nomad server force-leave -address=<OLD_INSTANCE_IP>:4646
    ```
 
 1. Once the instance has left the cluster, terminate it:
@@ -208,7 +208,7 @@ There are two ways a Nomad node may go down:
 1. The Nomad process may crash. In that case, `systemd` should restart it automatically.
 1. The EC2 Instance running Nomad dies. In that case, the Auto Scaling Group should launch a replacement automatically.
    Note that in this case, since the Nomad agent did not exit gracefully, and the replacement will have a different ID,
-   you may have to manually clean out the old nodes using the [server-force-leave
+   you may have to manually clean out the old nodes using the [server force-leave
    command](https://www.nomadproject.io/docs/commands/server-force-leave.html). We may add a script to do this
    automatically in the future. For more info, see the [Nomad Outage
    documentation](https://www.nomadproject.io/guides/outage.html).
