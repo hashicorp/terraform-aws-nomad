@@ -53,10 +53,15 @@ workflows:
   build-and-test:
     jobs:
       - test:
+          context:
+            - Gruntwork Admin
           filters:
             branches:
               ignore: publish-amis
       - deploy:
+          context:
+            - Gruntwork Admin  
+            - Gruntwork AMI Publishing
           requires:
             - test
           filters:
@@ -64,13 +69,3 @@ workflows:
               only: publish-amis
             tags:
               only: /^v.*/
-  nightly-test:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - test
