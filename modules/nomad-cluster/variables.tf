@@ -228,3 +228,7 @@ variable "protect_from_scale_in" {
   default     = false
 }
 
+variable "allow_outbound_cidr_blocks" {
+  description = "CIDR blocks for allowed outbound traffic."
+  default     = ["0.0.0.0/0"]
+}

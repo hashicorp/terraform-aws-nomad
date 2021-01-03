@@ -151,7 +151,7 @@ resource "aws_security_group_rule" "allow_all_outbound" {
   from_port   = 0
   to_port     = 0
   protocol    = "-1"
-  cidr_blocks = ["0.0.0.0/0"]
+  cidr_blocks = var.allow_outbound_cidr_blocks
 
   security_group_id = aws_security_group.lc_security_group.id
 }
