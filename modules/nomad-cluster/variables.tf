@@ -229,6 +229,7 @@ variable "protect_from_scale_in" {
 }
 
 variable "allow_outbound_cidr_blocks" {
-  description = "CIDR blocks for allowed outbound traffic."
+  description = "Allow outbound traffic to these CIDR blocks."
+  type        = list(string)
   default     = ["0.0.0.0/0"]
 }
