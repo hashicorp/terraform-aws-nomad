@@ -177,7 +177,7 @@ func checkNomadClusterIsWorking(t *testing.T, asgNameOutputVar string, terraform
 	testNomadCluster(t, nodeIpAddress)
 }
 
-func checkNomadClusterSshAccess(t *testing.T, asgNameOutputVar string, terraformOptions *terraform.Options, awsRegion string, keyPair *ssh.KeyPair, sshUsername string, ssh_access bool) {
+func checkNomadClusterSshAccess(t *testing.T, asgNameOutputVar string, terraformOptions *terraform.Options, awsRegion string, keyPair *ssh.KeyPair, sshUsername string) {
 	asgName := terraform.Output(t, terraformOptions, asgNameOutputVar)
 	nodeIpAddress := getIpAddressOfAsgInstance(t, asgName, awsRegion)
 
@@ -187,7 +187,7 @@ func checkNomadClusterSshAccess(t *testing.T, asgNameOutputVar string, terraform
 		SshUserName: sshUsername,
 	}
 
-	testSshAccess(t, publicHost, ssh_access)
+	testSshAccess(t, publicHost, true)
 }
 
 func testSshAccess(t *testing.T, publicHost ssh.Host, ssh_access bool) {
@@ -292,15 +292,8 @@ func callNomadApi(t *testing.T, nodeIpAddress string, path string) ([]interface{
 	return result, nil
 }
 
-func runNomadClusterSSHTest(t *testing.T, packerBuildName string, ssh_username string, ssh_access bool) {
+func runNomadClusterSSHTest(t *testing.T, packerBuildName string, ssh_username string) {
 	examplesDir := test_structure.CopyTerraformFolderToTemp(t, REPO_ROOT, "/")
-
-	// TODO Test default behavior as well - SSH access
-	// Configure CIDR blocks dependent on the access configuration.
-	ssh_cidr := []string{}
-	if ssh_access {
-		ssh_cidr = []string{"0.0.0.0/0"}
-	}
 
 	defer test_structure.RunTestStage(t, "teardown", func() {
 		terraformOptions := test_structure.LoadTerraformOptions(t, examplesDir)
@@ -336,7 +329,6 @@ func runNomadClusterSSHTest(t *testing.T, packerBuildName string, ssh_username s
 				CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_CONSUL_SERVERS:  DEFAULT_NUM_SERVERS,
 				CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_NOMAD_CLIENTS:   DEFAULT_NUM_CLIENTS,
 				VAR_AMI_ID: amiId,
-				VAR_SSH_CIDR: ssh_cidr,
 			},
 			EnvVars: map[string]string{
 				ENV_VAR_AWS_REGION: awsRegion,
@@ -354,6 +346,6 @@ func runNomadClusterSSHTest(t *testing.T, packerBuildName string, ssh_username s
 		checkNomadClusterIsWorking(t, CLUSTER_SEPARATE_EXAMPLE_OUTPUT_NOMAD_SERVER_ASG_NAME, terraformOptions, awsRegion)
 
 		keyPair := test_structure.LoadEc2KeyPair(t, examplesDir)
-		checkNomadClusterSshAccess(t, CLUSTER_SEPARATE_EXAMPLE_OUTPUT_NOMAD_SERVER_ASG_NAME, terraformOptions, awsRegion, keyPair.KeyPair, ssh_username, ssh_access)
+		checkNomadClusterSshAccess(t, CLUSTER_SEPARATE_EXAMPLE_OUTPUT_NOMAD_SERVER_ASG_NAME, terraformOptions, awsRegion, keyPair.KeyPair, ssh_username)
 	})
 }

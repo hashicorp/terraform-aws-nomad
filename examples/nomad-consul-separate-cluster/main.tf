@@ -84,9 +84,9 @@ module "nomad_servers" {
 
   # To make testing easier, we allow requests from any IP address here but in a production deployment, we strongly
   # recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
-  allowed_ssh_cidr_blocks = var.allowed_ssh_cidr_blocks
+  allowed_ssh_cidr_blocks = ["0.0.0.0/0"]
 
-  allowed_inbound_cidr_blocks = var.allowed_inbound_cidr_blocks
+  allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
   ssh_key_name                = var.ssh_key_name
 }
 
@@ -140,9 +140,9 @@ module "consul_servers" {
 
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
-  allowed_ssh_cidr_blocks = var.allowed_ssh_cidr_blocks
+  allowed_ssh_cidr_blocks = ["0.0.0.0/0"]
 
-  allowed_inbound_cidr_blocks = var.allowed_inbound_cidr_blocks
+  allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
   ssh_key_name                = var.ssh_key_name
 }
 
@@ -190,8 +190,8 @@ module "nomad_clients" {
 
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
-  allowed_ssh_cidr_blocks     = var.allowed_ssh_cidr_blocks
-  allowed_inbound_cidr_blocks = var.allowed_inbound_cidr_blocks
+  allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
+  allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
   ssh_key_name                = var.ssh_key_name
   ebs_block_devices = [
     {

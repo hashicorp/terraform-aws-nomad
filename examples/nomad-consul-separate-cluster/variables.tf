@@ -67,12 +67,3 @@ variable "ssh_key_name" {
   default     = null
 }
 
-variable "allowed_ssh_cidr_blocks" {
-  description = "Allowed CIDR block to access the cluster nodes via SSH."
-  default     = ["0.0.0.0/0"]
-}
-
-variable "allowed_inbound_cidr_blocks" {
-  description = "Allowed CIDR block for incomming traffic."
-  default     = ["0.0.0.0/0"]
-}

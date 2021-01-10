@@ -73,12 +73,3 @@ variable "vpc_id" {
   default     = ""
 }
 
-variable "allowed_ssh_cidr_blocks" {
-  description = "Allowed CIDR blocks to access the cluster nodes via SSH."
-  default     = ["0.0.0.0/0"]
-}
-
-variable "allowed_inbound_cidr_blocks" {
-  description = "Allowed CIDR blocks for incomming traffic."
-  default     = ["0.0.0.0/0"]
-}
