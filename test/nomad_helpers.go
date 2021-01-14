@@ -304,7 +304,7 @@ func runNomadClusterSSHTest(t *testing.T, packerBuildName string, ssh_username s
 		aws.DeleteAmi(t, awsRegion, amiId)
 	})
 
-		test_structure.RunTestStage(t, "setup_ami", func() {
+	test_structure.RunTestStage(t, "setup_ami", func() {
 		awsRegion := getRandomRegion(t)
 		test_structure.SaveString(t, examplesDir, SAVED_AWS_REGION, awsRegion)
 
