@@ -2,8 +2,9 @@ package test
 
 import (
 	"fmt"
-	"github.com/gruntwork-io/terratest/modules/packer"
 	"testing"
+
+	"github.com/gruntwork-io/terratest/modules/packer"
 )
 
 const CONSUL_AMI_TEMPLATE_VAR_REGION = "aws_region"

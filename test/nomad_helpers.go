@@ -16,7 +16,6 @@ import (
 	"github.com/gruntwork-io/terratest/modules/retry"
 	"github.com/gruntwork-io/terratest/modules/ssh"
 	"github.com/gruntwork-io/terratest/modules/terraform"
-	"github.com/gruntwork-io/terratest/modules/test-structure"
 )
 
 const REPO_ROOT = "../"
@@ -210,11 +209,11 @@ func testSshAccess(t *testing.T, publicHost ssh.Host, ssh_access bool) {
 	})
 
 	// No SSH access results in an error.
-	if err != nil && ! ssh_access {
+	if err != nil && !ssh_access {
 		logger.Logf(t, "Nomad cluster is properly deployed without SSH access: %s", response)
 		return
 	}
-	if err == nil && ! ssh_access {
+	if err == nil && !ssh_access {
 		logger.Logf(t, "Nomad cluster is NOT properly deployed without SSH access: %s", response)
 		t.Fatal("No SSH access configured, but nevertheless SSH access was successful.")
 	}
