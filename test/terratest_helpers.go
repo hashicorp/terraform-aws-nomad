@@ -2,9 +2,11 @@ package test
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/packer"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
 const CONSUL_AMI_TEMPLATE_VAR_REGION = "aws_region"
@@ -22,4 +24,11 @@ func buildAmi(t *testing.T, packerTemplatePath string, packerBuildName string, a
 	}
 
 	return packer.BuildAmi(t, options)
+}
+
+// Recent terraform version changed the behavior on terraform output.
+// Values now contain quotations marks, if terraform output is called with `-raw` option.
+// - https://github.com/gruntwork-io/terratest/issues/766
+func rawTerraformOutput(t *testing.T, terraformOptions *terraform.Options, outputVariableName string) string {
+	return strings.Trim(terraform.Output(t, terraformOptions, outputVariableName), "\"")
 }

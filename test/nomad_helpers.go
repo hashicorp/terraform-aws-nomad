@@ -16,6 +16,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/retry"
 	"github.com/gruntwork-io/terratest/modules/ssh"
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/gruntwork-io/terratest/modules/test-structure"
 )
 
 const REPO_ROOT = "../"
@@ -38,6 +39,7 @@ const CLUSTER_SEPARATE_EXAMPLE_VAR_CONSUL_CLUSTER_NAME = "consul_cluster_name"
 const CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_NOMAD_SERVERS = "num_nomad_servers"
 const CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_CONSUL_SERVERS = "num_consul_servers"
 const CLUSTER_SEPARATE_EXAMPLE_VAR_NUM_NOMAD_CLIENTS = "num_nomad_clients"
+const CLUSTER_SEPARATE_EXAMPLE_VAR_SSH_KEY_NAME = "ssh_key_name"
 const CLUSTER_SEPARATE_EXAMPLE_OUTPUT_NOMAD_SERVER_ASG_NAME = "asg_name_nomad_servers"
 
 const DEFAULT_NUM_SERVERS = 3
@@ -171,13 +173,13 @@ func runNomadClusterSeparateTest(t *testing.T, packerBuildName string) {
 
 // Check that the Nomad cluster comes up within a reasonable time period and can respond to requests
 func checkNomadClusterIsWorking(t *testing.T, asgNameOutputVar string, terraformOptions *terraform.Options, awsRegion string) {
-	asgName := terraform.Output(t, terraformOptions, asgNameOutputVar)
+	asgName := rawTerraformOutput(t, terraformOptions, asgNameOutputVar)
 	nodeIpAddress := getIpAddressOfAsgInstance(t, asgName, awsRegion)
 	testNomadCluster(t, nodeIpAddress)
 }
 
 func checkNomadClusterSshAccess(t *testing.T, asgNameOutputVar string, terraformOptions *terraform.Options, awsRegion string, keyPair *ssh.KeyPair, sshUsername string) {
-	asgName := terraform.Output(t, terraformOptions, asgNameOutputVar)
+	asgName := rawTerraformOutput(t, terraformOptions, asgNameOutputVar)
 	nodeIpAddress := getIpAddressOfAsgInstance(t, asgName, awsRegion)
 
 	publicHost := ssh.Host{
@@ -333,6 +335,12 @@ func runNomadClusterSSHTest(t *testing.T, packerBuildName string, ssh_username s
 				ENV_VAR_AWS_REGION: awsRegion,
 			},
 		}
+
+		keyPairName := fmt.Sprintf("terratest-onetime-key-%s", uniqueId)
+		keyPair := aws.CreateAndImportEC2KeyPair(t, awsRegion, keyPairName)
+		terraformOptions.Vars[CLUSTER_SEPARATE_EXAMPLE_VAR_SSH_KEY_NAME] = keyPairName
+		test_structure.SaveEc2KeyPair(t, examplesDir, keyPair)
+
 		test_structure.SaveTerraformOptions(t, examplesDir, terraformOptions)
 
 		terraform.InitAndApply(t, terraformOptions)
@@ -341,9 +349,6 @@ func runNomadClusterSSHTest(t *testing.T, packerBuildName string, ssh_username s
 	test_structure.RunTestStage(t, "validate", func() {
 		terraformOptions := test_structure.LoadTerraformOptions(t, examplesDir)
 		awsRegion := test_structure.LoadString(t, examplesDir, SAVED_AWS_REGION)
-
-		checkNomadClusterIsWorking(t, CLUSTER_SEPARATE_EXAMPLE_OUTPUT_NOMAD_SERVER_ASG_NAME, terraformOptions, awsRegion)
-
 		keyPair := test_structure.LoadEc2KeyPair(t, examplesDir)
 		checkNomadClusterSshAccess(t, CLUSTER_SEPARATE_EXAMPLE_OUTPUT_NOMAD_SERVER_ASG_NAME, terraformOptions, awsRegion, keyPair.KeyPair, ssh_username)
 	})
