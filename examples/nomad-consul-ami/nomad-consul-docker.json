@@ -10,7 +10,7 @@
   "builders": [
     {
       "name": "ubuntu18-ami",
-      "ami_name": "{{user `ami_name_prefix`}}-docker-ubuntu18-{{isotime | clean_ami_name}}",
+      "ami_name": "{{user `ami_name_prefix`}}-docker-ubuntu18-{{isotime | clean_resource_name}}",
       "ami_description": "An example of how to build an Ubuntu 18.04 AMI that has Nomad, Consul and Docker",
       "instance_type": "t2.micro",
       "region": "{{user `aws_region`}}",
@@ -32,7 +32,7 @@
     },
     {
       "name": "ubuntu16-ami",
-      "ami_name": "{{user `ami_name_prefix`}}-docker-ubuntu16-{{isotime | clean_ami_name}}",
+      "ami_name": "{{user `ami_name_prefix`}}-docker-ubuntu16-{{isotime | clean_resource_name}}",
       "ami_description": "An Ubuntu 16.04 AMI that has Nomad, Consul and Docker installed.",
       "instance_type": "t2.micro",
       "region": "{{user `aws_region`}}",
@@ -53,7 +53,7 @@
       "ssh_username": "ubuntu"
     },
     {
-      "ami_name": "{{user `ami_name_prefix`}}-docker-amazon-linux-2-{{isotime | clean_ami_name}}",
+      "ami_name": "{{user `ami_name_prefix`}}-docker-amazon-linux-2-{{isotime | clean_resource_name}}",
       "ami_description": "An Amazon Linux 2 AMI that has Nomad, Consul and Docker installed.",
       "instance_type": "t2.micro",
       "name": "amazon-linux-2-ami",
