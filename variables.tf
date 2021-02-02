@@ -37,6 +37,13 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
+variable "server_instance_type" {
+  description = "What kind of instance type to use for the nomad server"
+  type        = string
+  default     = "t2.micro"
+}
+
+
 variable "num_servers" {
   description = "The number of server nodes to deploy. We strongly recommend using 3 or 5."
   type        = number
