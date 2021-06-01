@@ -48,7 +48,7 @@ function get_required_terraform_output {
   local readonly output_name="$1"
   local output_value
 
-  output_value=$(terraform output -no-color "$output_name")
+  output_value=$(terraform output -raw -no-color "$output_name")
 
   if [[ -z "$output_value" ]]; then
     log_error "Unable to find a value for Terraform output $output_name"
