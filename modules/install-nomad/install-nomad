@@ -127,8 +127,30 @@ function install_binaries {
   local readonly path="$2"
   local readonly username="$3"
 
-  local readonly url="https://releases.hashicorp.com/nomad/${version}/nomad_${version}_linux_amd64.zip"
-  local readonly download_path="/tmp/nomad_${version}_linux_amd64.zip"
+  local cpu_arch
+  cpu_arch="$(uname -m)"
+  local binary_arch=""
+  case "$cpu_arch" in
+    x86_64)
+      binary_arch="amd64"
+      ;;
+    x86)
+      binary_arch="386"
+      ;;
+    arm64|aarch64)
+      binary_arch="arm64"
+      ;;
+    arm*)
+      binary_arch="arm"
+      ;;
+    *)
+      log_error "CPU architecture $cpu_arch is not a supported by Consul."
+      exit 1
+      ;;
+    esac
+
+  local readonly url="https://releases.hashicorp.com/nomad/${version}/nomad_${version}_linux_${binary_arch}.zip"
+  local readonly download_path="/tmp/nomad_${version}_linux_${binary_arch}.zip"
   local readonly bin_dir="$path/bin"
   local readonly nomad_dest_path="$bin_dir/nomad"
   local readonly run_nomad_dest_path="$bin_dir/run-nomad"

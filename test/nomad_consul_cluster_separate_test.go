@@ -14,5 +14,5 @@ func TestNomadConsulClusterSeparateWithUbuntu16Ami(t *testing.T) {
 
 func TestNomadConsulClusterSeparateAmazonLinux2Ami(t *testing.T) {
 	t.Parallel()
-	runNomadClusterSeparateTest(t, "amazon-linux-2-ami")
+	runNomadClusterSeparateTest(t, "amazon-linux-2-amd64-ami")
 }
