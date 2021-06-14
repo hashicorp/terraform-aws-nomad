@@ -31,6 +31,12 @@ variable "cluster_name" {
   default     = "nomad-example"
 }
 
+variable "server_instance_type" {
+  description = "What kind of instance type to use for the nomad servers"
+  type        = string
+  default     = "t2.micro"
+}
+
 variable "instance_type" {
   description = "What kind of instance type to use for the nomad clients"
   type        = string
