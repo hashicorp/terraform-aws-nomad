@@ -14,7 +14,7 @@ func TestNomadConsulClusterColocatedWithUbuntu16Ami(t *testing.T) {
 	runNomadClusterColocatedTest(t, "ubuntu16-ami")
 }
 
-func TestNomadConsulClusterColocatedAmazonLinux2Ami(t *testing.T) {
+func TestNomadConsulClusterColocatedAmazonLinux2Amd64Ami(t *testing.T) {
 	t.Parallel()
-	runNomadClusterColocatedTest(t, "amazon-linux-2-ami")
+	runNomadClusterColocatedTest(t, "amazon-linux-2-amd64-ami")
 }

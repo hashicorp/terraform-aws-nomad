@@ -39,7 +39,8 @@ jobs:
       # AMI already in the AWS Account.
       - run: _ci/publish-amis.sh "ubuntu16-ami"
       - run: _ci/publish-amis.sh "ubuntu18-ami"
-      - run: _ci/publish-amis.sh "amazon-linux-2-ami"
+      - run: _ci/publish-amis.sh "amazon-linux-2-amd64-ami"
+      - run: _ci/publish-amis.sh "amazon-linux-2-arm64-ami"
 workflows:
   version: 2
   build-and-test:
