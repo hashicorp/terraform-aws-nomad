@@ -69,12 +69,8 @@ module "nomad_servers" {
   source = "../../modules/nomad-cluster"
 
   cluster_name  = "${var.nomad_cluster_name}-server"
+  cluster_size  = var.num_nomad_servers
   instance_type = "t2.micro"
-
-  # You should typically use a fixed size of 3 or 5 for your Nomad server cluster
-  min_size         = var.num_nomad_servers
-  max_size         = var.num_nomad_servers
-  desired_capacity = var.num_nomad_servers
 
   ami_id    = var.ami_id == null ? data.aws_ami.nomad_consul.image_id : var.ami_id
   user_data = data.template_file.user_data_nomad_server.rendered
@@ -171,18 +167,13 @@ module "nomad_clients" {
   source = "../../modules/nomad-cluster"
 
   cluster_name  = "${var.nomad_cluster_name}-client"
+  cluster_size  = var.num_clients
   instance_type = "t2.micro"
 
   # Give the clients a different tag so they don't try to join the server cluster
   cluster_tag_key   = "nomad-clients"
   cluster_tag_value = var.nomad_cluster_name
 
-  # To keep the example simple, we are using a fixed-size cluster. In real-world usage, you could use auto scaling
-  # policies to dynamically resize the cluster in response to load.
-
-  min_size         = var.num_nomad_clients
-  max_size         = var.num_nomad_clients
-  desired_capacity = var.num_nomad_clients
   ami_id           = var.ami_id == null ? data.aws_ami.nomad_consul.image_id : var.ami_id
   user_data        = data.template_file.user_data_nomad_client.rendered
   vpc_id           = data.aws_vpc.default.id

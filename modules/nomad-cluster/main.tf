@@ -19,9 +19,9 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   availability_zones  = var.availability_zones
   vpc_zone_identifier = var.subnet_ids
 
-  min_size             = var.min_size
-  max_size             = var.max_size
-  desired_capacity     = var.desired_capacity
+  min_size             = var.cluster_size
+  max_size             = var.cluster_size
+  desired_capacity     = var.cluster_size
   termination_policies = [var.termination_policies]
 
   health_check_type         = var.health_check_type
@@ -74,6 +74,7 @@ resource "aws_launch_configuration" "launch_configuration" {
   image_id      = var.ami_id
   instance_type = var.instance_type
   user_data     = var.user_data
+  spot_price    = var.spot_price
 
   iam_instance_profile = aws_iam_instance_profile.instance_profile.name
   key_name             = var.ssh_key_name
