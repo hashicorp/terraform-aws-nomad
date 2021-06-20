@@ -173,7 +173,6 @@ module "nomad_clients" {
   cluster_name  = "${var.nomad_cluster_name}-client"
   instance_type = "t2.micro"
 
-  # Give the clients a different tag so they don't try to join the server cluster
   cluster_tag_key   = "nomad-clients"
   cluster_tag_value = var.nomad_cluster_name
 

@@ -322,16 +322,6 @@ function run {
         user="$2"
         shift
         ;;
-      --cluster-tag-key)
-        assert_not_empty "$key" "$2"
-        cluster_tag_key="$2"
-        shift
-        ;;
-      --cluster-tag-value)
-        assert_not_empty "$key" "$2"
-        cluster_tag_value="$2"
-        shift
-        ;;
       --skip-nomad-config)
         skip_nomad_config="true"
         ;;
