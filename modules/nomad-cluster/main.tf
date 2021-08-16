@@ -85,7 +85,8 @@ resource "aws_launch_configuration" "launch_configuration" {
   placement_tenancy           = var.tenancy
   associate_public_ip_address = var.associate_public_ip_address
 
-  ebs_optimized = var.root_volume_ebs_optimized
+  enable_monitoring = var.enable_detailed_monitoring
+  ebs_optimized     = var.root_volume_ebs_optimized
 
   root_block_device {
     volume_type           = var.root_volume_type
