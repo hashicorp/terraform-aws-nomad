@@ -13,7 +13,7 @@
 # Nomad AWS Module
 
 [![Maintained by Gruntwork.io](https://img.shields.io/badge/maintained%20by-gruntwork.io-%235849a6.svg)](https://gruntwork.io/?ref=repo_aws_nomad)
-![Terraform Version](https://img.shields.io/badge/tf-%3E%3D0.15.0-blue.svg)
+![Terraform Version](https://img.shields.io/badge/tf-%3E%3D1.0.0-blue.svg)
 
 This repo contains a set of modules for deploying a [Nomad](https://www.nomadproject.io/) cluster on
 [AWS](https://aws.amazon.com/) using [Terraform](https://www.terraform.io/). Nomad is a distributed, highly-available
