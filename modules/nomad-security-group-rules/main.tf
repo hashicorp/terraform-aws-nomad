@@ -56,3 +56,43 @@ resource "aws_security_group_rule" "allow_serf_udp_inbound" {
   security_group_id = var.security_group_id
 }
 
+resource "aws_security_group_rule" "self_allow_http_inbound" {
+  type        = "ingress"
+  from_port   = var.http_port
+  to_port     = var.http_port
+  protocol    = "tcp"
+  self        = true
+
+  security_group_id = var.security_group_id
+}
+
+resource "aws_security_group_rule" "self_allow_rpc_inbound" {
+  type        = "ingress"
+  from_port   = var.rpc_port
+  to_port     = var.rpc_port
+  protocol    = "tcp"
+  self        = true
+
+  security_group_id = var.security_group_id
+}
+
+resource "aws_security_group_rule" "self_allow_serf_tcp_inbound" {
+  type        = "ingress"
+  from_port   = var.serf_port
+  to_port     = var.serf_port
+  protocol    = "tcp"
+  self        = true
+
+  security_group_id = var.security_group_id
+}
+
+resource "aws_security_group_rule" "self_allow_serf_udp_inbound" {
+  type        = "ingress"
+  from_port   = var.serf_port
+  to_port     = var.serf_port
+  protocol    = "udp"
+  self        = true
+
+  security_group_id = var.security_group_id
+}
+
