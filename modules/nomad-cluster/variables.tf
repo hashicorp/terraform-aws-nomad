@@ -243,7 +243,7 @@ variable "iam_permissions_boundary" {
 variable "launch_configuration_metadata_http_tokens" {
   default = "optional"
   validation {
-    condition = var.launch_configuration_metadata_http_tokens != "optional" && var.launch_configuration_metadata_http_tokens != "required"
+    condition = var.launch_configuration_metadata_http_tokens == "optional" || var.launch_configuration_metadata_http_tokens == "required"
     error_message = "The supported values for launch_configuration_metadata_http_tokens are either optional or required."
   }
 }
