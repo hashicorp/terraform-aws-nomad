@@ -239,3 +239,21 @@ variable "iam_permissions_boundary" {
   type        = string
   default     = null
 }
+
+variable "launch_configuration_metadata_http_tokens" {
+  default = "optional"
+  validation {
+    condition = var.launch_configuration_metadata_http_tokens != "optional" && var.launch_configuration_metadata_http_tokens != "required"
+    error_message = "The supported values for launch_configuration_metadata_http_tokens are either optional or required."
+  }
+}
+
+variable "launch_configuration_metadata_response_hop_limit" {
+  default = 1
+  type = number
+}
+
+variable "launch_configuration_metadata_endpoint" {
+  default = true
+  type = bool
+}
