@@ -19,7 +19,7 @@ There is a good chance it will work on other flavors of Debian, CentOS, and RHEL
 
 <!-- TODO: update the clone URL to the final URL when this Module is released -->
 
-To install Nomad, use `git` to clone this repository at a specific tag (see the [releases page](../../../../releases)
+To install Nomad, use `git` to clone this repository at a specific tag (see the [releases page](https://github.com/hashicorp/terraform-aws-nomad/releases)
 for all available tags) and run the `install-nomad` script:
 
 ```

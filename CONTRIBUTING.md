@@ -89,5 +89,5 @@ We require that all contributors sign our Contributor License Agreement ("CLA") 
 ## Merge and release   
 
 The maintainers for this repo will review your code and provide feedback. If everything looks good, they will merge the
-code and release a new version, which you'll be able to find in the [releases page](../../releases).
+code and release a new version, which you'll be able to find in the [releases page](https://github.com/hashicorp/terraform-aws-nomad/releases).
 
