@@ -211,7 +211,7 @@ Description="HashiCorp Nomad"
 Documentation=https://www.nomadproject.io/
 Requires=network-online.target
 After=network-online.target
-ConditionalFileNotEmpty=$config_path
+ConditionFileNotEmpty=$config_path
 EOF
 )
 
