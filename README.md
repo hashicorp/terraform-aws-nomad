@@ -1,3 +1,9 @@
+# DISCLAIMER: This is no longer supported.
+Moving forward in the future this repository will be no longer supported and eventually lead to
+deprecation. Please use our latest versions of our products moving forward or alternatively you
+may fork the repository to continue use and development for your personal/business use.
+
+---
 <!--
 :type: service
 :name: HashiCorp Nomad
@@ -12,7 +18,6 @@
 
 # Nomad AWS Module
 
-[![Maintained by Gruntwork.io](https://img.shields.io/badge/maintained%20by-gruntwork.io-%235849a6.svg)](https://gruntwork.io/?ref=repo_aws_nomad)
 ![Terraform Version](https://img.shields.io/badge/tf-%3E%3D1.0.0-blue.svg)
 
 This repo contains a set of modules for deploying a [Nomad](https://www.nomadproject.io/) cluster on
@@ -38,7 +43,7 @@ number of client nodes, which are used for running jobs.
 
 ## Learn
 
-This repo is maintained by [Gruntwork](https://www.gruntwork.io), and follows the same patterns as [the Gruntwork
+This repo is maintained by [Gruntwork](https://www.gruntwork.io?ref=repo_aws_nomad), and follows the same patterns as [the Gruntwork
 Infrastructure as Code Library](https://gruntwork.io/infrastructure-as-code-library/), a collection of reusable,
 battle-tested, production ready infrastructure code. You can read [How to use the Gruntwork Infrastructure as Code
 Library](https://gruntwork.io/guides/foundations/how-to-use-gruntwork-infrastructure-as-code-library/) for an overview
@@ -121,4 +126,4 @@ Please see [CONTRIBUTING.md](https://github.com/hashicorp/terraform-aws-nomad/tr
 Please see [LICENSE](https://github.com/hashicorp/terraform-aws-nomad/tree/master/LICENSE) for details on how the code in this repo is licensed.
 
 
-Copyright &copy; 2019 Gruntwork, Inc.
+Copyright &copy; 2019 [Gruntwork](https://www.gruntwork.io?ref=repo_aws_nomad), Inc.
