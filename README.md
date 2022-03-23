@@ -43,7 +43,7 @@ number of client nodes, which are used for running jobs.
 
 ## Learn
 
-This repo is maintained by [Gruntwork](https://www.gruntwork.io?ref=repo_aws_nomad), and follows the same patterns as [the Gruntwork
+This repo was created by [Gruntwork](https://www.gruntwork.io?ref=repo_aws_nomad), and follows the same patterns as [the Gruntwork
 Infrastructure as Code Library](https://gruntwork.io/infrastructure-as-code-library/), a collection of reusable,
 battle-tested, production ready infrastructure code. You can read [How to use the Gruntwork Infrastructure as Code
 Library](https://gruntwork.io/guides/foundations/how-to-use-gruntwork-infrastructure-as-code-library/) for an overview
@@ -104,9 +104,11 @@ If you want to deploy this repo in production, check out the following resources
 
 
 
-## Who created this Module?
+## Support
 
 These modules were created by [Gruntwork](http://www.gruntwork.io/?ref=repo_aws_vault), in partnership with HashiCorp, in 2017 and maintained through 2021. They were deprecated in 2022 in favor of newer alternatives (see the top of the README for details).
+
+If you need help with anything else related to infrastructure or DevOps, Gruntwork offers [Commercial Support](https://gruntwork.io/support/) via Slack, email, and phone/video. If you're already a Gruntwork customer, hop on Slack and ask away! If not, [subscribe now](https://www.gruntwork.io/pricing/). If you're not sure, feel free to email us at [support@gruntwork.io](mailto:support@gruntwork.io).
 
 
 ## License
