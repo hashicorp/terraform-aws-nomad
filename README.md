@@ -104,7 +104,7 @@ If you want to deploy this repo in production, check out the following resources
 
 ## Who created this Module?
 
-These modules were created by [Gruntwork](http://www.gruntwork.io/?ref=repo_azure_vault), in partnership with HashiCorp, in 2017 and maintained through 2021. They were deprecated in 2022, see the top of the README for details.
+These modules were created by [Gruntwork](http://www.gruntwork.io/?ref=repo_aws_nomad), in partnership with HashiCorp, in 2017 and maintained through 2021. They were deprecated in 2022, see the top of the README for details.
 
 ## License
 
