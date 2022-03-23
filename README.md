@@ -103,14 +103,6 @@ If you want to deploy this repo in production, check out the following resources
 * [How to upgrade a Nomad cluster](https://github.com/hashicorp/terraform-aws-nomad/tree/master/modules/nomad-cluster/README.md#how-do-you-roll-out-updates)
 
 
-
-## Support
-
-These modules were created by [Gruntwork](http://www.gruntwork.io/?ref=repo_aws_nomad), in partnership with HashiCorp, in 2017 and maintained through 2021. They were deprecated in 2022 in favor of newer alternatives (see the top of the README for details).
-
-If you need help with anything else related to infrastructure or DevOps, Gruntwork offers [Commercial Support](https://gruntwork.io/support/) via Slack, email, and phone/video. If you're already a Gruntwork customer, hop on Slack and ask away! If not, [subscribe now](https://www.gruntwork.io/pricing/). If you're not sure, feel free to email us at [support@gruntwork.io](mailto:support@gruntwork.io).
-
-
 ## License
 
 Please see [LICENSE](https://github.com/hashicorp/terraform-aws-nomad/tree/master/LICENSE) for details on how the code in this repo is licensed.
