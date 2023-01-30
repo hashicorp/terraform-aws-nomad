@@ -144,7 +144,7 @@ function install_binaries {
       binary_arch="arm"
       ;;
     *)
-      log_error "CPU architecture $cpu_arch is not a supported by Consul."
+      log_error "CPU architecture $cpu_arch is not supported by Nomad."
       exit 1
       ;;
     esac
