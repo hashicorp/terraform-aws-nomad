@@ -33,19 +33,10 @@ variable "user_data" {
   type        = string
 }
 
-variable "min_size" {
-  description = "The minimum number of nodes to have in the cluster. If you're using this to run Nomad servers, we strongly recommend setting this to 3 or 5."
+variable "cluster_size" {
+  description = "The number of nodes to have in the Nomad cluster. We strongly recommended that you use either 3 or 5."
   type        = number
-}
-
-variable "max_size" {
-  description = "The maximum number of nodes to have in the cluster. If you're using this to run Nomad servers, we strongly recommend setting this to 3 or 5."
-  type        = number
-}
-
-variable "desired_capacity" {
-  description = "The desired number of nodes to have in the cluster. If you're using this to run Nomad servers, we strongly recommend setting this to 3 or 5."
-  type        = number
+  default     = 3
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -107,10 +98,16 @@ variable "associate_public_ip_address" {
   default     = false
 }
 
+variable "spot_price" {
+  description = "The maximum hourly price to pay for EC2 Spot Instances."
+  type        = number
+  default     = null
+}
+
 variable "tenancy" {
-  description = "The tenancy of the instance. Must be one of: default or dedicated."
+  description = "The tenancy of the instance. Must be one of: null, default or dedicated. For EC2 Spot Instances only null or dedicated can be used."
   type        = string
-  default     = "default"
+  default     = null
 }
 
 variable "root_volume_ebs_optimized" {
