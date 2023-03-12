@@ -239,3 +239,9 @@ variable "iam_permissions_boundary" {
   type        = string
   default     = null
 }
+
+variable "enable_detailed_monitoring" {
+  description = "Whether instances should have detailed monitoring enabled - this can incur additional cloudwatch costs"
+  type        = bool
+  default     = true
+}
