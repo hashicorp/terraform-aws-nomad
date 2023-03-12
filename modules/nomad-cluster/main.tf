@@ -93,6 +93,12 @@ resource "aws_launch_configuration" "launch_configuration" {
     delete_on_termination = var.root_volume_delete_on_termination
   }
 
+  metadata_options {
+    http_endpoint = var.launch_configuration_metadata_endpoint ? "enabled": "disabled"
+    http_put_response_hop_limit = var.launch_configuration_metadata_response_hop_limit
+    http_tokens = var.launch_configuration_metadata_http_tokens
+  }
+
   dynamic "ebs_block_device" {
     for_each = var.ebs_block_devices
 
