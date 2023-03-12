@@ -32,6 +32,7 @@ function print_usage {
   echo -e "  --use-sudo\t\tIf set, run the Nomad agent with sudo. By default, sudo is only used if --client is set."
   echo -e "  --environment\t\A single environment variable in the key/value pair form 'KEY=\"val\"' to pass to Nomad as environment variable when starting it up. Repeat this option for additional variables. Optional."
   echo -e "  --skip-nomad-config\tIf this flag is set, don't generate a Nomad configuration file. Optional. Default is false."
+  echo -e "  --meta\t\A single metadata value in the key/value pair form 'KEY=\"val\"' to add to client configuration. Repeat this option for additional metadata. Optional."
   echo
   echo "Example:"
   echo
@@ -122,23 +123,38 @@ function assert_is_installed {
   fi
 }
 
+function build_client_meta {
+  local meta=("$@")
+  echo "  meta {"
+  for m in "${meta[@]}";
+  do
+    IFS="=" read key val <<< $m
+    echo "    \"$key\" = \"$val\""
+  done
+  echo "  }"
+}
+
 function generate_nomad_config {
   local readonly server="$1"
   local readonly client="$2"
   local readonly num_servers="$3"
   local readonly config_dir="$4"
   local readonly user="$5"
+  shift 5
+  local readonly meta=("$@")
   local readonly config_path="$config_dir/$NOMAD_CONFIG_FILE"
 
   local instance_id=""
   local instance_ip_address=""
   local instance_region=""
   local instance_availability_zone=""
+  local client_meta=""
 
   instance_id=$(get_instance_id)
   instance_ip_address=$(get_instance_ip_address)
   instance_region=$(get_instance_region)
   availability_zone=$(get_instance_availability_zone)
+  client_meta=$(build_client_meta "${meta[@]}")
 
   local server_config=""
   if [[ "$server" == "true" ]]; then
@@ -156,6 +172,7 @@ EOF
     client_config=$(cat <<EOF
 client {
   enabled = true
+$client_meta
 }
 EOF
 )
@@ -276,6 +293,7 @@ function run {
   local skip_nomad_config="false"
   local use_sudo=""
   local environment=()
+  local meta=()
   local all_args=()
 
   while [[ $# > 0 ]]; do
@@ -343,6 +361,11 @@ function run {
         environment+=("$2")
         shift
         ;;
+      --meta)
+        assert_not_empty "$key" "$2"
+        meta+=("$2")
+        shift
+        ;;
       --help)
         print_usage
         exit
@@ -400,7 +423,7 @@ function run {
   if [[ "$skip_nomad_config" == "true" ]]; then
     log_info "The --skip-nomad-config flag is set, so will not generate a default Nomad config file."
   else
-    generate_nomad_config "$server" "$client" "$num_servers" "$config_dir" "$user"
+    generate_nomad_config "$server" "$client" "$num_servers" "$config_dir" "$user" "${meta[@]}"
   fi
 
   generate_systemd_config "$SYSTEMD_CONFIG_PATH" "$config_dir" "$data_dir" "$bin_dir" "$systemd_stdout" "$systemd_stderr" "$user" "$use_sudo" "${environment[@]}"
